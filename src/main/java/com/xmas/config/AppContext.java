@@ -1,6 +1,5 @@
 package com.xmas.config;
 
-import com.sun.org.apache.xerces.internal.parsers.SecurityConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -21,10 +20,9 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "com.xmas.dao")
 @PropertySources({
         @PropertySource("classpath:properties/hibernate.properties"),
-        @PropertySource("classpath:properties/jdbc.properties"),
-        @PropertySource("classpath:properties/serverapp.properties")
+        @PropertySource("classpath:properties/jdbc.properties")
 })
-@Import({SecurityConfiguration.class, MVCConfiguration.class})
+@Import({MVCConfiguration.class})
 public class AppContext {
 
     @Autowired
@@ -34,6 +32,7 @@ public class AppContext {
         Properties properties = new Properties();
         properties.put("hibernate.show_sql",env.getProperty("hibernate.show_sql"));
         properties.put("hibernate.dialect",env.getProperty("hibernate.dialect"));
+        properties.put("hibernate.hbm2ddl.auto",env.getProperty("hibernate.hbm2ddl.auto"));
         return properties;
     }
 
