@@ -25,6 +25,9 @@ public class Message {
     private String icon;
 
     @Column
+    private LocalDateTime created;
+
+    @Column
     private LocalDateTime expiration;
 
     @Column
@@ -44,8 +47,11 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private Set<Medium> mediums;
 
-    public Message() {
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
+    public Message() {
     }
 
     public Long getId() {
@@ -88,6 +94,14 @@ public class Message {
         this.icon = icon;
     }
 
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
     public LocalDateTime getExpiration() {
         return expiration;
     }
@@ -126,5 +140,13 @@ public class Message {
 
     public void setMediums(Set<Medium> mediums) {
         this.mediums = mediums;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

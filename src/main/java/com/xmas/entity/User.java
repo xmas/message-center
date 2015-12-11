@@ -18,7 +18,7 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Device> devices;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Message> messages;
 
     public Integer getId() {
