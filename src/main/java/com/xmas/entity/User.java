@@ -12,10 +12,13 @@ public class User {
     @GeneratedValue
     private Integer id;
 
+    @Column
+    private Long GUID;
+
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Device> devices;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Message> messages;
 
     public Integer getId() {
@@ -24,6 +27,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Long getGUID() {
+        return GUID;
+    }
+
+    public void setGUID(Long GUID) {
+        this.GUID = GUID;
     }
 
     public Set<Device> getDevices() {

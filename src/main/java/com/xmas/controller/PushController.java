@@ -1,22 +1,33 @@
 package com.xmas.controller;
 
+import com.xmas.dao.MessageRepository;
 import com.xmas.entity.Message;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import com.xmas.service.MessagesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 @RestController
-@RequestMapping("/messages/v1")
+@RequestMapping("users{GUID}/messages/v1")
 public class PushController {
 
-    @RequestMapping(method = RequestMethod.POST)
-    public List<Message> getMessages(@RequestBody Message message){
-        List<Message> result = new ArrayList<Message>();
-        result.add(message);
-        return result;
+    @Autowired
+    MessageRepository messageRepository;
+
+    @Autowired
+    MessagesService messagesService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public Collection<Message> getMessages(@PathVariable Long GUID, @RequestParam LocalDateTime time){
+        return messagesService.getMessages(GUID, message -> message.getCreated().isAfter(time));
     }
+
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
+    public void addMessage(@RequestBody Message message){
+        messageRepository.save(message);
+    }
+
+
 }
