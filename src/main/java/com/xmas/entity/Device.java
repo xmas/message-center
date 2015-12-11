@@ -10,7 +10,8 @@ public class Device {
     @GeneratedValue
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "mediumId")
     private Medium medium;
 
     @Column

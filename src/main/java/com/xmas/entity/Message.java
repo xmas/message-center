@@ -36,8 +36,10 @@ public class Message {
     @Column
     private String messageType;
 
-    @ElementCollection
-    @JoinTable(name = "mediums", joinColumns = @JoinColumn(name = "personID"))
+    @ManyToMany
+    @JoinTable(name = "messages_mediums",
+            joinColumns = @JoinColumn(name = "messageId"),
+            inverseJoinColumns = @JoinColumn(name = "mediumId"))
     @Column(name = "medium", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<Medium> mediums;

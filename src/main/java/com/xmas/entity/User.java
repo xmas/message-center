@@ -12,6 +12,9 @@ public class User {
     @GeneratedValue
     private Integer id;
 
+    @Column
+    private Long GUID;
+
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Device> devices;
 
@@ -24,6 +27,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Long getGUID() {
+        return GUID;
+    }
+
+    public void setGUID(Long GUID) {
+        this.GUID = GUID;
     }
 
     public Set<Device> getDevices() {
