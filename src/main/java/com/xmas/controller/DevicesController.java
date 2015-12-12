@@ -12,6 +12,11 @@ public class DevicesController {
     @Autowired
     UserService userService;
 
+    @RequestMapping(method = RequestMethod.GET)
+    public Iterable<Device> getDevices(@PathVariable Long GUID){
+        return userService.getDevices(GUID);
+    }
+
     @RequestMapping(value = "/{deviceId}", method = RequestMethod.GET)
     public Device getDevice(@PathVariable Long GUID, @PathVariable Integer deviceId){
         return userService.getDevice(GUID, deviceId);

@@ -58,6 +58,10 @@ public class UserService {
         }
     }
 
+    public Iterable<Device> getDevices(Long GUID){
+        return getUser(GUID).getDevices();
+    }
+
     public Device getDevice(Long GUID, Integer deviceId){
         return getUser(GUID).getDevices().stream()
                 .filter(d -> d.getId().equals(deviceId))
