@@ -1,8 +1,9 @@
 package com.xmas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -10,15 +11,21 @@ public class User {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Integer id;
+
+    @Column
+    private String name;
 
     @Column
     private Long GUID;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Device> devices;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Device> devices;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<Message> messages;
 
     public Integer getId() {
@@ -37,11 +44,11 @@ public class User {
         this.GUID = GUID;
     }
 
-    public Set<Device> getDevices() {
+    public List<Device> getDevices() {
         return devices;
     }
 
-    public void setDevices(Set<Device> devices) {
+    public void setDevices(List<Device> devices) {
         this.devices = devices;
     }
 
@@ -51,5 +58,13 @@ public class User {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

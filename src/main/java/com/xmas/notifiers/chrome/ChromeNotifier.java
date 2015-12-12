@@ -9,18 +9,17 @@ import com.xmas.notifiers.MessageSanderBuilder;
 import com.xmas.notifiers.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class ChromeNotifier implements Notifier {
 
     public static final String GOOGLE_PUSH_SERVER_PATH = "https://android.googleapis.com/gcm/send";
     public static final String HTTP_METHOD = "POST";
-
-    //public static final String /*{'Authorization': 'key=AIzaSyAzYUOz5zbpA4HULhC3phWekdJKOsKwCDw',
-    //'Content-Type': 'application/json'*/
 
     @Autowired
     MessageSanderBuilder messageSanderBuilder;

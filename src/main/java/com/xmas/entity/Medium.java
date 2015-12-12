@@ -1,5 +1,7 @@
 package com.xmas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.util.HashMap;
@@ -18,13 +20,16 @@ public class Medium {
                                                              "Only chrome, safari allowed.";
 
     @Id
+    @JsonIgnore
     private int id;
 
     @Column
     @Pattern(regexp = "^\\s*chrome\\s*$|^\\s*safary\\s*$", message = VALIDATION_MESSAGE_TEMPLATE )
     private String name;
 
-    Medium(String name) {
+    public Medium(){}
+
+    public Medium(String name) {
         this.name = name;
     }
 

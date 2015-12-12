@@ -15,15 +15,23 @@ public class UsersController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/{GUID}", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public Iterable<User> getUsers(){
+        return userService.getAll();
+    }
+
+    @RequestMapping(value = "/{GUID}", method = RequestMethod.GET, produces = "application/json")
     public User getUser(@PathVariable Long GUID){
         return userService.getUser(GUID);
     }
 
-    @RequestMapping(value = "/{GUID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{GUID}", method = RequestMethod.PUT, consumes = "application/json")
     public void addUser(@PathVariable Long GUID){
         userService.addUser(GUID);
     }
 
-
+    @RequestMapping(value = "/{GUID}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable Long GUID){
+        userService.deleteUser(GUID);
+    }
 }

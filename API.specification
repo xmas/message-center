@@ -1,0 +1,16 @@
+/users
+   GET - returns array of all users: [{"GUID" : 12365468356345}, {"GUID": 96879651321}]
+
+/users/{GUID}
+   GET - return specified user: {"GUID" : 13546984362}; 404 error if GUID not found
+   PUT - add user with GUID: empty body ; 409 error if already presented
+   DELETE - delete user with GUID:  empty body ; 404 error if GUID not found
+
+/users/{GUID}/devices/
+   GET - return all devices for user: [{"id" : 2, "medium" : {"name" : "chrome"}, "token" : "edzPkakgeIA:APA91bEbwlV3OvLxcyj56rmGjKdegdfg14MW9qG"},
+                                       {"id" : 3, "medium" : {"name" : "safari"}, "token" : "edzPkakstfrhggeIA:APA91bEbwlV3OvLxcyj56rmGjK14MW9qG"}]
+   POST - add new device for user : body : {"medium" : {"name" : "chrome"}, "token" : "edzPkakgeIA:APA91bEbwlV3OvLxcyj56rmGjKdegdfg14MW9qG"}
+
+/users/{GUID}/devices/{id}
+   GET - return specified device: {"id" : 2, "medium" : {"name" : "chrome"}, "token" : "edzPkakgeIA:APA91bEbwlV3OvLxcyj56rmGjKdegdfg14MW9qG"} ; 404 error if user or device not found
+   DELETE - delete specified device : empty body ; 404 error if user or device not found

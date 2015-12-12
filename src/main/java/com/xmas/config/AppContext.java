@@ -19,8 +19,8 @@ import java.util.Properties;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.xmas.dao")
 @PropertySources({
-        @PropertySource("classpath:properties/hibernate.properties"),
-        @PropertySource("classpath:properties/jdbc.properties")
+        @PropertySource("file:${user.home}/.pushmessages/properties/hibernate.properties"),
+        @PropertySource("file:${user.home}/.pushmessages/properties/jdbc.properties")
 })
 @Import({MVCConfiguration.class})
 public class AppContext {
