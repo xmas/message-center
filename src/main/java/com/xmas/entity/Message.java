@@ -2,6 +2,7 @@ package com.xmas.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,12 +45,13 @@ public class Message {
             joinColumns = @JoinColumn(name = "messageId"),
             inverseJoinColumns = @JoinColumn(name = "mediumId"))
     @Column(name = "medium", nullable = false)
-    @Enumerated(EnumType.STRING)
     private Set<Medium> mediums;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    @ManyToMany
+    @JoinTable(name = "user_message",
+            joinColumns = @JoinColumn(name = "messageId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
+    private List<User> users;
 
     public Message() {
     }
@@ -142,11 +144,11 @@ public class Message {
         this.mediums = mediums;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

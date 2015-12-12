@@ -14,9 +14,9 @@ public class MessagesService {
     @Autowired
     UserService userService;
 
-    public List<Message> getMessages(Long GUID, Predicate<Message> filter){
+    public List<Message> getMessages(String userName, Predicate<Message> filter){
         List<Message> result = new ArrayList<>();
-        userService.getUser(GUID).getMessages().stream().filter(filter).forEach(result::add);
+        userService.getUser(userName).getMessages().stream().filter(filter).forEach(result::add);
         return result;
     }
 

@@ -20,6 +20,10 @@ public class Device {
     @NotNull(message = "Token for devise must be presented.")
     private String token;
 
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
     public Integer getId() {
         return id;
     }
@@ -42,6 +46,14 @@ public class Device {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

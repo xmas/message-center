@@ -4,7 +4,7 @@ import com.xmas.dao.UsersRepository;
 import com.xmas.entity.Device;
 import com.xmas.entity.User;
 import com.xmas.exceptions.NoSuchDeviceFound;
-import com.xmas.exceptions.NoSuchUserPresentedException;
+import com.xmas.exceptions.NoSuchUserFoundException;
 import com.xmas.exceptions.UserAlreadyPresentedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,11 @@ public class UserService {
 
 
     public User getUser(Long GUID){
-        return usersRepository.getUserByGUID(GUID).orElseThrow(() ->new NoSuchUserPresentedException(GUID));
+        return usersRepository.getUserByGUID(GUID).orElseThrow(() ->new NoSuchUserFoundException(GUID));
+    }
+
+    public User getUser(String userName){
+        return usersRepository.getUserByName(userName).orElseThrow(() -> new NoSuchUserFoundException(userName));
     }
 
     public void addUser(Long GUID){
@@ -39,7 +43,7 @@ public class UserService {
 
     public void addDevice(Device device, Long GUID){
         User user = usersRepository.getUserByGUID(GUID)
-                .orElseThrow(() -> new NoSuchUserPresentedException(GUID));
+                .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
         user.getDevices().add(device);
 
@@ -48,7 +52,7 @@ public class UserService {
 
     public void deleteDevice(Long GUID, Long deviceId){
         User user = usersRepository.getUserByGUID(GUID)
-                .orElseThrow(() -> new NoSuchUserPresentedException(GUID));
+                .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
         user.getDevices().stream()
                 .filter(d -> d.getId().equals(deviceId)).findFirst()
