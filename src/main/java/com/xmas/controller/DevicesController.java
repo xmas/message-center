@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("users/{GUID}/devices")
+@RequestMapping("/users/{GUID}/devices")
 public class DevicesController {
 
     @Autowired
@@ -17,7 +17,7 @@ public class DevicesController {
         return userService.getDevice(GUID, deviceId);
     }
 
-    @RequestMapping(value = "/{deviceId}", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public void addDevice(@PathVariable Long GUID, @RequestBody Device device){
         userService.addDevice(device, GUID);
     }

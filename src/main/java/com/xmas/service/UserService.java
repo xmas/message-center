@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public void addUser(Long GUID){
-        if(usersRepository.getUserByGUID(GUID).isPresent()){
+        if(! usersRepository.getUserByGUID(GUID).isPresent()){
             User user = new User();
             user.setGUID(GUID);
 
@@ -54,6 +54,7 @@ public class UserService {
         User user = usersRepository.getUserByGUID(GUID)
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
+        device.setUser(user);
         user.getDevices().add(device);
 
         usersRepository.save(user);

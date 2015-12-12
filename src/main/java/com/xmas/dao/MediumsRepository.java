@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Set;
 
 public interface MediumsRepository extends CrudRepository<Medium, Integer>{
-    @Query("SELECT * FROM Medium")
+    @Query("SELECT medium FROM Medium medium")
     Set<Medium> getAll();
 }

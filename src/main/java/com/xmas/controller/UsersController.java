@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/users/{GUID}")
 public class UsersController {
 
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/{GUID}", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public User getUser(@PathVariable Long GUID){
         return userService.getUser(GUID);
     }
 
-    @RequestMapping(value = "/{GUID}", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
     public void addUser(@PathVariable Long GUID){
         userService.addUser(GUID);
     }

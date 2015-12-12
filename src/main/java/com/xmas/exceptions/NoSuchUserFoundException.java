@@ -1,6 +1,10 @@
 package com.xmas.exceptions;
 
-public class NoSuchUserFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
+public class NoSuchUserFoundException extends NotFoundException{
     public NoSuchUserFoundException(Long GUID) {
         super("User with such GUID(" + GUID + ") is not found.");
     }

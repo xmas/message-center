@@ -18,10 +18,10 @@ public class User {
     @Column
     private Long GUID;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Device> devices;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
+    @ManyToMany(mappedBy = "users")
     private List<Message> messages;
 
     public Integer getId() {

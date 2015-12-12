@@ -24,7 +24,9 @@ public class Medium {
     @Pattern(regexp = "^\\s*chrome\\s*$|^\\s*safary\\s*$", message = VALIDATION_MESSAGE_TEMPLATE )
     private String name;
 
-    Medium(String name) {
+    public Medium(){}
+
+    public Medium(String name) {
         this.name = name;
     }
 
