@@ -181,7 +181,17 @@
                 <version>2.6</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>push</warName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://45.79.109.120:8080/manager/text</url>
+                    <server>remote</server>
+                    <path>/push</path>
                 </configuration>
             </plugin>
 
