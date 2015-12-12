@@ -1,5 +1,7 @@
 package com.xmas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ public class Medium {
                                                              "Only chrome, safari allowed.";
 
     @Id
+    @JsonIgnore
     private int id;
 
     @Column

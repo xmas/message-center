@@ -1,5 +1,7 @@
 package com.xmas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -11,7 +13,7 @@ public class Device {
     @GeneratedValue
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH})
     @JoinColumn(name = "mediumId")
     @NotNull(message = "Device type must be presented")
     private Medium medium;
@@ -22,6 +24,7 @@ public class Device {
 
     @ManyToOne
     @JoinColumn(name = "userId")
+    @JsonIgnore
     private User user;
 
     public Integer getId() {

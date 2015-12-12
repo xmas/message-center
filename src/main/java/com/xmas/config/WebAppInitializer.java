@@ -1,5 +1,6 @@
 package com.xmas.config;
 
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -17,6 +18,12 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         fr.setInitParameter("encoding", "UTF-8");
         fr.setInitParameter("forceEncoding", "true");
         fr.addMappingForUrlPatterns(null, true, "/*");
+
+        FilterRegistration.Dynamic entityManagerInView = servletContext.addFilter("entityManagerInViewFilter",
+                new OpenEntityManagerInViewFilter());
+        entityManagerInView.setInitParameter("entityManagerFactoryBeanName", "entityManagerFactory");
+        entityManagerInView.setInitParameter("flushMode", "AUTO");
+        entityManagerInView.addMappingForUrlPatterns(null, true, "/*");
     }
 
     @Override

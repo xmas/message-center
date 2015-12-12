@@ -1,5 +1,6 @@
 package com.xmas.service;
 
+import com.xmas.dao.DeviceRepository;
 import com.xmas.dao.UsersRepository;
 import com.xmas.entity.Device;
 import com.xmas.entity.User;
@@ -18,6 +19,8 @@ public class UserService {
     @Autowired
     UsersRepository usersRepository;
 
+    @Autowired
+    DeviceRepository deviceRepository;
 
     public List<User> getAll(){
         List<User> users = new ArrayList<>();
@@ -44,6 +47,17 @@ public class UserService {
         }
     }
 
+    public void deleteUser(Long GUID){
+        if(! usersRepository.getUserByGUID(GUID).isPresent()){
+            User user = new User();
+            user.setGUID(GUID);
+
+            usersRepository.delete(user);
+        }else {
+            throw new NoSuchUserFoundException(GUID);
+        }
+    }
+
     public Device getDevice(Long GUID, Integer deviceId){
         return getUser(GUID).getDevices().stream()
                 .filter(d -> d.getId().equals(deviceId))
@@ -55,17 +69,21 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
         device.setUser(user);
-        user.getDevices().add(device);
+        deviceRepository.save(device);
 
+        user.getDevices().add(device);
         usersRepository.save(user);
     }
 
-    public void deleteDevice(Long GUID, Long deviceId){
+    public void deleteDevice(Long GUID, Integer deviceId){
         User user = usersRepository.getUserByGUID(GUID)
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
         user.getDevices().stream()
                 .filter(d -> d.getId().equals(deviceId)).findFirst()
-                .ifPresent(d -> user.getDevices().remove(d));
+                .ifPresent(d -> {
+                    user.getDevices().remove(d);
+                    deviceRepository.delete(d);
+                });
     }
 }
