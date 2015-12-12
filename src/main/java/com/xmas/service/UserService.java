@@ -9,12 +9,21 @@ import com.xmas.exceptions.UserAlreadyPresentedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService {
 
     @Autowired
     UsersRepository usersRepository;
 
+
+    public List<User> getAll(){
+        List<User> users = new ArrayList<>();
+        usersRepository.findAll().forEach(users::add);
+        return users;
+    }
 
     public User getUser(Long GUID){
         return usersRepository.getUserByGUID(GUID).orElseThrow(() ->new NoSuchUserFoundException(GUID));
