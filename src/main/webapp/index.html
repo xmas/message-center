@@ -3,36 +3,19 @@
 <head>
     <title>title</title>
     <link rel="manifest" href="manifest.json">
-    <script src="service-worker.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript">
+    <script src="jquery.cookie.js"></script>
+    <script src="ChromePushManager.js"></script>
+    <script src="index.js"></script>
+    <script src="service-worker.js"></script>
 
-        window.addEventListener('load', function() {
-            var pushButton = document.querySelector('.js-push-button');
-            pushButton.addEventListener('click', function() {
-                if (isPushEnabled) {
-                    unsubscribe();
-                } else {
-                    subscribe();
-                }
-            });
-
-            // Check that service workers are supported, if so, progressively
-            // enhance and add push messaging support, otherwise continue without it.
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service-worker.js')
-                        .then(initialiseState);
-            } else {
-                console.warn("Service workers aren\'t supported in this browser.");
-            }
-        });
-
-
-
-    </script>
 </head>
 <body>
-<button class="js-push-button">push</button>
+<input type="text" id="userGUID">
+<button class="subscribe" onclick="addUser()">Add user</button>
+<button class="subscribe" onclick="subscribe()">Subscribe</button>
+<button class="unsubscribe" onclick="unsubscribe()">Unsubscribe</button>
+<button class="sendNotification" onclick="sendNotification()">Notify</button>
 
 </body>
 </html>

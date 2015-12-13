@@ -39,7 +39,7 @@ public class UserService {
     public void addUser(Long GUID){
         if(! usersRepository.getUserByGUID(GUID).isPresent()){
             User user = new User();
-            user.setGUID(GUID);
+            user.setGuid(GUID);
 
             usersRepository.save(user);
         }else {
@@ -50,7 +50,7 @@ public class UserService {
     public void deleteUser(Long GUID){
         if(! usersRepository.getUserByGUID(GUID).isPresent()){
             User user = new User();
-            user.setGUID(GUID);
+            user.setGuid(GUID);
 
             usersRepository.delete(user);
         }else {

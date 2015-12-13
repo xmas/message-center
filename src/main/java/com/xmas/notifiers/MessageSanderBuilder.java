@@ -1,17 +1,20 @@
 package com.xmas.notifiers;
 
 import com.xmas.exceptions.NotificationSendingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import java.net.HttpURLConnection;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
 
 @Service
 public class MessageSanderBuilder {
+
+    Logger logger = LogManager.getLogger(MessageSanderBuilder.class);
 
     public ISender createSender(String urlString, Map<String, String> headers, String requestMethod) {
         try {
@@ -40,6 +43,18 @@ public class MessageSanderBuilder {
                 outputStream.write(JSONData.getBytes());
                 outputStream.flush();
                 outputStream.close();
+
+                int responseCode = connection.getResponseCode();
+                String result = connection.getResponseMessage();
+
+                InputStream stream = (InputStream) connection.getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                String s = null;
+                while ((s = reader.readLine()) != null){
+                    System.out.println(s);
+                }
+
+                logger.info("Notification sended. Response code : " + responseCode + ". ResponseMessage : " + result);
 
                 if (connection.getResponseCode() > 300) {
                     throw new NotificationSendingException(connection.getResponseMessage());

@@ -1,6 +1,5 @@
 package com.xmas.controller;
 
-import com.xmas.dao.MessageRepository;
 import com.xmas.entity.Message;
 import com.xmas.service.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,6 @@ import java.util.Collection;
 public class PushController {
 
     @Autowired
-    MessageRepository messageRepository;
-
-    @Autowired
     MessagesService messagesService;
 
     @RequestMapping(method = RequestMethod.GET)
@@ -27,7 +23,7 @@ public class PushController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     public void addMessage(@RequestBody Message message){
-        messageRepository.save(message);
+        messagesService.addMessage(message);
     }
 
 

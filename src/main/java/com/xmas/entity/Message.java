@@ -34,8 +34,8 @@ public class Message {
     @Column
     private String notificationAppURL;
 
-    @Enumerated(EnumType.STRING)
-    private MimeType mimeType;
+    @Column
+    private String mimeType;
 
     @Column
     private String messageType;
@@ -120,11 +120,11 @@ public class Message {
         this.notificationAppURL = notificationAppURL;
     }
 
-    public MimeType getMimeType() {
+    public String getMimeType() {
         return mimeType;
     }
 
-    public void setMimeType(MimeType mimeType) {
+    public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 

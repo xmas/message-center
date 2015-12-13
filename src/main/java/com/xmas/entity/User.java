@@ -3,6 +3,7 @@ package com.xmas.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,8 @@ public class User {
     private String name;
 
     @Column
-    private Long GUID;
+    @NotNull
+    private Long guid;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
@@ -36,12 +38,12 @@ public class User {
         this.id = id;
     }
 
-    public Long getGUID() {
-        return GUID;
+    public Long getGuid() {
+        return guid;
     }
 
-    public void setGUID(Long GUID) {
-        this.GUID = GUID;
+    public void setGuid(Long guid) {
+        this.guid = guid;
     }
 
     public List<Device> getDevices() {
@@ -66,5 +68,21 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return guid.equals(user.guid);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return guid.hashCode();
     }
 }
