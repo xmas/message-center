@@ -1,31 +1,50 @@
-// The service worker running in background to receive the incoming
-// push notifications and user clicks
 
-// A push has arrived ...
-self.addEventListener('push', function(event) {
-
-    // Since there is no payload data with the first version
-    // of push messages, we'll use some static content.
-    // However you could grab some data from
-    // an API and use it to populate a notification
-
-    var title = 'Realtime Chrome Push Example';
-    var body = 'We have news for you';
-    var icon = 'img/realtime-logo.jpg';
-
-    event.waitUntil(
-        self.registration.showNotification(title, {
-            body: body,
-            icon: icon
-        })
-    );
+self.addEventListener('push', function (event) {
+    getMessages(show)
 });
 
-
-// The user has clicked on the notification ...
-self.addEventListener('notificationclick', function(event) {
-    // Android doesn’t close the notification when you click on it
-    // See: http://crbug.com/463146
+self.addEventListener('notificationclick', function (event) {
     event.notification.close();
+    setRead(event.notification.data);
 });
+
+self.addEventListener('notificationclose', function (event) {
+    setRead(event.notification.data);
+});
+
+function setRead(id){
+    fetch("users/123456/messages/v1/"+id, {
+        method: "POST"
+    }).catch(function(e){
+        console.log(e);
+    });
+}
+
+function show(title, notif) {
+    self.registration.showNotification(title, notif)
+}
+
+function getMessages(calback) {
+    fetch('users/123456/messages/v1/unread')
+        .then(
+        function (data) {
+            data.json().then(function (messages) {
+                messages.forEach(function (message) {
+                    var title = message.title;
+                    var body = message.message;
+                    var icon = message.icon;
+
+                    calback(title, {
+                        body: body,
+                        icon: icon,
+                        data: message.id
+                    });
+                });
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+}
 

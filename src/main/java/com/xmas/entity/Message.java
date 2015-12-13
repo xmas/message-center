@@ -40,6 +40,9 @@ public class Message {
     @Column
     private String messageType;
 
+    @Column
+    private boolean accepted;
+
     @ManyToMany
     @JoinTable(name = "messages_mediums",
             joinColumns = @JoinColumn(name = "messageId"),
@@ -150,5 +153,13 @@ public class Message {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }

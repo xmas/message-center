@@ -5,6 +5,7 @@ import com.xmas.dao.MessageRepository;
 import com.xmas.entity.Medium;
 import com.xmas.entity.Message;
 import com.xmas.entity.User;
+import com.xmas.exceptions.NoSuchMessageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +28,23 @@ public class MessagesService {
     @Autowired
     MessageRepository messageRepository;
 
-    public List<Message> getMessages(String userName, Predicate<Message> filter) {
+    public List<Message> getMessages(Long GUID, Predicate<Message> filter) {
         List<Message> result = new ArrayList<>();
-        userService.getUser(userName).getMessages().stream().filter(filter).forEach(result::add);
+        userService.getUser(GUID).getMessages().stream().filter(filter).forEach(result::add);
         return result;
+    }
+
+    public List<Message> getUnread(Long GUID){
+        User user = userService.getUser(GUID);
+        ArrayList<Message> result = new ArrayList<>();
+        user.getMessages().stream().filter(message -> !message.isAccepted()).forEach(result::add);
+        return result;
+    }
+
+    public void setRead(Long id){
+        Message message = messageRepository.get(id).orElseThrow(() -> new NoSuchMessageException(id));
+        message.setAccepted(true);
+        messageRepository.save(message);
     }
 
     public void addMessage(Message message) {
