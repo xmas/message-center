@@ -27,9 +27,9 @@ public class DevicesController {
         userService.addDevice(device, GUID);
     }
 
-    @RequestMapping(value = "/{deviceId}", method = RequestMethod.DELETE)
-    public void deleteDevice(@PathVariable Long GUID, @PathVariable Integer deviceId){
-        userService.deleteDevice(GUID, deviceId);
+    @RequestMapping(value = "/{token}", method = RequestMethod.DELETE)
+    public void deleteDevice(@PathVariable Long GUID, @PathVariable String token){
+        userService.deleteDevice(GUID, token);
     }
 
 }

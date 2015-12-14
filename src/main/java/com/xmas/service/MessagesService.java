@@ -56,15 +56,23 @@ public class MessagesService {
                 users.add(savedUser);
             });
 
+        if(message.getMediums().isEmpty()){
+            mediumsRepository.findAll().forEach(message.getMediums()::add);
+        }
+
         if(message.getUsers() == null || message.getUsers().isEmpty()){
-            users.addAll(userService.getAll());
+            userService.getAll().forEach(user -> {
+                user.getDevices().forEach(device -> {
+                    if(message.getMediums().contains(device.getMedium()) && ! users.contains(user)){
+                        users.add(user);
+                    }
+                });
+            });
         }
 
         message.setUsers(users);
 
         message.setCreated(LocalDateTime.now());
-
-        messageRepository.save(message);
 
         processMessage(message);
 
@@ -92,12 +100,17 @@ public class MessagesService {
             users.forEach(user -> user.getDevices().stream().filter(device -> device.getMedium().equals(medium1)).
                     forEach(device -> list.add(device.getToken())));
 
-            tokens.put(medium1, list);
+            if(! list.isEmpty())
+                tokens.put(medium1, list);
         });
 
-        tokens.forEach((medium, tokenList) -> {
-            notifierService.push(medium, message, tokenList);
-        });
+        if(! tokens.isEmpty()) {
+            messageRepository.save(message);
+
+            tokens.forEach((medium, tokenList) -> {
+                notifierService.push(medium, message, tokenList);
+            });
+        }
 
     }
 

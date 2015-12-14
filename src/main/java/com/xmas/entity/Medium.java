@@ -9,6 +9,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "mediums")
+@SuppressWarnings("UnusedDeclaration")
 public class Medium {
 
     public static final Map<String, Integer> IMPLEMENTED_MEDIUMS = new HashMap<String, Integer>(){{

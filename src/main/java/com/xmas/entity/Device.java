@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "devices")
+@SuppressWarnings("UnusedDeclaration")
 public class Device {
 
     @Id

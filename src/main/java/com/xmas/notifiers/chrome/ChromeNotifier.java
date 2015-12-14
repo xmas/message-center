@@ -18,7 +18,6 @@ import java.util.Map;
 @Service
 public class ChromeNotifier implements Notifier {
 
-    public static final String GOOGLE_PUSH_SERVER_PATH = "https://android.googleapis.com/gcm/send";
     public static final String HTTP_METHOD = "POST";
 
     @Autowired
@@ -32,7 +31,7 @@ public class ChromeNotifier implements Notifier {
 
     @Override
     public void pushMessage(Message message, List<String> tokens) {
-        ISender sender = messageSanderBuilder.createSender(GOOGLE_PUSH_SERVER_PATH, prepareHeaders(), HTTP_METHOD);
+        ISender sender = messageSanderBuilder.createSender(googlePushAPIUrl, prepareHeaders(), HTTP_METHOD);
         sender.send(prepareMessage(message, tokens));
 
     }

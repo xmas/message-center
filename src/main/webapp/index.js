@@ -18,14 +18,22 @@ function getUserId(){
 }
 
 function addUser(){
+    if(!getUserId()) return;
     jQuery.ajax({
         url: 'users/' + getUserId(),
         method: 'PUT',
-        contentType: "application/json"
+        contentType: "application/json",
+        success: function(){
+            alert("New user created");
+        },
+        error: function(e){
+            alert(e.responseText);
+        }
     });
 }
 
 function subscribe() {
+    if(!getUserId()) return;
     chromePushManager = new ChromePushManager('./service-worker.js', function (error, registrationId) {
         if (error) {
             alert(error);
@@ -36,16 +44,39 @@ function subscribe() {
             $('.subscribe').prop("disabled", true);
             $('.unsubscribe').prop("disabled", false);
         }
+    }, getUserId());
+}
+
+function getUsers(){
+    jQuery.ajax({
+        url: 'users',
+        method: 'GET',
+        contentType: "application/json",
+        success: function(data){
+            data.forEach(function(user){
+                $('#users').append('<li>' + user.guid + '</li>')
+            })
+        },
+        error: function (data) {
+            console.log('Error while sending to server: ' + data);
+        }
     });
 }
 
 function unSubscribe() {
-    chromePushManager.unSubscribe();
-    $('.subscribe').prop("disabled", false);
-    $('.unsubscribe').prop("disabled", true);
+    if(!getUserId()) return;
+    if(chromePushManager) {
+        chromePushManager.removeSubscription(removeSubscriptionFromServer);
+    }else{
+        chromePushManager = new ChromePushManager('./service-worker.js', function(){}, getUserId());
+        chromePushManager.removeSubscription(removeSubscriptionFromServer);
+    }
+        $('.subscribe').prop("disabled", false);
+        $('.unsubscribe').prop("disabled", true);
 }
 
 function sendNotification() {
+    if(!getUserId()) return;
     var data = {
         "message": "Hello world!",
         "title": "Hello",
@@ -82,6 +113,20 @@ function sendSubscriptionToServer(subscriptionId) {
         method: 'POST',
         data: JSON.stringify(data),
         contentType: "application/json",
+        error: function (data) {
+            console.log('Error while sending to server: ' + data);
+        }
+    });
+}
+
+function removeSubscriptionFromServer(subscriptionId) {
+    jQuery.ajax({
+        url: 'users/' + getUserId() + '/devices/'+ subscriptionId,
+        method: 'DELETE',
+        contentType: "application/json",
+        success: function(){
+            alert("Subscription was deleted")
+        },
         error: function (data) {
             console.log('Error while sending to server: ' + data);
         }

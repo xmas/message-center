@@ -82,15 +82,17 @@ public class UserService {
         usersRepository.save(user);
     }
 
-    public void deleteDevice(Long GUID, Integer deviceId){
+    public void deleteDevice(Long GUID, String token){
         User user = usersRepository.getUserByGUID(GUID)
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
         user.getDevices().stream()
-                .filter(d -> d.getId().equals(deviceId)).findFirst()
+                .filter(d -> d.getToken().equals(token)).findFirst()
                 .ifPresent(d -> {
                     user.getDevices().remove(d);
                     deviceRepository.delete(d);
                 });
+
+        usersRepository.save(user);
     }
 }

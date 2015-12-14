@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@SuppressWarnings("UnusedDeclaration")
 public class User {
 
     @Id

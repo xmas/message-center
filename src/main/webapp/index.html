@@ -7,10 +7,10 @@
     <script src="jquery.cookie.js"></script>
     <script src="ChromePushManager.js"></script>
     <script src="index.js"></script>
-    <script src="service-worker.js"></script>
 
 </head>
 <body>
+<label for="userGUID">Set up user Id</label>
 <input type="text" id="userGUID">
 <button class="adduser" onclick="addUser()">Add user</button>
 
@@ -20,5 +20,6 @@
 <button class="unsubscribe" onclick="unSubscribe()">Unsubscribe</button>
 <button class="sendNotification" onclick="sendNotification()">Notify</button>
 
+<ul id="users"></ul>
 </body>
 </html>

@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "messages")
+@SuppressWarnings("UnusedDeclaration")
 public class Message {
 
     @Id
