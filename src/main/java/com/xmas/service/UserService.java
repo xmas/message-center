@@ -39,7 +39,7 @@ public class UserService {
     public void addUser(Long GUID){
         if(! usersRepository.getUserByGUID(GUID).isPresent()){
             User user = new User();
-            user.setGUID(GUID);
+            user.setGuid(GUID);
 
             usersRepository.save(user);
         }else {
@@ -50,7 +50,7 @@ public class UserService {
     public void deleteUser(Long GUID){
         if(! usersRepository.getUserByGUID(GUID).isPresent()){
             User user = new User();
-            user.setGUID(GUID);
+            user.setGuid(GUID);
 
             usersRepository.delete(user);
         }else {
@@ -71,6 +71,9 @@ public class UserService {
     public void addDevice(Device device, Long GUID){
         User user = usersRepository.getUserByGUID(GUID)
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
+
+        //Do nothing if there already presented device with same token and medium
+        if(user.getDevices().contains(device)) return;
 
         device.setUser(user);
         deviceRepository.save(device);

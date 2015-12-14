@@ -1,16 +1,30 @@
 /users
-   GET - returns array of all users: [{"GUID" : 12365468356345}, {"GUID": 96879651321}]
+   GET - returns array of all users: [{"guid" : 12365468356345}, {"guid": 96879651321}]
 
-/users/{GUID}
-   GET - return specified user: {"GUID" : 13546984362}; 404 error if GUID not found
-   PUT - add user with GUID: empty body ; 409 error if already presented
-   DELETE - delete user with GUID:  empty body ; 404 error if GUID not found
+/users/{guid}
+   GET - return specified user: {"guid" : 13546984362}; 404 error if guid not found
+   PUT - add user with guid: empty body ; 409 error if already presented
+   DELETE - delete user with guid:  empty body ; 404 error if guid not found
 
-/users/{GUID}/devices/
+/users/{guid}/devices/
    GET - return all devices for user: [{"id" : 2, "medium" : {"name" : "chrome"}, "token" : "edzPkakgeIA:APA91bEbwlV3OvLxcyj56rmGjKdegdfg14MW9qG"},
                                        {"id" : 3, "medium" : {"name" : "safari"}, "token" : "edzPkakstfrhggeIA:APA91bEbwlV3OvLxcyj56rmGjK14MW9qG"}]
    POST - add new device for user : body : {"medium" : {"name" : "chrome"}, "token" : "edzPkakgeIA:APA91bEbwlV3OvLxcyj56rmGjKdegdfg14MW9qG"}
 
-/users/{GUID}/devices/{id}
+/users/{guid}/devices/{id}
    GET - return specified device: {"id" : 2, "medium" : {"name" : "chrome"}, "token" : "edzPkakgeIA:APA91bEbwlV3OvLxcyj56rmGjKdegdfg14MW9qG"} ; 404 error if user or device not found
    DELETE - delete specified device : empty body ; 404 error if user or device not found
+
+/messages/v1
+   POST -send message: body: {
+                                 "message" : "Hello world!",
+                                 "title" : "Hello",
+                                 "subTitle" : "Hi",
+                                 "icon" : "http://www.google.com/someIcon.png",
+                                 "expiraion" : "2015-12-12T19:20:39", - ISO date time format
+                                 "notificationAppURL" : "http://www.somehost.com",
+                                 "mimeType" : "text/plain",
+                                 "messageType" : "Alert",
+                                 "mediums" : [{"name" : "chrome"},{"name" : "safari"}], - or empty array [] if all
+                                 "users" : [{"guid" : 12365468356345}, {"guid": 96879651321}] - or empty array [] if all
+                              }

@@ -1,0 +1,1 @@
+curl -i -X POST -H "Content-Type:application/json" http://localhost:8080/push/messages/v1 -d '{"message": "Hello world!", "title": "Hello", "subTitle": "Hi", "icon": "http://www.google.com/someIcon.png", "expiration": "2015-12-12T19:20:39", "notificationAppURL": "http://www.somehost.com", "mimeType": "text/plain", "messageType": "Alert", "mediums": [], "users": [] }'

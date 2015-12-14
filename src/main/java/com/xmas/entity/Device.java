@@ -18,7 +18,7 @@ public class Device {
     @NotNull(message = "Device type must be presented")
     private Medium medium;
 
-    @Column
+    @Column(unique = true)
     @NotNull(message = "Token for devise must be presented.")
     private String token;
 

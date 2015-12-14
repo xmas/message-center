@@ -34,11 +34,14 @@ public class Message {
     @Column
     private String notificationAppURL;
 
-    @Enumerated(EnumType.STRING)
-    private MimeType mimeType;
+    @Column
+    private String mimeType;
 
     @Column
     private String messageType;
+
+    @Column
+    private boolean accepted;
 
     @ManyToMany
     @JoinTable(name = "messages_mediums",
@@ -120,11 +123,11 @@ public class Message {
         this.notificationAppURL = notificationAppURL;
     }
 
-    public MimeType getMimeType() {
+    public String getMimeType() {
         return mimeType;
     }
 
-    public void setMimeType(MimeType mimeType) {
+    public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 
@@ -150,5 +153,13 @@ public class Message {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }
