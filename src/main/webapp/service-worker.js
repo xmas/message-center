@@ -12,8 +12,13 @@ self.addEventListener('notificationclose', function (event) {
     setRead(event.notification.data);
 });
 
+self.addEventListener('message', function (evt) {
+    self.userId = evt.data.id;
+    console.log('postMessage received', evt.data);
+});
+
 function setRead(id){
-    fetch("users/123456/messages/v1/"+id, {
+    fetch('users/' + self.userId + '/messages/v1/'+id, {
         method: "POST"
     }).catch(function(e){
         console.log(e);
@@ -25,7 +30,7 @@ function show(title, notif) {
 }
 
 function getMessages(calback) {
-    fetch('users/123456/messages/v1/unread')
+    fetch('users/' + self.userId + '/messages/v1/unread')
         .then(
         function (data) {
             data.json().then(function (messages) {

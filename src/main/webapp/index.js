@@ -35,16 +35,14 @@ function subscribe() {
             subscripted = true;
             $('.subscribe').prop("disabled", true);
             $('.unsubscribe').prop("disabled", false);
-            $('.sendNotification').prop("disabled", false);
         }
     });
 }
 
-function unsubscribe() {
-    chromePushManager.unsubscribe();
+function unSubscribe() {
+    chromePushManager.unSubscribe();
     $('.subscribe').prop("disabled", false);
     $('.unsubscribe').prop("disabled", true);
-    $('.sendNotification').prop("disabled", true);
 }
 
 function sendNotification() {

@@ -17,6 +17,8 @@ ChromePushManager.initialiseState = function (callback) {
     } else if (!('PushManager' in window)) {
         callback('Push messaging isn\'t supported.', null);
     } else {
+        var userId = $('#userGUID').val();
+        navigator.serviceWorker.controller.postMessage({id: userId});
         ChromePushManager.subscribeBrowserId(callback);
     }
 };
@@ -40,7 +42,7 @@ ChromePushManager.subscribeBrowserId = function(callback) {
     });
 };
 
-ChromePushManager.unsubscribe = function(){
+ChromePushManager.unSubscribe = function(){
     this.subscription.unsubscribe();
 };
 
