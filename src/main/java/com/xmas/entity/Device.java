@@ -23,6 +23,12 @@ public class Device {
     @NotNull(message = "Token for devise must be presented.")
     private String token;
 
+    @Column
+    private String ip;
+
+    @Column
+    private String location;
+
     @ManyToOne
     @JoinColumn(name = "userId")
     @JsonIgnore
@@ -50,6 +56,22 @@ public class Device {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public User getUser() {

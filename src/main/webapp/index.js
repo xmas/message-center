@@ -48,6 +48,7 @@ function subscribe() {
 }
 
 function getUsers(){
+    $('#users').empty();
     jQuery.ajax({
         url: 'users',
         method: 'GET',
@@ -126,6 +127,23 @@ function removeSubscriptionFromServer(subscriptionId) {
         contentType: "application/json",
         success: function(){
             alert("Subscription was deleted")
+        },
+        error: function (data) {
+            console.log('Error while sending to server: ' + data);
+        }
+    });
+}
+
+function getDevices(){
+    $('#devices').empty();
+    jQuery.ajax({
+        url: 'users/' + getUserId() + '/devices',
+        method: 'GET',
+        contentType: "application/json",
+        success: function(data){
+            data.forEach(function(device){
+                $('#devices').append('<li>' + device.medium.name + '-' + device.ip + ':' + device.location +'</li>')
+            })
         },
         error: function (data) {
             console.log('Error while sending to server: ' + data);

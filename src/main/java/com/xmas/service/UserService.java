@@ -7,6 +7,7 @@ import com.xmas.entity.User;
 import com.xmas.exceptions.NoSuchDeviceFound;
 import com.xmas.exceptions.NoSuchUserFoundException;
 import com.xmas.exceptions.UserAlreadyPresentedException;
+import com.xmas.location.provider.IPLocationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ public class UserService {
 
     @Autowired
     DeviceRepository deviceRepository;
+
+    @Autowired
+    IPLocationProvider locationProvider;
 
     public List<User> getAll(){
         List<User> users = new ArrayList<>();
@@ -68,12 +72,17 @@ public class UserService {
                 .findFirst().orElseThrow(() -> new NoSuchDeviceFound(deviceId));
     }
 
-    public void addDevice(Device device, Long GUID){
+    public void addDevice(Device device, Long GUID, String ip){
         User user = usersRepository.getUserByGUID(GUID)
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
         //Do nothing if there already presented device with same token and medium
         if(user.getDevices().contains(device)) return;
+
+        locationProvider.getLocation(ip).ifPresent(location -> {
+            device.setIp(ip);
+            device.setLocation(location);
+        });
 
         device.setUser(user);
         deviceRepository.save(device);

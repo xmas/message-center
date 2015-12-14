@@ -52,6 +52,9 @@ public class IPLocationProvider {
     }
 
     public Optional<String> getLocation(String ip){
+        if(true)
+            return Optional.of("LOCATION");
+
         String url = apiUrl + MODE + "/?format=" + FORMAT + "&key=" + apiKey + "&ip=" + ip;
 
         try {
