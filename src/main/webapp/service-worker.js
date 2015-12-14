@@ -8,10 +8,6 @@ self.addEventListener('notificationclick', function (event) {
     setRead(event.notification.data);
 });
 
-self.addEventListener('notificationclose', function (event) {
-    setRead(event.notification.data);
-});
-
 self.addEventListener('message', function (evt) {
     self.userId = evt.data.id;
     console.log('postMessage received', evt.data);
@@ -26,7 +22,7 @@ function setRead(id){
 }
 
 function show(title, notif) {
-    self.registration.showNotification(title, notif)
+    self.registration.showNotification(title, notif);
 }
 
 function getMessages(calback) {
@@ -46,8 +42,7 @@ function getMessages(calback) {
                     });
                 });
             });
-        }
-    )
+        })
         .catch(function (err) {
             console.log('Fetch Error :-S', err);
         });

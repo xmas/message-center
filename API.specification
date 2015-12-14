@@ -26,5 +26,5 @@
                                  "mimeType" : "text/plain",
                                  "messageType" : "Alert",
                                  "mediums" : [{"name" : "chrome"},{"name" : "safari"}], - or empty array [] if all
-                                 "users" : [{"guid" : 12365468356345}, {"guid": 96879651321}] - - or empty array [] if all
+                                 "users" : [{"guid" : 12365468356345}, {"guid": 96879651321}] - or empty array [] if all
                               }

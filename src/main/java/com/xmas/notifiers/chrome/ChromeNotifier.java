@@ -24,8 +24,11 @@ public class ChromeNotifier implements Notifier {
     @Autowired
     MessageSanderBuilder messageSanderBuilder;
 
-    @Value("${google.api.key}")
+    @Value("${google.chrome.push.api.key}")
     private String googleApiKey;
+
+    @Value("${google.chrome.push.api.url}")
+    private String googlePushAPIUrl;
 
     @Override
     public void pushMessage(Message message, List<String> tokens) {

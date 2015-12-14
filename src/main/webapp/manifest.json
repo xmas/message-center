@@ -6,7 +6,7 @@
     "sizes": "256x256",
     "type": "image/ico"
   }],
-  "start_url": "static/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "gcm_sender_id": "632960387698"
 }

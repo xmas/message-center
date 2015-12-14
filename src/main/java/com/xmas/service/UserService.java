@@ -72,6 +72,9 @@ public class UserService {
         User user = usersRepository.getUserByGUID(GUID)
                 .orElseThrow(() -> new NoSuchUserFoundException(GUID));
 
+        //Do nothing if there already presented device with same token and medium
+        if(user.getDevices().contains(device)) return;
+
         device.setUser(user);
         deviceRepository.save(device);
 
