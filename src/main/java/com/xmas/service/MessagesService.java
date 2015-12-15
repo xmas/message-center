@@ -2,6 +2,7 @@ package com.xmas.service;
 
 import com.xmas.dao.MediumsRepository;
 import com.xmas.dao.MessageRepository;
+import com.xmas.entity.Device;
 import com.xmas.entity.Medium;
 import com.xmas.entity.Message;
 import com.xmas.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class MessagesService {
@@ -34,77 +36,79 @@ public class MessagesService {
         return result;
     }
 
-    public List<Message> getUnread(Long GUID){
+    public List<Message> getUnread(Long GUID) {
         User user = userService.getUser(GUID);
         ArrayList<Message> result = new ArrayList<>();
         user.getMessages().stream().filter(message -> !message.isAccepted()).forEach(result::add);
         return result;
     }
 
-    public void setRead(Long id){
+    public void setRead(Long id) {
         Message message = messageRepository.get(id).orElseThrow(() -> new NoSuchMessageException(id));
         message.setAccepted(true);
         messageRepository.save(message);
     }
 
     public void addMessage(Message message) {
-        List<User> users = new ArrayList<>();
-
-        if (message.getUsers() != null)
-            message.getUsers().forEach(user -> {
-                User savedUser = userService.getUser(user.getGuid());
-                users.add(savedUser);
-            });
-
-        if(message.getMediums().isEmpty()){
-            mediumsRepository.findAll().forEach(message.getMediums()::add);
-        }
-
-        if(message.getUsers() == null || message.getUsers().isEmpty()){
-            userService.getAll().forEach(user -> {
-                user.getDevices().forEach(device -> {
-                    if(message.getMediums().contains(device.getMedium()) && ! users.contains(user)){
-                        users.add(user);
-                    }
-                });
-            });
-        }
-
-        message.setUsers(users);
-
         message.setCreated(LocalDateTime.now());
 
-        processMessage(message);
+        processMessage(populateUsers(populateMediums(message)));
 
     }
 
-    private void processMessage(Message message) {
-        Set<Medium> mediums;
+    private Message populateMediums(Message message) {
         if (message.getMediums() == null || message.getMediums().isEmpty()) {
-            mediums = new HashSet<>();
-            mediums.addAll(mediumsRepository.getAll());
-        } else {
-            mediums = message.getMediums();
+            message.setMediums(mediumsRepository.getAll());
         }
+        return message;
+    }
 
-        List<User> users = new ArrayList<>();
-        message.getUsers().stream().forEach(user -> users.add(userService.getUser(user.getGuid())));
-        if (users.isEmpty()) users.addAll(userService.getAll());
+    private Message populateUsers(Message message) {
+        if (message.getUsers() == null || message.getUsers().isEmpty()) {
+            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, userService.getAll()));
+        } else {
+            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, message.getUsers()));
+        }
+        return message;
+    }
+
+    private List<User> filterUsersThatDoNotHasRequiredMediums(Message message, List<User> users) {
+        return users.stream()
+                .filter(user -> hasUserRequiredMediums(user, message))
+                .peek(user -> addMessageToUser(user, message))
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasUserRequiredMediums(User user, Message message){
+        return user.getDevices().stream()
+                .<Medium>map(Device::getMedium)
+                .filter(message.getMediums()::contains).count() > 0;
+    }
+
+    private void addMessageToUser(User user, Message message){
+        if (user.getMessages() != null)
+            user.getMessages().add(message);
+        else
+            user.setMessages(new ArrayList<Message>() {{
+                add(message);
+            }});
+    }
+
+    private void processMessage(Message message) {
 
         Map<Medium, List<String>> tokens = new HashMap<>();
 
-
-        mediums.forEach(medium1 -> {
+        message.getMediums().forEach(medium -> {
             List<String> list = new ArrayList<>();
 
-            users.forEach(user -> user.getDevices().stream().filter(device -> device.getMedium().equals(medium1)).
+            message.getUsers().forEach(user -> user.getDevices().stream().filter(device -> device.getMedium().equals(medium)).
                     forEach(device -> list.add(device.getToken())));
 
-            if(! list.isEmpty())
-                tokens.put(medium1, list);
+            if (!list.isEmpty())
+                tokens.put(medium, list);
         });
 
-        if(! tokens.isEmpty()) {
+        if (!tokens.isEmpty()) {
             messageRepository.save(message);
 
             tokens.forEach((medium, tokenList) -> {
