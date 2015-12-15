@@ -67,7 +67,10 @@ public class MessagesService {
         if (message.getUsers() == null || message.getUsers().isEmpty()) {
             message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, userService.getAll()));
         } else {
-            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, message.getUsers()));
+            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, message.getUsers().stream()
+                    .map(User::getGuid)
+                    .<User>map(userService::getUser)
+                    .collect(Collectors.toList())));
         }
         return message;
     }
