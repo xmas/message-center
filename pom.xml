@@ -161,6 +161,19 @@
             <version>4.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcmail-jdk15</artifactId>
+            <version>1.46</version>
+        </dependency>
+
+
         <!-- PROVIDED DEPENDENCIES -->
         <dependency>
             <groupId>javax.servlet</groupId>
