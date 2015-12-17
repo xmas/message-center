@@ -12,9 +12,12 @@ import java.util.Map;
 @SuppressWarnings("UnusedDeclaration")
 public class Medium {
 
+    public static final String CHROME = "chrome";
+    public static final String SAFARI = "safari";
+
     public static final Map<String, Integer> IMPLEMENTED_MEDIUMS = new HashMap<String, Integer>(){{
-            put("chrome", 0);
-            put("safari", 1);
+            put(CHROME, 0);
+            put(SAFARI, 1);
     }};
 
     public static final String VALIDATION_MESSAGE_TEMPLATE = "Medium ${validatedValue} is not implemented yet." +
