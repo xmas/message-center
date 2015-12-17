@@ -24,11 +24,12 @@ initialiseState = function (callback, userId) {
         //Make subscription
         //If subscription already made unsubscribe, and make new.
         getAliveSubscription(function (error, subscription) {
-            if (error) {
+            if (!subscription) {
                 subscribeBrowserId(callback);
             } else {
-                subscription.unsubscribe();
-                subscribeBrowserId(callback);
+                subscription.unsubscribe().then(function(){
+                    subscribeBrowserId(callback);
+                });
             }
         });
     }

@@ -1,4 +1,4 @@
-self.addEventListener('push', function (event) {
+self.addEventListener('push', function () {
     createDb();
     getMessages(show)
 });
@@ -14,14 +14,15 @@ self.addEventListener('message', function (evt) {
     console.log('postMessage received', evt.data);
 });
 
-function setRead(id){
-    getUserId(self.db, function(userId){
-        fetch('users/' + userId + '/messages/v1/'+id, {
-            method: "POST"
-        }).catch(function(e){
-            console.log(e);
+function setRead(id) {
+    if (id)
+        getUserId(self.db, function (userId) {
+            fetch('users/' + userId + '/messages/v1/' + id, {
+                method: "POST"
+            }).catch(function (e) {
+                console.log(e);
+            });
         });
-    });
 }
 
 function show(title, notif) {
@@ -29,7 +30,7 @@ function show(title, notif) {
 }
 
 function getMessages(calback) {
-    getUserId(self.db, function(userId){
+    getUserId(self.db, function (userId) {
         fetch('users/' + userId + '/messages/v1/unread')
             .then(
             function (data) {
@@ -53,8 +54,8 @@ function getMessages(calback) {
     });
 }
 
-function createDb(){
-    if(! self.db) {
+function createDb() {
+    if (!self.db) {
         importScripts("./Dexie.js");
         self.db = new Dexie("pushDatabase");
         db.version(1).stores({values: "name, value"});
@@ -62,13 +63,13 @@ function createDb(){
     }
 }
 
-function getUserId(db, callback){
-    db.values.where("name").equals("userId").first(function(item){
+function getUserId(db, callback) {
+    db.values.where("name").equals("userId").first(function (item) {
         callback(item.value);
     })
 }
 
-function storeUserId(db, userId){
+function storeUserId(db, userId) {
     db.values.put({name: "userId", value: userId});
 }
 
