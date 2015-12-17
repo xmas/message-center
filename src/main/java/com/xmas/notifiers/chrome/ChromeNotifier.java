@@ -21,7 +21,7 @@ public class ChromeNotifier implements Notifier {
     public static final String HTTP_METHOD = "POST";
 
     @Autowired
-    MessageSanderBuilder messageSanderBuilder;
+    private MessageSanderBuilder messageSanderBuilder;
 
     @Value("${google.chrome.push.api.key}")
     private String googleApiKey;
@@ -32,15 +32,12 @@ public class ChromeNotifier implements Notifier {
     @Override
     public void pushMessage(Message message, List<String> tokens) {
         ISender sender = messageSanderBuilder.createSender(googlePushAPIUrl, prepareHeaders(), HTTP_METHOD);
-        sender.send(prepareMessage(message, tokens));
+        sender.send(prepareMessage(tokens));
 
     }
 
-    public String prepareMessage(Message message, List<String> tokens){
-        //TODO implement message text
-
+    public String prepareMessage(List<String> tokens){
         ObjectMapper mapper = new ObjectMapper();
-
         ChromeMessage chromeMessage = new ChromeMessage();
         chromeMessage.setRegistration_ids(tokens);
 

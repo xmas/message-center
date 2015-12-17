@@ -12,7 +12,7 @@ import java.util.List;
 public class NotifierService {
 
     @Autowired
-    ChromeNotifier chromeNotifier;
+    private ChromeNotifier chromeNotifier;
 
     public void push(Medium medium, Message message, List<String> tokens){
         switch (medium.getName()){

@@ -22,12 +22,13 @@ initialiseState = function (callback, userId) {
         });
 
         //Make subscription
-        //If subscription was already created just get it else make new.
-        getAliveSubscription(function (error, sbscriptionId) {
+        //If subscription already made unsubscribe, and make new.
+        getAliveSubscription(function (error, subscription) {
             if (error) {
                 subscribeBrowserId(callback);
             } else {
-                callback(null, sbscriptionId);
+                subscription.unsubscribe();
+                subscribeBrowserId(callback);
             }
         });
     }
@@ -44,7 +45,7 @@ subscribeBrowserId = function (callback) {
                     callback('Unable to subscribe to push.', null);
                 }
             })
-            .catch(function (e) {
+            .catch(function () {
                 if (Notification.permission === 'denied') {
                     callback('Permission for Notifications was denied', null);
                 } else {
@@ -54,18 +55,16 @@ subscribeBrowserId = function (callback) {
     });
 };
 getAliveSubscription = function (callback) {
-    var this_ = this;
     navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
         serviceWorkerRegistration.pushManager.getSubscription()
             .then(function (subscription) {
                 if (subscription) {
-                    var register = getRegistrationId(subscription);
-                    callback(null, register);
+                    callback(null, subscription);
                 } else {
                     callback('Unable to subscribe to push.', null);
                 }
             })
-            .catch(function (e) {
+            .catch(function () {
                 if (Notification.permission === 'denied') {
                     callback('Permission for Notifications was denied', null);
                 } else {

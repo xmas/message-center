@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 public class DevicesController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Device> getDevices(@PathVariable Long GUID){
