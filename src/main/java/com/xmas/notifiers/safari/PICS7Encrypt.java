@@ -6,6 +6,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.*;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -26,6 +27,10 @@ public class PICS7Encrypt {
 
     private final byte[] _store;
     private final String _storepass;
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     public PICS7Encrypt(byte[] store, String storepass) {
         _store = store;

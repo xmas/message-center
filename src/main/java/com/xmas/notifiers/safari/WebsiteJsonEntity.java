@@ -5,19 +5,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @SuppressWarnings("unused")
-public class WebsiteJsonEntity {
-    @Value("safari.website.json.websiteName")
+public class WebsiteJsonEntity implements Cloneable{
+    @Value("${safari.website.json.websiteName}")
     private String websiteName;
-    @Value("safari.website.json.websitePushID")
+    @Value("${safari.website.json.websitePushID}")
     private String websitePushID;
-    @Value("safari.website.json.allowedDomains")
+    @Value("${safari.website.json.allowedDomains}")
     private String allowedDomains;
-    @Value("safari.website.json.urlFormatString")
+    @Value("${safari.website.json.urlFormatString}")
     private String urlFormatString;
-    @Value("safari.website.json.authenticationToken")
-    //TODO userId in token
+    @Value("${safari.website.json.authenticationToken}")
     private String authenticationToken;
-    @Value("safari.website.json.webServiceURL")
+    @Value("${safari.website.json.webServiceURL}")
     private String webServiceURL;
 
     public String getWebsiteName() {
@@ -66,5 +65,16 @@ public class WebsiteJsonEntity {
 
     public void setWebServiceURL(String webServiceURL) {
         this.webServiceURL = webServiceURL;
+    }
+
+    @Override
+    public WebsiteJsonEntity clone(){
+        WebsiteJsonEntity clone = new WebsiteJsonEntity();
+        clone.urlFormatString = urlFormatString;
+        clone.allowedDomains = allowedDomains;
+        clone.webServiceURL = webServiceURL;
+        clone.websiteName = websiteName;
+        clone.websitePushID = websitePushID;
+        return clone;
     }
 }

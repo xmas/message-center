@@ -16,10 +16,10 @@ public class SafariPushController {
     @Autowired
     private ZipCreator zipCreator;
 
-    @RequestMapping(value = "/v1/pushPackages/${safari.website.json.websitePushID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/pushPackages/${safari.website.json.websitePushID}", method = RequestMethod.GET)
     public void pushPackages(HttpServletResponse response) throws IOException {
         response.setHeader("Content-type", "application/zip");
-        response.getOutputStream().write(zipCreator.create());
+        response.getOutputStream().write(zipCreator.create(123456L));
     }
 
     @RequestMapping(value = "/v1/devices/{deviceToken}/registrations/${safari.website.json.websitePushID}", method = RequestMethod.POST)

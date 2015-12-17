@@ -3,6 +3,7 @@ package com.xmas.notifiers.safari;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xmas.exceptions.ZipCreationException;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class ZipCreator {
     private static final Logger logger = LogManager.getLogger(Zipper.class);
 
     @Autowired
-    WebsiteJsonEntity websiteJson;
+    private WebsiteJsonEntity websiteJsonDefault;
 
-    @Value("safari.signature.password")
+    @Value("${safari.signature.password}")
     private String signaturePassword;
 
     public byte[] create(Long userID) {
@@ -37,10 +38,10 @@ public class ZipCreator {
             zip.addFileToZip("icon.iconset", "icon_128x128.png", getResource(getFullPathFileName("/safari/icons/icon_128x128.png")), true);
             zip.addFileToZip("icon.iconset", "icon_128x128@2x.png", getResource(getFullPathFileName("/safari/icons/icon_128x128@2x.png")), true);
 
-            zip.addFileToZip("", "website.json", getWebsiteJson(), true);
+            zip.addFileToZip("", "website.json", getWebsiteJson(userID), true);
             byte[] manifest = zip.getManifest();
             zip.addFileToZip("", "manifest.json", manifest, false);
-            PICS7Encrypt encrypt = new PICS7Encrypt(getResource("/safari/ca.p12"), signaturePassword);
+            PICS7Encrypt encrypt = new PICS7Encrypt(getResource(getFullPathFileName("/safari/ca.p12")), signaturePassword);
             zip.addFileToZip("", "signature", encrypt.sign(manifest), true);
             return zip.finalizeZip();
         } catch (Exception e) {
@@ -48,11 +49,11 @@ public class ZipCreator {
         }
     }
 
-    private byte[] getResource(String fileName) throws IOException {
+    protected byte[] getResource(String fileName) throws IOException {
         return Files.readAllBytes(Paths.get(fileName));
     }
 
-    private String getFullPathFileName(String fileName) throws IOException {
+    protected String getFullPathFileName(String fileName) throws IOException {
         URL resource = this.getClass().getClassLoader().getResource(fileName);
         if (resource != null) {
             return resource.getPath();
@@ -61,12 +62,38 @@ public class ZipCreator {
         }
     }
 
-    private byte[] getWebsiteJson(Long userId) throws JsonProcessingException {
-
-        return MAPPER.writeValueAsString(websiteJson).getBytes();
+    protected byte[] getWebsiteJson(Long userId) throws JsonProcessingException {
+        WebsiteJsonEntity websiteJsonEntity = websiteJsonDefault.clone();
+        websiteJsonEntity.setAuthenticationToken(createAuthenticationToken(userId));
+        return MAPPER.writeValueAsString(websiteJsonEntity).getBytes();
     }
 
-    private String createAutenticationToken(Long userId){
-        
+    //Token must have at least 16 characters
+    protected String createAuthenticationToken(Long userId){
+        String rawToken = appendLength(userId.toString());
+        return new String(Base64.encodeBase64(rawToken.getBytes()));
+    }
+
+    private String appendLength(String s){
+        for (int i = 0; i <16-s.length(); i++) {
+            s = "0" + s;
+        }
+        return s;
+    }
+
+    public WebsiteJsonEntity getWebsiteJsonDefault() {
+        return websiteJsonDefault;
+    }
+
+    public void setWebsiteJsonDefault(WebsiteJsonEntity websiteJsonDefault) {
+        this.websiteJsonDefault = websiteJsonDefault;
+    }
+
+    public String getSignaturePassword() {
+        return signaturePassword;
+    }
+
+    public void setSignaturePassword(String signaturePassword) {
+        this.signaturePassword = signaturePassword;
     }
 }
