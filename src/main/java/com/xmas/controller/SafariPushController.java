@@ -3,7 +3,7 @@ package com.xmas.controller;
 import com.xmas.entity.Device;
 import com.xmas.entity.Medium;
 import com.xmas.notifiers.safari.SafariLogJSONEntity;
-import com.xmas.notifiers.safari.ZipCreator;
+import com.xmas.notifiers.safari.pushpackage.ZipCreator;
 import com.xmas.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
