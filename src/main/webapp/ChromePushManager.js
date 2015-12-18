@@ -20,16 +20,13 @@ initialiseState = function (callback, userId) {
         navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
             serviceWorkerRegistration.active.postMessage({id: userId});
         });
-
         //Make subscription
         //If subscription already made unsubscribe, and make new.
-        getAliveSubscription(function (error, subscription) {
-            if (!subscription) {
+        getAliveSubscription(function (error, subscriptionId) {
+            if (!subscriptionId) {
                 subscribeBrowserId(callback);
             } else {
-                subscription.unsubscribe().then(function(){
-                    subscribeBrowserId(callback);
-                });
+                callback(null, subscriptionId)
             }
         });
     }
@@ -37,42 +34,40 @@ initialiseState = function (callback, userId) {
 
 subscribeBrowserId = function (callback) {
     navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
-            .then(function (subscription) {
-                if (subscription) {
-                    var register = getRegistrationId(subscription);
-                    callback(null, register);
-                } else {
-                    callback('Unable to subscribe to push.', null);
-                }
-            })
-            .catch(function () {
-                if (Notification.permission === 'denied') {
-                    callback('Permission for Notifications was denied', null);
-                } else {
-                    callback('Unable to subscribe to push.', null);
-                }
-            });
+        processSubscription(serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true}), callback)
     });
 };
 getAliveSubscription = function (callback) {
     navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-        serviceWorkerRegistration.pushManager.getSubscription()
-            .then(function (subscription) {
-                if (subscription) {
-                    callback(null, subscription);
-                } else {
-                    callback('Unable to subscribe to push.', null);
-                }
-            })
-            .catch(function () {
-                if (Notification.permission === 'denied') {
-                    callback('Permission for Notifications was denied', null);
-                } else {
-                    callback('Unable to subscribe to push.', null);
-                }
-            });
+        processSubscription(serviceWorkerRegistration.pushManager.getSubscription(), callback)
     });
+};
+
+processSubscription = function (promise, callback) {
+    promise
+        .then(function (subscription) {
+            processSuccess(subscription, callback)
+        })
+        .catch(function () {
+            handleError(callback)
+        });
+};
+
+processSuccess = function (subscription, callback) {
+    if (subscription) {
+        var registrationId = getRegistrationId(subscription);
+        callback(null, registrationId);
+    } else {
+        callback('Unable to subscribe to push.', null);
+    }
+};
+
+handleError = function (callback) {
+    if (Notification.permission === 'denied') {
+        callback('Permission for Notifications was denied', null);
+    } else {
+        callback('Unable to subscribe to push.', null);
+    }
 };
 
 ChromePushManager.prototype.removeSubscription = function (callback) {
