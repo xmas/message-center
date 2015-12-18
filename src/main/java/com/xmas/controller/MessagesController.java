@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("")
-public class ChromePushController {
+public class MessagesController {
 
     @Autowired
     MessagesService messagesService;

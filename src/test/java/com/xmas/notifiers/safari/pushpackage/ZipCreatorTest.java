@@ -1,4 +1,4 @@
-package com.xmas.notifiers.safari;
+package com.xmas.notifiers.safari.pushpackage;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.xmas.notifiers.safari;
+package com.xmas.notifiers.safari.pushpackage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
