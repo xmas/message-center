@@ -26,7 +26,6 @@ public class DevicesController {
 
     @RequestMapping(method = RequestMethod.POST)
     public void addDevice(@PathVariable Long GUID, @RequestBody Device device, HttpServletRequest request){
-
         userService.addDevice(device, GUID, request.getRemoteAddr());
     }
 

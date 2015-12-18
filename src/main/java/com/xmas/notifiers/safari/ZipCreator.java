@@ -81,19 +81,7 @@ public class ZipCreator {
         return s;
     }
 
-    public WebsiteJsonEntity getWebsiteJsonDefault() {
-        return websiteJsonDefault;
-    }
-
-    public void setWebsiteJsonDefault(WebsiteJsonEntity websiteJsonDefault) {
-        this.websiteJsonDefault = websiteJsonDefault;
-    }
-
-    public String getSignaturePassword() {
-        return signaturePassword;
-    }
-
-    public void setSignaturePassword(String signaturePassword) {
-        this.signaturePassword = signaturePassword;
+    public Long encodeUserGUID(String token){
+        return Long.parseLong(new String(Base64.decodeBase64(token.getBytes())));
     }
 }
