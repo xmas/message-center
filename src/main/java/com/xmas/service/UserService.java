@@ -4,7 +4,6 @@ import com.xmas.dao.DeviceRepository;
 import com.xmas.dao.UsersRepository;
 import com.xmas.entity.Device;
 import com.xmas.entity.User;
-import com.xmas.exceptions.DeviceAlreadyPresentedException;
 import com.xmas.exceptions.NoSuchDeviceFound;
 import com.xmas.exceptions.NoSuchUserFoundException;
 import com.xmas.exceptions.UserAlreadyPresentedException;
@@ -54,10 +53,7 @@ public class UserService {
 
     public void deleteUser(Long GUID) {
         if (!usersRepository.getUserByGUID(GUID).isPresent()) {
-            User user = new User();
-            user.setGuid(GUID);
-
-            usersRepository.delete(user);
+            usersRepository.delete(GUID);
         } else {
             throw new NoSuchUserFoundException(GUID);
         }
@@ -74,32 +70,19 @@ public class UserService {
     }
 
     public void addDevice(Device device, Long GUID, String ip) {
-        User user = usersRepository.getUserByGUID(GUID)
-                .orElseThrow(() -> new NoSuchUserFoundException(GUID));
+        usersRepository.getUserByGUID(GUID)
+                .map(user -> {
+                    if (user.getDevices().contains(device)) return user;
 
-        //Do nothing if there already presented device with same token and medium
-        if (user.getDevices().contains(device)) return;
+                    device.setIp(ip);
+                    locationProvider.getLocation(ip).ifPresent(device::setLocation);
 
-        //throw exception if such device is owned by other user
-        deviceRepository.getAll().stream()
-                .filter(d -> d.equals(device))
-                .map(Device::getUser)
-                .map(User::getGuid)
-                .findAny()
-                .ifPresent(id -> {
-                    throw new DeviceAlreadyPresentedException();
-                });
+                    device.setUser(user);
+                    deviceRepository.save(device);
 
-        locationProvider.getLocation(ip).ifPresent(location -> {
-            device.setIp(ip);
-            device.setLocation(location);
-        });
-
-        device.setUser(user);
-        deviceRepository.save(device);
-
-        user.getDevices().add(device);
-        usersRepository.save(user);
+                    user.getDevices().add(device);
+                    return usersRepository.save(user);
+                }).orElseThrow(() -> new NoSuchUserFoundException(GUID));
     }
 
     public void deleteDevice(Long GUID, String token) {

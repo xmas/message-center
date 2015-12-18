@@ -5,8 +5,8 @@ import com.xmas.dao.UsersRepository;
 import com.xmas.entity.Device;
 import com.xmas.entity.Medium;
 import com.xmas.entity.User;
-import com.xmas.exceptions.DeviceAlreadyPresentedException;
 import com.xmas.location.provider.IPLocationProvider;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -109,10 +109,16 @@ public class UserServiceTest {
         when(usersRepository.getUserByGUID(SAFARI_USER_GUID)).thenReturn(Optional.of(safariUser));
         when(usersRepository.getUserByGUID(ALL_DEVICES_USER_GUID)).thenReturn(Optional.of(allDevicesUser));
 
+        when(usersRepository.save(chromeUser)).thenReturn(chromeUser);
+        when(usersRepository.save(safariUser)).thenReturn(safariUser);
+        when(usersRepository.save(allDevicesUser)).thenReturn(allDevicesUser);
+
         when(deviceRepository.getAll()).thenReturn(new HashSet<Device>() {{
             add(chromeDevice);
             add(safariDevice);
         }});
+
+        when(deviceRepository.save(safariDevice)).thenThrow(ConstraintViolationException.class);
 
         when(locationProvider.getLocation(IP)).thenReturn(Optional.<String>empty());
     }
@@ -144,11 +150,9 @@ public class UserServiceTest {
         assertEquals(1, chromeUser.getDevices().size());
     }
 
-    @Test(expected = DeviceAlreadyPresentedException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void testAddDeviceIfOtherUserAlreadyHasSuchDevice() throws Exception {
         userService.addDevice(safariDevice, CHROME_USER_GUID, IP);
-
-        verify(deviceRepository, times(1)).getAll();
     }
 
     @Test
