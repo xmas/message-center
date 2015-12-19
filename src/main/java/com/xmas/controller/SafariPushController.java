@@ -2,6 +2,7 @@ package com.xmas.controller;
 
 import com.xmas.entity.Device;
 import com.xmas.entity.Medium;
+import com.xmas.entity.User;
 import com.xmas.notifiers.safari.SafariLogJSONEntity;
 import com.xmas.notifiers.safari.pushpackage.ZipCreator;
 import com.xmas.service.UserService;
@@ -30,16 +31,16 @@ public class SafariPushController {
     private UserService userService;
 
     @RequestMapping(value = "/v1/pushPackages/${safari.website.json.websitePushID}", method = RequestMethod.GET)
-    public void pushPackages(HttpServletResponse response) throws IOException {
+    public void pushPackages(@RequestBody User user, HttpServletResponse response) throws IOException {
         response.setHeader("Content-type", "application/zip");
-        response.getOutputStream().write(zipCreator.create(123456L));
+        response.getOutputStream().write(zipCreator.create(user.getGuid()));
     }
 
     @RequestMapping(value = "/v1/devices/{deviceToken}/registrations/${safari.website.json.websitePushID}", method = RequestMethod.POST)
     public void register(@PathVariable String deviceToken,
                          @RequestHeader("Authorization") String authorization,
                          HttpServletRequest request) {
-        Long GUID = zipCreator.encodeUserGUID(authorization);
+        Long GUID = zipCreator.encodeUserGUID(authorization.replace(HEADER_PREFIX, ""));
         userService.addDevice(createSafariDevice(deviceToken), GUID, request.getRemoteAddr());
     }
 
