@@ -39,7 +39,7 @@ public class ZipCreator {
             zip.addFileToZip("", "manifest.json", zip.getManifest(), false);
 
             PICS7Encrypt encrypt = new PICS7Encrypt(getResource("/safari/ca.p12"), signaturePassword);
-            zip.addFileToZip("", "signature", encrypt.sign(zip.getManifest()), true);
+            zip.addFileToZip("", "signature", encrypt.sign(zip.getManifest()), false);
 
             return zip.finalizeZip();
 
@@ -57,17 +57,18 @@ public class ZipCreator {
     //Token must have at least 16 characters
     protected String createAuthenticationToken(Long userId){
         String rawToken = appendLength(userId.toString());
-        return new String(Base64.encodeBase64(rawToken.getBytes()));
+        return new String(Base64.encodeBase64(rawToken.getBytes())).replace("==", "");
     }
 
     private String appendLength(String s){
-        for (int i = 0; i <16-s.length(); i++) {
-            s = "0" + s;
+        String res = s;
+        for (int i = 0; i < 16-s.length(); i++) {
+            res = "0" + res;
         }
-        return s;
+        return res;
     }
 
     public Long encodeUserGUID(String token){
-        return Long.parseLong(new String(Base64.decodeBase64(token.getBytes())));
+        return Long.parseLong(new String(Base64.decodeBase64((token+"==").getBytes())));
     }
 }

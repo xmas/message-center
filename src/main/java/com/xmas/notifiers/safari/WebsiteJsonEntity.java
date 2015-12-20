@@ -14,7 +14,7 @@ public class WebsiteJsonEntity implements Cloneable{
     private String allowedDomains;
     @Value("${safari.website.json.urlFormatString}")
     private String urlFormatString;
-    @Value("${safari.website.json.authenticationToken}")
+
     private String authenticationToken;
     @Value("${safari.website.json.webServiceURL}")
     private String webServiceURL;

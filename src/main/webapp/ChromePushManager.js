@@ -1,4 +1,4 @@
-var ChromePushManager = function (serviceWorkerPath, callback, userId) {
+var PushManager = function (serviceWorkerPath, callback, userId) {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(serviceWorkerPath)
             .then(initialiseState(callback, userId));
@@ -70,7 +70,7 @@ handleError = function (callback) {
     }
 };
 
-ChromePushManager.prototype.removeSubscription = function (callback) {
+PushManager.prototype.removeSubscription = function (callback) {
     navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
         serviceWorkerRegistration.pushManager.getSubscription()
             .then(function (subscription) {

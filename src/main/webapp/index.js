@@ -1,12 +1,18 @@
-var chromePushManager;
+var pushManager;
 var subscripted;
-$(document).ready(function () {
-    var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-    if (!is_chrome) {
-        alert("No can do ... this demo requires Chrome 42+");
+/*$(document).ready(function () {
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+        $.getScript( "./ChromePushManager.js" )
+            .done(function( script, textStatus ) {
+                console.log( textStatus );
+            });
+    }else if('safari' in window){
+        $.getScript( "./SafariPushManager.js" )
+            .done(function( script, textStatus ) {
+                console.log( textStatus );
+            });
     }
-
-});
+});*/
 
 function getUserId(){
     var expr = /^\d+$/;
@@ -34,7 +40,7 @@ function addUser(){
 
 function subscribe() {
     if(!getUserId()) return;
-    chromePushManager = new ChromePushManager('./service-worker.js', function (error, registrationId) {
+    pushManager = new PushManager('./service-worker.js', function (error, registrationId) {
         if (error) {
             alert(error);
             console.log(error)
@@ -66,11 +72,11 @@ function getUsers(){
 
 function unSubscribe() {
     if(!getUserId()) return;
-    if(chromePushManager) {
-        chromePushManager.removeSubscription(removeSubscriptionFromServer);
+    if(pushManager) {
+        pushManager.removeSubscription(removeSubscriptionFromServer);
     }else{
-        chromePushManager = new ChromePushManager('./service-worker.js', function(){}, getUserId());
-        chromePushManager.removeSubscription(removeSubscriptionFromServer);
+        pushManager = new ChromePushManager('./service-worker.js', function(){}, getUserId());
+        pushManager.removeSubscription(removeSubscriptionFromServer);
     }
         $('.subscribe').prop("disabled", false);
         $('.unsubscribe').prop("disabled", true);

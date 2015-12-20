@@ -32,9 +32,9 @@ public class IPLocationProvider {
 
     private static final Logger logger = LogManager.getLogger(IPLocationProvider.class);
 
-    @Value("ipinfodb.api.key")
+    @Value("${ipinfodb.api.key}")
     private String apiKey;
-    @Value("ipinfodb.api.url")
+    @Value("${ipinfodb.api.url}")
     private String apiUrl;
 
     static {
@@ -52,11 +52,8 @@ public class IPLocationProvider {
     }
 
     public Optional<String> getLocation(String ip){
-        if(true)
-            return Optional.of("LOCATION");
-
         String url = apiUrl + MODE + "/?format=" + FORMAT + "&key=" + apiKey + "&ip=" + ip;
-
+        logger.debug(url);
         try {
             HttpGet request = new HttpGet(url);
             HttpResponse response = HTTP_CLIENT.execute(request, new BasicHttpContext());
@@ -76,7 +73,7 @@ public class IPLocationProvider {
                         ". API status message is '" + ipCityResponse.getStatusMessage() + "'");
                 return Optional.empty();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Cant get location info from " + apiUrl + " with key " + apiKey + "for IP " + ip +
                     ". Error message is '" + e.getMessage() + "'");
             logger.debug(e.getMessage(), e);

@@ -43,9 +43,7 @@ public class PICS7Encrypt {
             logger.error("Could not find store file (.p12)");
             return null;
         }
-        // First load the keystore object by providing the p12 file path
         KeyStore clientStore = KeyStore.getInstance("PKCS12");
-        // replace testPass with the p12 password/pin
         clientStore.load(new ByteArrayInputStream(_store), _storepass.toCharArray());
         return clientStore;
     }

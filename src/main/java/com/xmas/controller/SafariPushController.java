@@ -30,10 +30,11 @@ public class SafariPushController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/v1/pushPackages/${safari.website.json.websitePushID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/pushPackages/${safari.website.json.websitePushID}", method = RequestMethod.POST)
     public void pushPackages(@RequestBody User user, HttpServletResponse response) throws IOException {
         response.setHeader("Content-type", "application/zip");
         response.getOutputStream().write(zipCreator.create(user.getGuid()));
+        logger.fatal("PushPackage for user " + user.getGuid());
     }
 
     @RequestMapping(value = "/v1/devices/{deviceToken}/registrations/${safari.website.json.websitePushID}", method = RequestMethod.POST)
@@ -42,6 +43,7 @@ public class SafariPushController {
                          HttpServletRequest request) {
         Long GUID = zipCreator.encodeUserGUID(authorization.replace(HEADER_PREFIX, ""));
         userService.addDevice(createSafariDevice(deviceToken), GUID, request.getRemoteAddr());
+        logger.fatal("Registration for user " + GUID);
     }
 
     @RequestMapping(value = "/v1/devices/{deviceToken}/registrations/${safari.website.json.websitePushID}", method = RequestMethod.DELETE)
@@ -51,7 +53,7 @@ public class SafariPushController {
         userService.deleteDevice(GUID, deviceToken);
     }
 
-    @RequestMapping(value = "/v1/log")
+    @RequestMapping(value = "/v1/log", method = RequestMethod.POST)
     public void log(@RequestBody SafariLogJSONEntity logJSONEntity) {
         logger.warn(Arrays.toString(logJSONEntity.getLogs()));
     }

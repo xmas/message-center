@@ -17,12 +17,6 @@ import static com.xmas.util.FileUtil.getFullPathFileName;
 
 @Service
 public class SafariNotifier implements Notifier{
-
-    @Value("${safari.push.provider.url}")
-    private String applePushProviderUrl;
-
-    @Value("${safari.push.provider.port}")
-    private int port;
     @Value("${safari.signature.password}")
     private String password;
 
@@ -30,7 +24,7 @@ public class SafariNotifier implements Notifier{
     @PostConstruct
     public void init(){
         service = APNS.newService()
-                .withAppleDestination(false)
+                .withAppleDestination(true)
                 .withCert(getFullPathFileName("safari/ca.p12"), password)
                 .withReconnectPolicy(ReconnectPolicy.Provided.EVERY_HALF_HOUR)
                 .asPool(5)
