@@ -35,10 +35,14 @@ function setRead(id) {
 }
 
 function show(title, notif) {
-    return self.registration.showNotification(title, notif).then(function (NEvent) {
-        NEvent.notification.onclose = function () {
-            console.log("sgh")
-        }
+    return self.registration.showNotification(title, notif).then(function (NEvent, arg2, arg3) {
+        self.registration.getNotifications().then(function(notifications){
+            notifications.forEach(function(notif){
+                notif.onclick = function(){
+                    console.log("sdf")
+                }
+            })
+        })
     });
 }
 
@@ -54,16 +58,17 @@ function getMessages() {
 }
 
 function showMessages(messages) {
-    var count = 0;
-    messages.every(function (message) {
-        if (count++ < 2) {
-            showPlainNotification(message);
-            return true;
-        } else {
-            showMoreNotification(message, messages.length - count + 1);
-            return false;
-        }
-    })
+    for(var i = 0; i < 2 && i < messages.length; i++){
+        showPlainNotification(messages[i]);
+    }
+
+    var rest = messages.length - 2;
+    if(rest > 1){
+        showMoreNotification(messages[2], rest);
+    }else if(rest == 1){
+        showPlainNotification(messages[2]);
+    }
+
 }
 
 function showPlainNotification(message) {
