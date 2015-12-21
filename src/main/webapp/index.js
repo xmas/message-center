@@ -1,18 +1,19 @@
 var pushManager;
 var subscripted;
-/*$(document).ready(function () {
+$(document).ready(function () {
     if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-        $.getScript( "./ChromePushManager.js" )
-            .done(function( script, textStatus ) {
-                console.log( textStatus );
-            });
+        addPushManagerScript('./ChromePushManager.js')
     }else if('safari' in window){
-        $.getScript( "./SafariPushManager.js" )
-            .done(function( script, textStatus ) {
-                console.log( textStatus );
-            });
+        addPushManagerScript("./SafariPushManager.js" )
     }
-});*/
+});
+
+function addPushManagerScript(scriptUrl){
+    var script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = scriptUrl;
+    $("head").append( script );
+}
 
 function getUserId(){
     var expr = /^\d+$/;
