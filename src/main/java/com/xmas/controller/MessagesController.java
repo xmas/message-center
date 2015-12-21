@@ -27,8 +27,8 @@ public class MessagesController {
     }
 
     @RequestMapping(value = "users/{GUID}/messages/v1/{id}", method = RequestMethod.POST)
-    public void read(@PathVariable Long id){
-        messagesService.setRead(id);
+    public void read(@PathVariable Long id, @PathVariable Long GUID){
+        messagesService.setRead(GUID, id);
     }
 
     @RequestMapping(value = "users/{GUID}/messages/v1/unread")

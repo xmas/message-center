@@ -6,17 +6,10 @@ import com.xmas.entity.Device;
 import com.xmas.entity.Medium;
 import com.xmas.entity.Message;
 import com.xmas.entity.User;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesServiceTest {
@@ -58,15 +51,18 @@ public class MessagesServiceTest {
     public static final Long SAFARI_USER_GUID = 123456789L;
     public static final Long ALL_DEVICES_USER_GUID = 12345601246L;
 
+/*
     @org.junit.Before
     public void setUp() throws Exception {
 
         chrome = new Medium(Medium.CHROME);
         safari = new Medium(Medium.SAFARI);
 
-        /*
+        */
+/*
          * Set up devices
-         */
+         *//*
+
         chromeDevice = new Device();
         chromeDevice.setMedium(chrome);
         chromeDevice.setToken(CHROME_TOKEN);
@@ -76,9 +72,11 @@ public class MessagesServiceTest {
         safariDevice.setToken(SAFARI_TOKEN);
 
 
-        /*
+        */
+/*
          * Set up users
-         */
+         *//*
+
         chromeUser = new User();
         chromeUser.setGuid(CHROME_USER_GUID);
         chromeUser.setDevices(new ArrayList<Device>() {{
@@ -98,9 +96,11 @@ public class MessagesServiceTest {
             add(chromeDevice);
         }});
 
-        /*
+        */
+/*
          * Set up messages
-         */
+         *//*
+
         messageForChromeUserForChromeDevice = new Message();
         messageForChromeUserForChromeDevice.setTitle("HELLO!");
         messageForChromeUserForChromeDevice.setMessage("hello world!");
@@ -135,9 +135,11 @@ public class MessagesServiceTest {
         messageForAllUsersForAllDevices.setUsers(new ArrayList<>());
         messageForAllUsersForAllDevices.setMediums(new HashSet<>());
 
-        /*
+        */
+/*
          * Set up mocks
-         */
+         *//*
+
 
         when(userService.getUser(CHROME_USER_GUID)).thenReturn(chromeUser);
         when(userService.getUser(SAFARI_USER_GUID)).thenReturn(safariUser);
@@ -165,9 +167,11 @@ public class MessagesServiceTest {
     }
 
 
-    /*
+    */
+/*
      * No messages will be saved and sent if there are no users with specified medium
-     */
+     *//*
+
     @Test
     public void addMessagesTestForChromeUserSafariDevice() {
         messagesService.addMessage(messageForChromeUserForSafariDevice);
@@ -190,10 +194,12 @@ public class MessagesServiceTest {
         }});
     }
 
-    /*
+    */
+/*
      * Message should be added for both chrome and safari users
      * NotifierService should be invoked twice, once for chrome, and once for safari
-     */
+     *//*
+
     @Test
     public void addMessagesTestForallUsersAllDevices() {
         messagesService.addMessage(messageForAllUsersForAllDevices);
@@ -210,6 +216,7 @@ public class MessagesServiceTest {
             add(SAFARI_TOKEN);
         }});
     }
+*/
 
 
 }

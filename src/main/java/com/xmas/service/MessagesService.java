@@ -2,10 +2,8 @@ package com.xmas.service;
 
 import com.xmas.dao.MediumsRepository;
 import com.xmas.dao.MessageRepository;
-import com.xmas.entity.Device;
-import com.xmas.entity.Medium;
-import com.xmas.entity.Message;
-import com.xmas.entity.User;
+import com.xmas.dao.UserMessageRepository;
+import com.xmas.entity.*;
 import com.xmas.exceptions.NoSuchMessageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,34 +17,41 @@ import java.util.stream.Collectors;
 public class MessagesService {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    NotifierService notifierService;
+    private NotifierService notifierService;
 
     @Autowired
-    MediumsRepository mediumsRepository;
+    private MediumsRepository mediumsRepository;
 
     @Autowired
-    MessageRepository messageRepository;
+    private MessageRepository messageRepository;
+
+    @Autowired
+    private UserMessageRepository userMessageRepository;
+
 
     public List<Message> getMessages(Long GUID, Predicate<Message> filter) {
         List<Message> result = new ArrayList<>();
-        userService.getUser(GUID).getMessages().stream().filter(filter).forEach(result::add);
+        userService.getUser(GUID).getUserMessages().stream().map(UserMessage::getMessage).filter(filter).forEach(result::add);
         return result;
     }
 
     public List<Message> getUnread(Long GUID) {
-        User user = userService.getUser(GUID);
-        ArrayList<Message> result = new ArrayList<>();
-        user.getMessages().stream().filter(message -> !message.isAccepted()).forEach(result::add);
-        return result;
+        return userService.getUser(GUID)
+                .getUserMessages().stream()
+                .filter(message -> !message.isAccepted())
+                .map(UserMessage::getMessage)
+                .collect(Collectors.toList());
     }
 
-    public void setRead(Long id) {
+    public void setRead(Long guid, Long id) {
         Message message = messageRepository.get(id).orElseThrow(() -> new NoSuchMessageException(id));
-        message.setAccepted(true);
-        messageRepository.save(message);
+        userMessageRepository.save(message.getUserMessages().stream()
+                .filter(userMessage -> userMessage.getUser().getGuid().equals(guid))
+                .peek(userMessage1 -> userMessage1.setAccepted(true))
+                .collect(Collectors.toList()));
     }
 
     public void addMessage(Message message) {
@@ -64,10 +69,11 @@ public class MessagesService {
     }
 
     private Message populateUsers(Message message) {
-        if (message.getUsers() == null || message.getUsers().isEmpty()) {
-            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, userService.getAll()));
+        if (message.getUserMessages() == null || message.getUserMessages().isEmpty()) {
+            message.setUserMessages(filterUsersThatDoNotHasRequiredMediums(message, userService.getAll()));
         } else {
-            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, message.getUsers().stream()
+            message.setUserMessages(filterUsersThatDoNotHasRequiredMediums(message, message.getUserMessages().stream()
+                    .map(UserMessage::getUser)
                     .map(User::getGuid)
                     .<User>map(userService::getUser)
                     .collect(Collectors.toList())));
@@ -75,24 +81,31 @@ public class MessagesService {
         return message;
     }
 
-    private List<User> filterUsersThatDoNotHasRequiredMediums(Message message, List<User> users) {
+    private List<UserMessage> filterUsersThatDoNotHasRequiredMediums(Message message, List<User> users) {
+        List<UserMessage> result = new ArrayList<>();
         return users.stream()
                 .filter(user -> hasUserRequiredMediums(user, message))
-                .peek(user -> addMessageToUser(user, message))
+                .map(user -> {
+                    UserMessage userMessage = new UserMessage();
+                    userMessage.setMessage(message);
+                    userMessage.setUser(user);
+                    return userMessage;
+                })
+                .peek(userMessage -> addMessageToUser(userMessage.getUser(), userMessage))
                 .collect(Collectors.toList());
     }
 
-    private boolean hasUserRequiredMediums(User user, Message message){
+    private boolean hasUserRequiredMediums(User user, Message message) {
         return user.getDevices().stream()
                 .<Medium>map(Device::getMedium)
                 .filter(message.getMediums()::contains).count() > 0;
     }
 
-    private void addMessageToUser(User user, Message message){
-        if (user.getMessages() != null)
-            user.getMessages().add(message);
+    private void addMessageToUser(User user, UserMessage message) {
+        if (user.getUserMessages() != null)
+            user.getUserMessages().add(message);
         else
-            user.setMessages(new ArrayList<Message>() {{
+            user.setUserMessages(new ArrayList<UserMessage>() {{
                 add(message);
             }});
     }
@@ -104,8 +117,11 @@ public class MessagesService {
         message.getMediums().forEach(medium -> {
             List<String> list = new ArrayList<>();
 
-            message.getUsers().forEach(user -> user.getDevices().stream().filter(device -> device.getMedium().equals(medium)).
-                    forEach(device -> list.add(device.getToken())));
+            message.getUserMessages().stream()
+                    .map(UserMessage::getUser)
+                    .forEach(user -> user.getDevices().stream()
+                            .filter(device -> device.getMedium().equals(medium))
+                            .forEach(device -> list.add(device.getToken())));
 
             if (!list.isEmpty())
                 tokens.put(medium, list);
@@ -113,6 +129,7 @@ public class MessagesService {
 
         if (!tokens.isEmpty()) {
             messageRepository.save(message);
+            message.getUserMessages().stream().forEach(userMessageRepository::save);
 
             tokens.forEach((medium, tokenList) -> {
                 notifierService.push(medium, message, tokenList);

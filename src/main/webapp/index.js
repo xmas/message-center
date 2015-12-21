@@ -76,7 +76,7 @@ function unSubscribe() {
     if(pushManager) {
         pushManager.removeSubscription(removeSubscriptionFromServer);
     }else{
-        pushManager = new ChromePushManager('./service-worker.js', function(){}, getUserId());
+        pushManager = new PushManager('./service-worker.js', function(){}, getUserId());
         pushManager.removeSubscription(removeSubscriptionFromServer);
     }
         $('.subscribe').prop("disabled", false);
