@@ -9,12 +9,19 @@ self.addEventListener('push', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
     event.notification.close();
-    setRead(event.notification.data);
-});
+    setRead(event.notification.data.id);
 
-self.addEventListener('notificationclose', function (event) {
-    event.notification.close();
-    setRead(event.notification.data);
+    event.waitUntil(clients.matchAll({
+        type: "window"
+    }).then(function(clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+            var client = clientList[i];
+            if (client.url == event.notification.data.notificationAppURL && 'focus' in client)
+                return client.focus();
+        }
+        if (clients.openWindow)
+            return clients.openWindow(event.notification.data.notificationAppURL);
+    }));
 });
 
 self.addEventListener('message', function (evt) {
@@ -35,15 +42,7 @@ function setRead(id) {
 }
 
 function show(title, notif) {
-    return self.registration.showNotification(title, notif).then(function (NEvent, arg2, arg3) {
-        self.registration.getNotifications().then(function(notifications){
-            notifications.forEach(function(notif){
-                notif.onclick = function(){
-                    console.log("sdf")
-                }
-            })
-        })
-    });
+    return self.registration.showNotification(title, notif)
 }
 
 function getMessages() {
@@ -79,7 +78,7 @@ function showPlainNotification(message) {
     show(title, {
         body: body,
         icon: icon,
-        data: message.id
+        data: message
     });
 }
 
