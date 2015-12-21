@@ -42,7 +42,7 @@ public class Message {
     private String messageType;
 
     @Column
-    private boolean accepted;
+    private boolean pushed;
 
     @ManyToMany
     @JoinTable(name = "messages_mediums",
@@ -51,11 +51,8 @@ public class Message {
     @Column(name = "medium", nullable = false)
     private Set<Medium> mediums;
 
-    @ManyToMany
-    @JoinTable(name = "user_message",
-            joinColumns = @JoinColumn(name = "messageId"),
-            inverseJoinColumns = @JoinColumn(name = "userId"))
-    private List<User> users;
+    @OneToMany(mappedBy = "message")
+    private List<UserMessage> userMessages;
 
     public Message() {
     }
@@ -148,19 +145,19 @@ public class Message {
         this.mediums = mediums;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<UserMessage> getUserMessages() {
+        return userMessages;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUserMessages(List<UserMessage> userMessages) {
+        this.userMessages = userMessages;
     }
 
-    public boolean isAccepted() {
-        return accepted;
+    public boolean isPushed() {
+        return pushed;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public void setPushed(boolean pushed) {
+        this.pushed = pushed;
     }
 }
