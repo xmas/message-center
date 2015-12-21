@@ -79,7 +79,7 @@ public class MessagesService {
                     .<User>map(guid -> {
                         try {
                             return userService.getUser(guid);
-                        } catch (NoSuchUserFoundException e){
+                        } catch (NoSuchUserFoundException e) {
                             return null;
                         }
                     })
@@ -138,9 +138,7 @@ public class MessagesService {
             messageRepository.save(message);
             message.getUserMessages().stream().forEach(userMessageRepository::save);
 
-            tokens.forEach((medium, tokenList) -> {
-                notifierService.push(medium, message, tokenList);
-            });
+            tokens.forEach((medium, tokenList) -> notifierService.push(medium, message, tokenList));
         }
 
     }
