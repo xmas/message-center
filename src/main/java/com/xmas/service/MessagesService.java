@@ -5,6 +5,7 @@ import com.xmas.dao.MessageRepository;
 import com.xmas.dao.UserMessageRepository;
 import com.xmas.entity.*;
 import com.xmas.exceptions.NoSuchMessageException;
+import com.xmas.exceptions.NoSuchUserFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,14 +76,20 @@ public class MessagesService {
             message.setUserMessages(filterUsersThatDoNotHasRequiredMediums(message, message.getUserMessages().stream()
                     .map(UserMessage::getUser)
                     .map(User::getGuid)
-                    .<User>map(userService::getUser)
+                    .<User>map(guid -> {
+                        try {
+                            return userService.getUser(guid);
+                        } catch (NoSuchUserFoundException e){
+                            return null;
+                        }
+                    })
+                    .filter(user -> user != null)
                     .collect(Collectors.toList())));
         }
         return message;
     }
 
     private List<UserMessage> filterUsersThatDoNotHasRequiredMediums(Message message, List<User> users) {
-        List<UserMessage> result = new ArrayList<>();
         return users.stream()
                 .filter(user -> hasUserRequiredMediums(user, message))
                 .map(user -> {

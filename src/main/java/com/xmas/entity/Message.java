@@ -1,5 +1,8 @@
 package com.xmas.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.xmas.json.UserMessageJsonDeserializer;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,6 +55,7 @@ public class Message {
     private Set<Medium> mediums;
 
     @OneToMany(mappedBy = "message")
+    @JsonDeserialize(using = UserMessageJsonDeserializer.class)
     private List<UserMessage> userMessages;
 
     public Message() {
