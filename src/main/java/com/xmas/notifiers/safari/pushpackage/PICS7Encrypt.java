@@ -25,41 +25,35 @@ public class PICS7Encrypt {
 
     private static final Logger logger = LogManager.getLogger(Zipper.class);
 
-    private final byte[] _store;
-    private final String _storepass;
+    private final byte[] certificate;
+    private final String password;
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
     public PICS7Encrypt(byte[] store, String storepass) {
-        _store = store;
-        _storepass = storepass;
+        assert store != null;
+        certificate = store;
+        password = storepass;
     }
 
-    private KeyStore getKeystore() throws KeyStoreException, NoSuchAlgorithmException, CertificateException,
-            IOException {
-        if (_store == null) {
-            logger.error("Could not find store file (.p12)");
-            return null;
-        }
+    private KeyStore getKeystore() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         KeyStore clientStore = KeyStore.getInstance("PKCS12");
-        clientStore.load(new ByteArrayInputStream(_store), _storepass.toCharArray());
+        clientStore.load(new ByteArrayInputStream(certificate), password.toCharArray());
         return clientStore;
     }
 
-    private X509CertificateHolder getCert(KeyStore keystore, String aliaz) throws GeneralSecurityException,
-            IOException {
+    private X509CertificateHolder getCert(KeyStore keystore, String aliaz) throws GeneralSecurityException, IOException {
         java.security.cert.Certificate c = keystore.getCertificate(aliaz);
         return new X509CertificateHolder(c.getEncoded());
     }
 
     private PrivateKey getPrivateKey(KeyStore keystore, String aliaz) throws GeneralSecurityException, IOException {
-        return (PrivateKey) keystore.getKey(aliaz, _storepass.toCharArray());
+        return (PrivateKey) keystore.getKey(aliaz, password.toCharArray());
     }
 
-    public byte[] sign(byte[] dataToSign) throws IOException, GeneralSecurityException, OperatorCreationException,
-            CMSException {
+    public byte[] sign(byte[] dataToSign) throws IOException, GeneralSecurityException, OperatorCreationException, CMSException {
         KeyStore clientStore = getKeystore();
         if (clientStore == null) {
             return null;
@@ -83,7 +77,7 @@ public class PICS7Encrypt {
 
         CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
         // Initializing the the BC's Signer
-        ContentSigner sha1Signer = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(
+        ContentSigner sha1Signer = new JcaContentSignerBuilder("PKCS7").setProvider("BC").build(
                 getPrivateKey(clientStore, aliaz));
 
         gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder()
