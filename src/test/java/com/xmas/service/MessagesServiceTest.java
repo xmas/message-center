@@ -2,14 +2,19 @@ package com.xmas.service;
 
 import com.xmas.dao.MediumsRepository;
 import com.xmas.dao.MessageRepository;
-import com.xmas.entity.Device;
-import com.xmas.entity.Medium;
-import com.xmas.entity.Message;
-import com.xmas.entity.User;
+import com.xmas.dao.UserMessageRepository;
+import com.xmas.entity.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesServiceTest {
@@ -26,12 +31,18 @@ public class MessagesServiceTest {
     @Mock
     MessageRepository messageRepository;
 
+    @Mock
+    UserMessageRepository userMessageRepository;
+
     @InjectMocks
     MessagesService messagesService;
 
     User chromeUser;
     User safariUser;
     User allDevicesUser;
+
+    UserMessage chromeUserAllDevMessage;
+    UserMessage safariUserAllDevMessage;
 
     Device chromeDevice;
     Device safariDevice;
@@ -51,18 +62,13 @@ public class MessagesServiceTest {
     public static final Long SAFARI_USER_GUID = 123456789L;
     public static final Long ALL_DEVICES_USER_GUID = 12345601246L;
 
-/*
     @org.junit.Before
     public void setUp() throws Exception {
 
         chrome = new Medium(Medium.CHROME);
         safari = new Medium(Medium.SAFARI);
 
-        */
-/*
-         * Set up devices
-         *//*
-
+        /* Set up devices*/
         chromeDevice = new Device();
         chromeDevice.setMedium(chrome);
         chromeDevice.setToken(CHROME_TOKEN);
@@ -71,12 +77,7 @@ public class MessagesServiceTest {
         safariDevice.setMedium(safari);
         safariDevice.setToken(SAFARI_TOKEN);
 
-
-        */
-/*
-         * Set up users
-         *//*
-
+        /* Set up users*/
         chromeUser = new User();
         chromeUser.setGuid(CHROME_USER_GUID);
         chromeUser.setDevices(new ArrayList<Device>() {{
@@ -96,16 +97,23 @@ public class MessagesServiceTest {
             add(chromeDevice);
         }});
 
-        */
-/*
-         * Set up messages
-         *//*
+        chromeUserAllDevMessage = new UserMessage();
+        chromeUserAllDevMessage.setUser(chromeUser);
 
+        safariUserAllDevMessage = new UserMessage();
+        safariUserAllDevMessage.setUser(safariUser);
+
+
+        UserMessage allUserMessage = new UserMessage();
+        allUserMessage.setUser(safariUser);
+
+
+        /* Set up messages*/
         messageForChromeUserForChromeDevice = new Message();
         messageForChromeUserForChromeDevice.setTitle("HELLO!");
         messageForChromeUserForChromeDevice.setMessage("hello world!");
-        messageForChromeUserForChromeDevice.setUsers(new ArrayList<User>() {{
-            add(chromeUser);
+        messageForChromeUserForChromeDevice.setUserMessages(new ArrayList<UserMessage>() {{
+            add(chromeUserAllDevMessage);
         }});
         messageForChromeUserForChromeDevice.setMediums(new HashSet<Medium>() {{
             add(chrome);
@@ -114,8 +122,8 @@ public class MessagesServiceTest {
         messageForChromeUserForSafariDevice = new Message();
         messageForChromeUserForSafariDevice.setTitle("HELLO!");
         messageForChromeUserForSafariDevice.setMessage("hello world!");
-        messageForChromeUserForSafariDevice.setUsers(new ArrayList<User>() {{
-            add(chromeUser);
+        messageForChromeUserForSafariDevice.setUserMessages(new ArrayList<UserMessage>() {{
+            add(chromeUserAllDevMessage);
         }});
         messageForChromeUserForSafariDevice.setMediums(new HashSet<Medium>() {{
             add(safari);
@@ -124,7 +132,7 @@ public class MessagesServiceTest {
         messageForAllUsersForChromeDevice = new Message();
         messageForAllUsersForChromeDevice.setTitle("HELLO!");
         messageForAllUsersForChromeDevice.setMessage("hello world!");
-        messageForAllUsersForChromeDevice.setUsers(new ArrayList<>());
+        messageForAllUsersForChromeDevice.setUserMessages(new ArrayList<>());
         messageForAllUsersForChromeDevice.setMediums(new HashSet<Medium>() {{
             add(chrome);
         }});
@@ -132,15 +140,10 @@ public class MessagesServiceTest {
         messageForAllUsersForAllDevices = new Message();
         messageForAllUsersForAllDevices.setTitle("HELLO!");
         messageForAllUsersForAllDevices.setMessage("hello world!");
-        messageForAllUsersForAllDevices.setUsers(new ArrayList<>());
+        messageForAllUsersForAllDevices.setUserMessages(new ArrayList<>());
         messageForAllUsersForAllDevices.setMediums(new HashSet<>());
 
-        */
-/*
-         * Set up mocks
-         *//*
-
-
+        /* Set up mocks*/
         when(userService.getUser(CHROME_USER_GUID)).thenReturn(chromeUser);
         when(userService.getUser(SAFARI_USER_GUID)).thenReturn(safariUser);
         when(userService.getAll()).thenReturn(new ArrayList<User>() {{
@@ -158,8 +161,6 @@ public class MessagesServiceTest {
     public void addMessagesTestChromeUserChromeDevice() {
         messagesService.addMessage(messageForChromeUserForChromeDevice);
 
-        assertTrue(chromeUser.getMessages().contains(messageForChromeUserForChromeDevice));
-
         verify(messageRepository, times(1)).save(messageForChromeUserForChromeDevice);
         verify(notifierService, times(1)).push(chrome, messageForChromeUserForChromeDevice, new ArrayList<String>() {{
             add(CHROME_TOKEN);
@@ -167,11 +168,7 @@ public class MessagesServiceTest {
     }
 
 
-    */
-/*
-     * No messages will be saved and sent if there are no users with specified medium
-     *//*
-
+    /* No messages will be saved and sent if there are no users with specified medium*/
     @Test
     public void addMessagesTestForChromeUserSafariDevice() {
         messagesService.addMessage(messageForChromeUserForSafariDevice);
@@ -179,33 +176,25 @@ public class MessagesServiceTest {
         verifyZeroInteractions(messageRepository);
         verifyZeroInteractions(notifierService);
 
-        assertTrue(chromeUser.getMessages() == null);
+        assertTrue(chromeUser.getUserMessages() == null);
     }
 
     @Test
     public void addMessagesTestForallUsersChromeDevice() {
         messagesService.addMessage(messageForAllUsersForChromeDevice);
 
-        assertTrue(chromeUser.getMessages().contains(messageForAllUsersForChromeDevice));
-
         verify(messageRepository, times(1)).save(messageForAllUsersForChromeDevice);
         verify(notifierService, times(1)).push(chrome, messageForAllUsersForChromeDevice, new ArrayList<String>() {{
             add(CHROME_TOKEN);
         }});
     }
-
-    */
-/*
+    /*
      * Message should be added for both chrome and safari users
      * NotifierService should be invoked twice, once for chrome, and once for safari
-     *//*
-
+     */
     @Test
     public void addMessagesTestForallUsersAllDevices() {
         messagesService.addMessage(messageForAllUsersForAllDevices);
-
-        assertTrue(chromeUser.getMessages().contains(messageForAllUsersForAllDevices));
-        assertTrue(safariUser.getMessages().contains(messageForAllUsersForAllDevices));
 
         verify(messageRepository, times(1)).save(messageForAllUsersForAllDevices);
 
@@ -216,7 +205,6 @@ public class MessagesServiceTest {
             add(SAFARI_TOKEN);
         }});
     }
-*/
 
 
 }

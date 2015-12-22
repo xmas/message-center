@@ -67,8 +67,7 @@ public class Zipper {
                 try {
                     manifest.put(completeFilename, SHASum(file));
                 } catch (NoSuchAlgorithmException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    logger.error("This system do not provide support for SHA hash algorithm");
                 }
             }
         } else {

@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xmas.exceptions.ZipCreationException;
 import com.xmas.notifiers.safari.WebsiteJsonEntity;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import static com.xmas.util.FileUtil.getResource;
 
@@ -17,8 +20,6 @@ import static com.xmas.util.FileUtil.getResource;
 public class ZipCreator {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-
-    private static final Logger logger = LogManager.getLogger(Zipper.class);
 
     @Autowired
     private WebsiteJsonEntity websiteJsonDefault;
@@ -29,23 +30,32 @@ public class ZipCreator {
     public byte[] create(Long userID) {
         try {
             Zipper zip = new Zipper();
-            zip.addFileToZip("icon.iconset", "icon_16x16.png", getResource("/safari/icons/icon_16x16.png"), true);
-            zip.addFileToZip("icon.iconset", "icon_16x16@2x.png", getResource("/safari/icons/icon_16x16@2x.png"), true);
-            zip.addFileToZip("icon.iconset", "icon_32x32.png", getResource("/safari/icons/icon_32x32.png"), true);
-            zip.addFileToZip("icon.iconset", "icon_32x32@2x.png", getResource("/safari/icons/icon_32x32@2x.png"), true);
-            zip.addFileToZip("icon.iconset", "icon_128x128.png", getResource("/safari/icons/icon_128x128.png"), true);
-            zip.addFileToZip("icon.iconset", "icon_128x128@2x.png", getResource("/safari/icons/icon_128x128@2x.png"), true);
-            zip.addFileToZip("", "website.json", getWebsiteJson(userID), true);
-            zip.addFileToZip("", "manifest.json", zip.getManifest(), false);
-
-            PICS7Encrypt encrypt = new PICS7Encrypt(getResource("/safari/ca.p12"), signaturePassword);
-            zip.addFileToZip("", "signature", encrypt.sign(zip.getManifest()), false);
-
+            addIcons(zip);
+            addJsonFiles(zip, userID);
+            addSignature(zip);
             return zip.finalizeZip();
-
         } catch (Exception e) {
             throw new ZipCreationException(e);
         }
+    }
+
+    private void addIcons(Zipper zip) throws IOException {
+        zip.addFileToZip("icon.iconset", "icon_16x16.png", getResource("/safari/icons/icon_16x16.png"), true);
+        zip.addFileToZip("icon.iconset", "icon_16x16@2x.png", getResource("/safari/icons/icon_16x16@2x.png"), true);
+        zip.addFileToZip("icon.iconset", "icon_32x32.png", getResource("/safari/icons/icon_32x32.png"), true);
+        zip.addFileToZip("icon.iconset", "icon_32x32@2x.png", getResource("/safari/icons/icon_32x32@2x.png"), true);
+        zip.addFileToZip("icon.iconset", "icon_128x128.png", getResource("/safari/icons/icon_128x128.png"), true);
+        zip.addFileToZip("icon.iconset", "icon_128x128@2x.png", getResource("/safari/icons/icon_128x128@2x.png"), true);
+    }
+
+    private void addJsonFiles(Zipper zip, Long userID) throws IOException {
+        zip.addFileToZip("", "website.json", getWebsiteJson(userID), true);
+        zip.addFileToZip("", "manifest.json", zip.getManifest(), false);
+    }
+
+    private void addSignature(Zipper zip) throws IOException, OperatorCreationException, GeneralSecurityException, CMSException {
+        PICS7Encrypt encrypt = new PICS7Encrypt(getResource("/safari/ca.p12"), signaturePassword);
+        zip.addFileToZip("", "signature", encrypt.sign(zip.getManifest()), false);
     }
 
     protected byte[] getWebsiteJson(Long userId) throws JsonProcessingException {
