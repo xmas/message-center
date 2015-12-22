@@ -1,7 +1,5 @@
 package com.xmas.notifiers.safari.pushpackage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.*;
@@ -23,8 +21,6 @@ import java.util.List;
 
 public class PICS7Encrypt {
 
-    private static final Logger logger = LogManager.getLogger(Zipper.class);
-
     private final byte[] certificate;
     private final String password;
 
@@ -44,32 +40,30 @@ public class PICS7Encrypt {
         return clientStore;
     }
 
-    private X509CertificateHolder getCert(KeyStore keystore, String aliaz) throws GeneralSecurityException, IOException {
-        java.security.cert.Certificate c = keystore.getCertificate(aliaz);
+    private X509CertificateHolder getCert(KeyStore keystore, String alias) throws GeneralSecurityException, IOException {
+        java.security.cert.Certificate c = keystore.getCertificate(alias);
         return new X509CertificateHolder(c.getEncoded());
     }
 
-    private PrivateKey getPrivateKey(KeyStore keystore, String aliaz) throws GeneralSecurityException, IOException {
-        return (PrivateKey) keystore.getKey(aliaz, password.toCharArray());
+    private PrivateKey getPrivateKey(KeyStore keystore, String alias) throws GeneralSecurityException, IOException {
+        return (PrivateKey) keystore.getKey(alias, password.toCharArray());
     }
 
     public byte[] sign(byte[] dataToSign) throws IOException, GeneralSecurityException, OperatorCreationException, CMSException {
         KeyStore clientStore = getKeystore();
-        if (clientStore == null) {
-            return null;
-        }
+        assert clientStore != null;
         Enumeration<String> aliases = clientStore.aliases();
-        String aliaz = "";
+        String alias = null;
         while (aliases.hasMoreElements()) {
-            aliaz = aliases.nextElement();
-            if (clientStore.isKeyEntry(aliaz)) {
+            alias = aliases.nextElement();
+            if (clientStore.isKeyEntry(alias)) {
                 break;
             }
         }
 
         CMSTypedData msg = new CMSProcessableByteArray(dataToSign); // Data to sign
 
-        X509CertificateHolder x509Certificate = getCert(clientStore, aliaz);
+        X509CertificateHolder x509Certificate = getCert(clientStore, alias);
         List<X509CertificateHolder> certList = new ArrayList<>();
         certList.add(x509Certificate); // Adding the X509 Certificate
 
@@ -77,14 +71,12 @@ public class PICS7Encrypt {
 
         CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
         // Initializing the the BC's Signer
-        ContentSigner sha1Signer = new JcaContentSignerBuilder("PKCS7").setProvider("BC").build(
-                getPrivateKey(clientStore, aliaz));
+        ContentSigner sha256Signer = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(
+                getPrivateKey(clientStore, alias));
 
         gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder()
-                .setProvider("BC").build()).build(sha1Signer, x509Certificate));
-        // adding the certificate
+                .setProvider("BC").build()).build(sha256Signer, x509Certificate));
         gen.addCertificates(certs);
-        // Getting the signed data
         CMSSignedData sigData = gen.generate(msg, false);
         return sigData.getEncoded();
     }
