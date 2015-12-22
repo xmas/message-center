@@ -4,13 +4,15 @@ import com.xmas.dao.MediumsRepository;
 import com.xmas.dao.MessageRepository;
 import com.xmas.dao.UserMessageRepository;
 import com.xmas.entity.*;
-import com.xmas.exceptions.NoSuchMessageException;
 import com.xmas.exceptions.NoSuchUserFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -47,11 +49,9 @@ public class MessagesService {
                 .collect(Collectors.toList());
     }
 
-    public void setRead(Long guid, Long id) {
-        Message message = messageRepository.get(id).orElseThrow(() -> new NoSuchMessageException(id));
-        userMessageRepository.save(message.getUserMessages().stream()
-                .filter(userMessage -> userMessage.getUser().getGuid().equals(guid))
-                .peek(userMessage1 -> userMessage1.setAccepted(true))
+    public void setRead(Long guid) {
+        userMessageRepository.save(userMessageRepository.getUnRead(guid).stream()
+                .peek(userMessage -> userMessage.setAccepted(true))
                 .collect(Collectors.toList()));
     }
 

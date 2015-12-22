@@ -8,7 +8,13 @@ self.addEventListener('push', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-    event.notification.close();
+
+    self.registration.getNotifications().then(function(notificationsList){
+        notificationsList.forEach(function(notification){
+            notification.close();
+        })
+    });
+
     setRead(event.notification.data.id);
 
     event.waitUntil(clients.matchAll({
@@ -33,7 +39,7 @@ self.addEventListener('message', function (evt) {
 function setRead(id) {
     if (id)
         getUserId(self.db).then(function (userId) {
-            fetch('users/' + userId + '/messages/v1/' + id, {
+            fetch('users/' + userId + '/messages/v1/', {
                 method: "POST"
             }).catch(function (e) {
                 console.log(e);
@@ -76,7 +82,7 @@ function showMessages(messages) {
 
         if(messagesCount > 0){
             var ids = [];
-            for(var i = 0; i < messagesCount; i++){
+            for(i = 0; i < messagesCount; i++){
                 ids.push(unshownMessages[i].id)
             }
             if(shown[2] && shown[2].data.ids){
