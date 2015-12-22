@@ -30,6 +30,9 @@ public class Message {
     private String icon;
 
     @Column
+    private LocalDateTime pushTime;
+
+    @Column
     private LocalDateTime created;
 
     @Column
@@ -99,6 +102,14 @@ public class Message {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public LocalDateTime getPushTime() {
+        return pushTime;
+    }
+
+    public void setPushTime(LocalDateTime pushTime) {
+        this.pushTime = pushTime;
     }
 
     public LocalDateTime getCreated() {
