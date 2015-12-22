@@ -57,17 +57,64 @@ function getMessages() {
 }
 
 function showMessages(messages) {
-    for(var i = 0; i < 2 && i < messages.length; i++){
-        showPlainNotification(messages[i]);
-    }
+    var shown;
 
-    var rest = messages.length - 2;
-    if(rest > 1){
-        showMoreNotification(messages[2], rest);
-    }else if(rest == 1){
-        showPlainNotification(messages[2]);
-    }
+    self.registration.getNotifications().then(function(notificationsList){
+        shown = notificationsList;
+        return messages.filter(function(message){
+            return ! notificationsList.some(function(notif){
+                return notif.data.id == message.id || (notif.data.ids && notif.data.ids.indexOf(message.id) >=0)
+            })
+        })
+    }).then(function(unshownMessages){
+        messagesCount = unshownMessages.length;
 
+        for(var i = 0; i < 2 - shown.length && i < unshownMessages.length; i++){
+            showPlainNotification(unshownMessages[i]);
+            messagesCount--;
+        }
+
+        if(messagesCount > 0){
+            var ids = [];
+            for(var i = 0; i < messagesCount; i++){
+                ids.push(unshownMessages[i].id)
+            }
+            if(shown[2] && shown[2].data.ids){
+                addToMore(shown[2], ids)
+            }else if(shown[2]){
+                ids.push(shown[2].data.id);
+                addToMore(shown[2], ids)
+            }else if(messagesCount > 1){
+                showMoreNotification(unshownMessages.slice(unshownMessages.length - messagesCount, unshownMessages.length), messagesCount);
+            }else if(messagesCount == 1){
+                showPlainNotification(unshownMessages[unshownMessages.length - 1]);
+            }
+        }
+
+    });
+}
+
+function addToMore(notif, ids){
+    var data = notif.data;
+    if(! data.ids) data.ids = [];
+
+    ids.forEach(function(id){
+        if(data.ids) {
+            data.ids.push(id)
+        }else{
+            data.ids = [data.id]
+        }
+    });
+
+    var title = 'And ' + data.ids.length + ' more ...';
+
+    show(title, {
+        body: '',
+        icon: notif.icon,
+        data: data
+    });
+
+    notif.close();
 }
 
 function showPlainNotification(message) {
@@ -82,15 +129,19 @@ function showPlainNotification(message) {
     });
 }
 
-function showMoreNotification(message, count) {
-    var title = 'And ' + count + ' more ...';
+function showMoreNotification(messages) {
+    var title = 'And ' + messages.length + ' more ...';
     var body = '';
-    var icon = message.icon;
+    var icon = messages[0].icon;
+    messages[0].ids = [];
+    messages.forEach(function(message){
+        messages[0].ids.push(message.id)
+    });
 
     show(title, {
         body: body,
         icon: icon,
-        data: message.id
+        data: messages[0]
     });
 }
 
