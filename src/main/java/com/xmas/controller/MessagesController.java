@@ -22,8 +22,8 @@ public class MessagesController {
     }
 
     @RequestMapping(value = "/messages/v1", method = RequestMethod.POST, consumes = "application/json")
-    public void addMessage(@RequestBody Message message){
-        messagesService.addMessage(message);
+    public void addMessage(@RequestBody List<Message> messages){
+        messages.forEach(messagesService::addMessage);
     }
 
     @RequestMapping(value = "users/{GUID}/messages/v1", method = RequestMethod.POST)
