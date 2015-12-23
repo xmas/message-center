@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xmas.entity.Message;
 import com.xmas.exceptions.NotificationSendingException;
-import com.xmas.notifiers.ISender;
-import com.xmas.notifiers.MessageSanderBuilder;
 import com.xmas.notifiers.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
