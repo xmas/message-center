@@ -4,6 +4,7 @@ import com.xmas.entity.Message;
 import com.xmas.exceptions.NotificationSendingException;
 import com.xmas.notifiers.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,16 @@ import java.util.List;
 public class EmailNotifier implements Notifier {
 
     @Autowired
-    TemplateEngine templateEngine;
+    private TemplateEngine templateEngine;
 
     @Autowired
-    JavaMailSender mailSender;
+    private JavaMailSender mailSender;
+
+    @Value("${mail.from}")
+    private String from;
+
+    @Value("${user.home}/.pushmessages/email/")
+    private String templatesDir;
 
     @Override
     public void pushMessage(Message message, List<String> emails) {
@@ -36,7 +43,7 @@ public class EmailNotifier implements Notifier {
             ctx.setVariable("text", message.getMessage());
             ctx.setVariable("image", message.getIcon());
 
-            final String htmlContent = this.templateEngine.process("template.html", ctx);
+            final String htmlContent = this.templateEngine.process(templatesDir + "template.html", ctx);
 
             MimeMessage mailMessage = mailSender.createMimeMessage();
 
@@ -44,10 +51,8 @@ public class EmailNotifier implements Notifier {
 
             helper.setText(htmlContent, true);
             helper.setSubject(message.getTitle());
-
-            helper.setFrom("vasyl.danyliuk.1@gmail.com");
             helper.setTo(email);
-            
+
             return mailMessage;
         } catch (MessagingException me) {
             throw new NotificationSendingException(me.getMessage());
