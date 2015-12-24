@@ -25,12 +25,15 @@ public class MessagesService {
     @Autowired
     private NotifierService notifierService;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private MediumsRepository mediumsRepository;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private MessageRepository messageRepository;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private UserMessageRepository userMessageRepository;
 
@@ -124,11 +127,15 @@ public class MessagesService {
         message.getMediums().forEach(medium -> {
             List<String> list = new ArrayList<>();
 
-            message.getUserMessages().stream()
-                    .map(UserMessage::getUser)
-                    .forEach(user -> user.getDevices().stream()
-                            .filter(device -> device.getMedium().equals(medium))
-                            .forEach(device -> list.add(device.getToken())));
+            if(medium.getName().equals(Medium.EMAIL)){
+                list.addAll(message.getEmails());
+            }else {
+                message.getUserMessages().stream()
+                        .map(UserMessage::getUser)
+                        .forEach(user -> user.getDevices().stream()
+                                .filter(device -> device.getMedium().equals(medium))
+                                .forEach(device -> list.add(device.getToken())));
+            }
 
             if (!list.isEmpty())
                 tokens.put(medium, list);

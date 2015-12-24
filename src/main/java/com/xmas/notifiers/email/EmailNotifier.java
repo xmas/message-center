@@ -40,7 +40,7 @@ public class EmailNotifier implements Notifier {
             MimeMessage mailMessage = mailSender.createMimeMessage();
             mailMessage.setSubject(message.getTitle());
             mailMessage.setText(message.getMessage());
-            mailMessage.setFrom(new InternetAddress("asdf@mail.com"));
+            mailMessage.setFrom(new InternetAddress("vasyl.danyliuk.1@gmail.com"));
             mailMessage.setRecipient(RecipientType.TO, new InternetAddress(email));
             return mailMessage;
         }catch (MessagingException me){

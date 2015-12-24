@@ -50,6 +50,9 @@ public class Message {
     @Column
     private boolean pushed;
 
+    @Transient
+    private List<String> emails;
+
     @ManyToMany
     @JoinTable(name = "messages_mediums",
             joinColumns = @JoinColumn(name = "messageId"),
@@ -174,5 +177,13 @@ public class Message {
 
     public void setPushed(boolean pushed) {
         this.pushed = pushed;
+    }
+
+    public List<String> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
     }
 }

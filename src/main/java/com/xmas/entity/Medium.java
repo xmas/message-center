@@ -19,6 +19,7 @@ public class Medium {
     public static final Map<String, Integer> IMPLEMENTED_MEDIUMS = new HashMap<String, Integer>(){{
             put(CHROME, 0);
             put(SAFARI, 1);
+            put(EMAIL, 2);
     }};
 
     public static final String VALIDATION_MESSAGE_TEMPLATE = "Medium ${validatedValue} is not implemented yet." +
