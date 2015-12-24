@@ -97,7 +97,7 @@ public class AppContext {
      */
     private TemplateResolver emailTemplateResolver() {
         TemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("/mail/");
+        templateResolver.setPrefix("/email/");
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setOrder(1);
         return templateResolver;

@@ -5,12 +5,12 @@ import com.xmas.exceptions.NotificationSendingException;
 import com.xmas.notifiers.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 
@@ -29,21 +29,27 @@ public class EmailNotifier implements Notifier {
     }
 
     MimeMessage prepareMessage(Message message, String email) {
-/*        final Context ctx = new Context(locale);
-        ctx.setVariable("name", recipientName);
-        ctx.setVariable("subscriptionDate", new Date());
-        ctx.setVariable("hobbies", Arrays.asList("Cinema", "Sports", "Music"));
-        ctx.setVariable("imageResourceName", imageResourceName); // so that we can reference it from HTML
-
-        final String htmlContent = this.templateEngine.process("email-inlineimage.html", ctx);*/
         try {
+            final Context ctx = new Context();
+            ctx.setVariable("title", message.getTitle());
+            ctx.setVariable("subtitle", message.getSubTitle());
+            ctx.setVariable("text", message.getMessage());
+            ctx.setVariable("image", message.getIcon());
+
+            final String htmlContent = this.templateEngine.process("template.html", ctx);
+
             MimeMessage mailMessage = mailSender.createMimeMessage();
-            mailMessage.setSubject(message.getTitle());
-            mailMessage.setText(message.getMessage());
-            mailMessage.setFrom(new InternetAddress("vasyl.danyliuk.1@gmail.com"));
-            mailMessage.setRecipient(RecipientType.TO, new InternetAddress(email));
+
+            MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, "utf8");
+
+            helper.setText(htmlContent, true);
+            helper.setSubject(message.getTitle());
+
+            helper.setFrom("vasyl.danyliuk.1@gmail.com");
+            helper.setTo(email);
+            
             return mailMessage;
-        }catch (MessagingException me){
+        } catch (MessagingException me) {
             throw new NotificationSendingException(me.getMessage());
         }
     }
