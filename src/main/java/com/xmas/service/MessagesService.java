@@ -61,6 +61,7 @@ public class MessagesService {
     public void addMessage(Message message) {
         message.setCreated(LocalDateTime.now());
 
+        saveMessage(message);
         processMessage(populateUsers(populateMediums(message)));
 
     }
@@ -127,7 +128,7 @@ public class MessagesService {
         message.getMediums().forEach(medium -> {
             List<String> list = new ArrayList<>();
 
-            if(medium.getName().equals(Medium.EMAIL)){
+            if(medium.getName().equals(Medium.EMAIL) && message.getEmails() != null && !message.getEmails().isEmpty()) {
                 list.addAll(message.getEmails());
             }else {
                 message.getUserMessages().stream()
@@ -141,11 +142,20 @@ public class MessagesService {
                 tokens.put(medium, list);
         });
 
-        if (!tokens.isEmpty()) {
-            messageRepository.save(message);
-            message.getUserMessages().stream().forEach(userMessageRepository::save);
+        tokens.forEach((medium, tokenList) -> notifierService.push(medium, message, tokenList));
+    }
 
-            tokens.forEach((medium, tokenList) -> notifierService.push(medium, message, tokenList));
+    private void saveMessage(Message message){
+        messageRepository.save(message);
+        if(message.getUserMessages() == null || message.getUserMessages().isEmpty()){
+            userService.getAll().stream()
+                    .map(user -> new UserMessage(user, message))
+                    .forEach(userMessageRepository::save);
+        }else {
+            message.getUserMessages().stream()
+                    .peek(userMessage -> userMessage.setUser(userService.getUser(userMessage.getUser().getGuid())))
+                    .peek(userMessage -> userMessage.setMessage(message))
+                    .forEach(userMessageRepository::save);
         }
 
     }

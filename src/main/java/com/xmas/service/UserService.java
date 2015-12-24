@@ -17,14 +17,20 @@ import java.util.List;
 @Service
 public class UserService {
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     UsersRepository usersRepository;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     DeviceRepository deviceRepository;
 
     @Autowired
     IPLocationProvider locationProvider;
+
+    public boolean exist(User user){
+        return usersRepository.getUserByGUID(user.getGuid()).isPresent();
+    }
 
     public List<User> getAll() {
         List<User> users = new ArrayList<>();

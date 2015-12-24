@@ -49,13 +49,7 @@ public class NotifierService {
         }
     }
 
-    /**
-     * Calculte peirod in seconds between now and {@param time} in future
-     * @return seconds between now and given time
-     * @throws IllegalArgumentException if time is before now
-     */
     private long calculateDelay(LocalDateTime time){
-        if(time.isBefore(LocalDateTime.now())) throw new IllegalArgumentException("Specified time can't be before now.");
         return Duration.between(LocalDateTime.now(), time).getSeconds();
     }
 }

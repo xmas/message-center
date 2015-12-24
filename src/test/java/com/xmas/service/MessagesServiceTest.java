@@ -161,6 +161,7 @@ public class MessagesServiceTest {
     public void addMessagesTestChromeUserChromeDevice() {
         messagesService.addMessage(messageForChromeUserForChromeDevice);
 
+        verify(userMessageRepository, times(1)).save(any(UserMessage.class));
         verify(messageRepository, times(1)).save(messageForChromeUserForChromeDevice);
         verify(notifierService, times(1)).push(chrome, messageForChromeUserForChromeDevice, new ArrayList<String>() {{
             add(CHROME_TOKEN);
@@ -168,21 +169,22 @@ public class MessagesServiceTest {
     }
 
 
-    /* No messages will be saved and sent if there are no users with specified medium*/
     @Test
     public void addMessagesTestForChromeUserSafariDevice() {
         messagesService.addMessage(messageForChromeUserForSafariDevice);
 
-        verifyZeroInteractions(messageRepository);
+        verify(userMessageRepository, times(1)).save(any(UserMessage.class));
+        verify(messageRepository, times(1)).save(any(Message.class));
         verifyZeroInteractions(notifierService);
 
         assertTrue(chromeUser.getUserMessages() == null);
     }
 
     @Test
-    public void addMessagesTestForallUsersChromeDevice() {
+    public void addMessagesTestForAllUsersChromeDevice() {
         messagesService.addMessage(messageForAllUsersForChromeDevice);
 
+        verify(userMessageRepository, times(2)).save(any(UserMessage.class));
         verify(messageRepository, times(1)).save(messageForAllUsersForChromeDevice);
         verify(notifierService, times(1)).push(chrome, messageForAllUsersForChromeDevice, new ArrayList<String>() {{
             add(CHROME_TOKEN);
@@ -193,8 +195,10 @@ public class MessagesServiceTest {
      * NotifierService should be invoked twice, once for chrome, and once for safari
      */
     @Test
-    public void addMessagesTestForallUsersAllDevices() {
+    public void addMessagesTestForAllUsersAllDevices() {
         messagesService.addMessage(messageForAllUsersForAllDevices);
+
+        verify(userMessageRepository, times(2)).save(any(UserMessage.class));
 
         verify(messageRepository, times(1)).save(messageForAllUsersForAllDevices);
 

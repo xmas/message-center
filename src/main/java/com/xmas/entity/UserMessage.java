@@ -22,6 +22,14 @@ public class UserMessage {
     @Column
     boolean accepted;
 
+    public UserMessage() {
+    }
+
+    public UserMessage(User user, Message message) {
+        this.user = user;
+        this.message = message;
+    }
+
     public Long getId() {
         return id;
     }
