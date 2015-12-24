@@ -3,6 +3,7 @@ package com.xmas.service;
 import com.xmas.entity.Medium;
 import com.xmas.entity.Message;
 import com.xmas.notifiers.chrome.ChromeNotifier;
+import com.xmas.notifiers.email.EmailNotifier;
 import com.xmas.notifiers.safari.SafariNotifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class NotifierService {
     SafariNotifier safariNotifier;
 
     @Autowired
+    EmailNotifier emailNotifier;
+
+    @Autowired
     ScheduledExecutorService executor;
 
     public void push(Medium medium, Message message, List<String> tokens){
@@ -41,6 +45,7 @@ public class NotifierService {
         switch (medium.getName()){
             case Medium.CHROME: chromeNotifier.pushMessage(message, tokens);break;
             case Medium.SAFARI: safariNotifier.pushMessage(message, tokens);break;
+            case Medium.EMAIL: emailNotifier.pushMessage(message, tokens);break;
         }
     }
 

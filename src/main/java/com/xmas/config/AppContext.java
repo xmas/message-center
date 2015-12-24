@@ -9,11 +9,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 import javax.persistence.ValidationMode;
 import javax.sql.DataSource;
@@ -63,7 +66,7 @@ public class AppContext {
 
 
     @Bean
-    MailSender mailSender(){
+    JavaMailSender mailSender(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         Properties mailProperties = new Properties();
@@ -80,6 +83,24 @@ public class AppContext {
         mailSender.setProtocol("smtp");
 
         return mailSender;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.addTemplateResolver(emailTemplateResolver());
+        return templateEngine;
+    }
+
+    /**
+     * THYMELEAF: Template Resolver for email templates.
+     */
+    private TemplateResolver emailTemplateResolver() {
+        TemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("/mail/");
+        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setOrder(1);
+        return templateResolver;
     }
 
     @Bean
@@ -115,8 +136,7 @@ public class AppContext {
         PropertyPlaceholderConfigurer props = new PropertyPlaceholderConfigurer();
         props.setLocations(new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/app.properties"),
                            new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/jdbc.properties"),
-                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/hibernate.properties"),
-                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/mail.properties"));
+                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/hibernate.properties"));
         return props;
     }
 

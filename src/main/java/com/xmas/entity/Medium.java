@@ -14,6 +14,7 @@ public class Medium {
 
     public static final String CHROME = "chrome";
     public static final String SAFARI = "safari";
+    public static final String EMAIL = "email";
 
     public static final Map<String, Integer> IMPLEMENTED_MEDIUMS = new HashMap<String, Integer>(){{
             put(CHROME, 0);

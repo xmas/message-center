@@ -54,7 +54,7 @@ public class MessageSanderBuilder {
                     System.out.println(s);
                 }
 
-                logger.info("Notification sended. Response code : " + responseCode + ". ResponseMessage : " + result);
+                logger.info("Notification sent. Response code : " + responseCode + ". ResponseMessage : " + result);
 
                 if (connection.getResponseCode() > 300) {
                     throw new NotificationSendingException(connection.getResponseMessage());
