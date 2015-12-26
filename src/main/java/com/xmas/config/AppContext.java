@@ -15,6 +15,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
@@ -88,17 +89,29 @@ public class AppContext {
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.addTemplateResolver(emailTemplateResolver());
+        templateEngine.addTemplateResolver(fileTemplateResolver());
+        templateEngine.addTemplateResolver(classpathTemplateResolver());
         return templateEngine;
     }
 
     /**
      * THYMELEAF: Template Resolver for email templates.
      */
-    private TemplateResolver emailTemplateResolver() {
+    private TemplateResolver fileTemplateResolver() {
         TemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setOrder(1);
+        return templateResolver;
+    }
+
+    /**
+     * THYMELEAF: Template Resolver for email templates.
+     */
+    private TemplateResolver classpathTemplateResolver() {
+        TemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("/email/");
+        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setOrder(2);
         return templateResolver;
     }
 

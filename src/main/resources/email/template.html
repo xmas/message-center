@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<!--suppress ALL -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${title}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
 <h3 th:text="${subtitle}"></h3>
 
 <div th:text="${text}"></div>
 
+<a th:href="${redirectUrl}">
+    <img th:src="${icon}"/>
+</a>
 <p>
-    <img src="sample.png" th:src="${image}" />
-</p>
-<p>
-    Regards, <br />
-    <em> Team</em>
+    Regards, <br/>
+    <em>Currentactions.com team</em>
 </p>
 </body>
 </html>

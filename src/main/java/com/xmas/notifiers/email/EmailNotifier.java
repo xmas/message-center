@@ -68,6 +68,10 @@ public class EmailNotifier implements Notifier {
     }
 
     private String prepareText(Message message){
-        return this.templateEngine.process(templatesDir + "template.html", prepareContext(message));
+        try {
+            return this.templateEngine.process(templatesDir + "template.html", prepareContext(message));
+        }catch (Exception e){
+            return this.templateEngine.process("template.html", prepareContext(message));
+        }
     }
 }
