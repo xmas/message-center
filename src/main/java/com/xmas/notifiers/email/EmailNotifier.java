@@ -18,6 +18,10 @@ import java.util.List;
 @Service
 public class EmailNotifier implements Notifier {
 
+    public static final boolean FORMAT_HTML = true;
+    public static final String DEFAULT_CHARSET = "utf8";
+
+
     @Autowired
     private TemplateEngine templateEngine;
 
@@ -30,6 +34,8 @@ public class EmailNotifier implements Notifier {
     @Value("${user.home}/.pushmessages/email/")
     private String templatesDir;
 
+
+
     @Override
     public void pushMessage(Message message, List<String> emails) {
         emails.forEach(email -> mailSender.send(prepareMessage(message, email)));
@@ -37,25 +43,31 @@ public class EmailNotifier implements Notifier {
 
     MimeMessage prepareMessage(Message message, String email) {
         try {
-            final Context ctx = new Context();
-            ctx.setVariable("title", message.getTitle());
-            ctx.setVariable("subtitle", message.getSubTitle());
-            ctx.setVariable("text", message.getMessage());
-            ctx.setVariable("image", message.getIcon());
-
-            final String htmlContent = this.templateEngine.process(templatesDir + "template.html", ctx);
-
             MimeMessage mailMessage = mailSender.createMimeMessage();
-
-            MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, "utf8");
-
-            helper.setText(htmlContent, true);
+            MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, DEFAULT_CHARSET);
+            helper.setText(prepareText(message), FORMAT_HTML);
             helper.setSubject(message.getTitle());
             helper.setTo(email);
 
             return mailMessage;
         } catch (MessagingException me) {
-            throw new NotificationSendingException(me.getMessage());
+            throw new NotificationSendingException("Can't create email message.", me);
         }
+    }
+
+    private Context prepareContext(Message message){
+        Context context = new Context();
+
+        context.setVariable("title", message.getTitle());
+        context.setVariable("subtitle", message.getSubTitle());
+        context.setVariable("text", message.getMessage());
+        context.setVariable("icon", message.getIcon());
+        context.setVariable("redirectUrl", message.getNotificationAppURL());
+
+        return context;
+    }
+
+    private String prepareText(Message message){
+        return this.templateEngine.process(templatesDir + "template.html", prepareContext(message));
     }
 }
