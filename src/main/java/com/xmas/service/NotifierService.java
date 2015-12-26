@@ -8,8 +8,10 @@ import com.xmas.notifiers.safari.SafariNotifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +51,7 @@ public class NotifierService {
         }
     }
 
-    private long calculateDelay(LocalDateTime time){
-        return Duration.between(LocalDateTime.now(), time).getSeconds();
+    protected long calculateDelay(ZonedDateTime time){
+        return Duration.between(LocalDateTime.now(Clock.systemUTC()), time).getSeconds();
     }
 }

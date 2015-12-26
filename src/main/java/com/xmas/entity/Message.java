@@ -5,6 +5,7 @@ import com.xmas.json.UserMessageJsonDeserializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class Message {
     private String icon;
 
     @Column
-    private LocalDateTime pushTime;
+    private ZonedDateTime pushTime;
 
     @Column
     private LocalDateTime created;
@@ -107,11 +108,11 @@ public class Message {
         this.icon = icon;
     }
 
-    public LocalDateTime getPushTime() {
+    public ZonedDateTime getPushTime() {
         return pushTime;
     }
 
-    public void setPushTime(LocalDateTime pushTime) {
+    public void setPushTime(ZonedDateTime pushTime) {
         this.pushTime = pushTime;
     }
 
