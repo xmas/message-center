@@ -48,3 +48,9 @@
    It will be used for creating html emails for user. Example of template.html in resources.
    Placeholders used in this example can be used in different html tags.
    If template.html will be not found there default will be used
+
+
+ # R integration
+  Install R if not installed yet: sudo apt-get install r-base
+  Install rserve if not installed yet: sudo apt-get install r-cran-rserve
+
