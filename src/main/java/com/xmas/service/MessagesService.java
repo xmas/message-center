@@ -39,9 +39,16 @@ public class MessagesService {
 
 
     public List<Message> getMessages(Long GUID, Predicate<Message> filter) {
-        List<Message> result = new ArrayList<>();
-        userService.getUser(GUID).getUserMessages().stream().map(UserMessage::getMessage).filter(filter).forEach(result::add);
-        return result;
+        return userService.getUser(GUID)
+                .getUserMessages().stream()
+                .map(UserMessage::getMessage)
+                .filter(filter)
+                .sorted((m1, m2) -> m1.getCreated().isBefore(m2.getCreated()) ? -1 : 1)
+                .collect(Collectors.toList());
+    }
+
+    public void deleteMessage(Long id){
+        messageRepository.delete(id);
     }
 
     public List<Message> getUnread(Long GUID) {

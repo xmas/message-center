@@ -26,6 +26,11 @@ public class MessagesController {
         messages.forEach(messagesService::addMessage);
     }
 
+    @RequestMapping(value = "users/{GUID}/messages/v1/{id}",method = RequestMethod.DELETE)
+    public void deleteMessage(@PathVariable Long GUID, @PathVariable Long id){
+        messagesService.deleteMessage(id);
+    }
+
     @RequestMapping(value = "users/{GUID}/messages/v1", method = RequestMethod.POST)
     public void read(@PathVariable Long GUID){
         messagesService.setRead(GUID);
