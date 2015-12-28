@@ -1,7 +1,7 @@
 package com.xmas.R.service;
 
-import com.xmas.R.entity.Script;
 import com.xmas.dao.ScriptRepository;
+import com.xmas.entity.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,16 @@ public class RService {
     @Autowired
     ScriptRepository scriptRepository;
 
-    public void saveScript(Script script){
+    public Iterable<Script> getScripts(){
+        return scriptRepository.findAll();
+    }
 
+    public Script getScript(Integer id){
+        return scriptRepository.findOne(id);
+    }
+
+    public void saveScript(Script script){
+        scriptRepository.save(script);
     }
 
     protected String loadScript(String scriptName) throws IOException {
