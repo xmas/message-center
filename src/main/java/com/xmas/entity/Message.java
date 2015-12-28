@@ -63,7 +63,7 @@ public class Message {
 
     @OneToMany(mappedBy = "message")
     @JsonDeserialize(using = UserMessageJsonDeserializer.class)
-    private List<UserMessage> userMessages;
+    private List<UserMessage> users;
 
     public Message() {
     }
@@ -164,12 +164,12 @@ public class Message {
         this.mediums = mediums;
     }
 
-    public List<UserMessage> getUserMessages() {
-        return userMessages;
+    public List<UserMessage> getUsers() {
+        return users;
     }
 
-    public void setUserMessages(List<UserMessage> userMessages) {
-        this.userMessages = userMessages;
+    public void setUsers(List<UserMessage> users) {
+        this.users = users;
     }
 
     public boolean isPushed() {

@@ -112,7 +112,7 @@ public class MessagesServiceTest {
         messageForChromeUserForChromeDevice = new Message();
         messageForChromeUserForChromeDevice.setTitle("HELLO!");
         messageForChromeUserForChromeDevice.setMessage("hello world!");
-        messageForChromeUserForChromeDevice.setUserMessages(new ArrayList<UserMessage>() {{
+        messageForChromeUserForChromeDevice.setUsers(new ArrayList<UserMessage>() {{
             add(chromeUserAllDevMessage);
         }});
         messageForChromeUserForChromeDevice.setMediums(new HashSet<Medium>() {{
@@ -122,7 +122,7 @@ public class MessagesServiceTest {
         messageForChromeUserForSafariDevice = new Message();
         messageForChromeUserForSafariDevice.setTitle("HELLO!");
         messageForChromeUserForSafariDevice.setMessage("hello world!");
-        messageForChromeUserForSafariDevice.setUserMessages(new ArrayList<UserMessage>() {{
+        messageForChromeUserForSafariDevice.setUsers(new ArrayList<UserMessage>() {{
             add(chromeUserAllDevMessage);
         }});
         messageForChromeUserForSafariDevice.setMediums(new HashSet<Medium>() {{
@@ -132,7 +132,7 @@ public class MessagesServiceTest {
         messageForAllUsersForChromeDevice = new Message();
         messageForAllUsersForChromeDevice.setTitle("HELLO!");
         messageForAllUsersForChromeDevice.setMessage("hello world!");
-        messageForAllUsersForChromeDevice.setUserMessages(new ArrayList<>());
+        messageForAllUsersForChromeDevice.setUsers(new ArrayList<>());
         messageForAllUsersForChromeDevice.setMediums(new HashSet<Medium>() {{
             add(chrome);
         }});
@@ -140,7 +140,7 @@ public class MessagesServiceTest {
         messageForAllUsersForAllDevices = new Message();
         messageForAllUsersForAllDevices.setTitle("HELLO!");
         messageForAllUsersForAllDevices.setMessage("hello world!");
-        messageForAllUsersForAllDevices.setUserMessages(new ArrayList<>());
+        messageForAllUsersForAllDevices.setUsers(new ArrayList<>());
         messageForAllUsersForAllDevices.setMediums(new HashSet<>());
 
         /* Set up mocks*/

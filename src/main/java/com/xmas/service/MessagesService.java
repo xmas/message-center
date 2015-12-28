@@ -74,10 +74,10 @@ public class MessagesService {
     }
 
     private Message populateUsers(Message message) {
-        if (message.getUserMessages() == null || message.getUserMessages().isEmpty()) {
-            message.setUserMessages(filterUsersThatDoNotHasRequiredMediums(message, userService.getAll()));
+        if (message.getUsers() == null || message.getUsers().isEmpty()) {
+            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, userService.getAll()));
         } else {
-            message.setUserMessages(filterUsersThatDoNotHasRequiredMediums(message, message.getUserMessages().stream()
+            message.setUsers(filterUsersThatDoNotHasRequiredMediums(message, message.getUsers().stream()
                     .map(UserMessage::getUser)
                     .map(User::getGuid)
                     .<User>map(guid -> {
@@ -131,7 +131,7 @@ public class MessagesService {
             if(medium.getName().equals(Medium.EMAIL) && message.getEmails() != null && !message.getEmails().isEmpty()) {
                 list.addAll(message.getEmails());
             }else {
-                message.getUserMessages().stream()
+                message.getUsers().stream()
                         .map(UserMessage::getUser)
                         .forEach(user -> user.getDevices().stream()
                                 .filter(device -> device.getMedium().equals(medium))
@@ -147,12 +147,12 @@ public class MessagesService {
 
     private void saveMessage(Message message){
         messageRepository.save(message);
-        if(message.getUserMessages() == null || message.getUserMessages().isEmpty()){
+        if(message.getUsers() == null || message.getUsers().isEmpty()){
             userService.getAll().stream()
                     .map(user -> new UserMessage(user, message))
                     .forEach(userMessageRepository::save);
         }else {
-            message.getUserMessages().stream()
+            message.getUsers().stream()
                     .peek(userMessage -> userMessage.setUser(userService.getUser(userMessage.getUser().getGuid())))
                     .peek(userMessage -> userMessage.setMessage(message))
                     .forEach(userMessageRepository::save);
