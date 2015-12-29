@@ -1,7 +1,6 @@
 package com.xmas.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "scripts")
@@ -14,9 +13,9 @@ public class Script {
     private String scriptFileName;
     @ElementCollection
     @CollectionTable(name = "script_args")
-    private List<String> arguments;
+    private String inputFileName;
     @Column
-    private String outFileName;
+    private String outputFileName;
 
     public Integer getId() {
         return id;
@@ -34,19 +33,19 @@ public class Script {
         this.scriptFileName = scriptFileName;
     }
 
-    public List<String> getArguments() {
-        return arguments;
+    public String getInputFileName() {
+        return inputFileName;
     }
 
-    public void setArguments(List<String> arguments) {
-        this.arguments = arguments;
+    public void setInputFileName(String inputFileName) {
+        this.inputFileName = inputFileName;
     }
 
-    public String getOutFileName() {
-        return outFileName;
+    public String getOutputFileName() {
+        return outputFileName;
     }
 
-    public void setOutFileName(String outFileName) {
-        this.outFileName = outFileName;
+    public void setOutputFileName(String outputFileName) {
+        this.outputFileName = outputFileName;
     }
 }
