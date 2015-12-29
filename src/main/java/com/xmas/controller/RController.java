@@ -4,6 +4,7 @@ import com.xmas.R.service.RService;
 import com.xmas.entity.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/R/")
@@ -23,8 +24,8 @@ public class RController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public void addScript(@RequestBody Script script){
-        rService.saveScript(script);
+    public Script addScript(@RequestParam("file") MultipartFile file){
+        return rService.createScript(file);
     }
 
     public void evaluate(){

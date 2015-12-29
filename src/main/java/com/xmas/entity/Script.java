@@ -10,12 +10,16 @@ public class Script {
     @GeneratedValue
     private Integer id;
     @Column
-    private String scriptFileName;
-    @ElementCollection
-    @CollectionTable(name = "script_args")
-    private String inputFileName;
+    private String name;
     @Column
-    private String outputFileName;
+    private String scriptFileName;
+
+    public Script() {
+    }
+
+    public Script(String scriptFileName) {
+        this.scriptFileName = scriptFileName;
+    }
 
     public Integer getId() {
         return id;
@@ -25,27 +29,19 @@ public class Script {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getScriptFileName() {
         return scriptFileName;
     }
 
     public void setScriptFileName(String scriptFileName) {
         this.scriptFileName = scriptFileName;
-    }
-
-    public String getInputFileName() {
-        return inputFileName;
-    }
-
-    public void setInputFileName(String inputFileName) {
-        this.inputFileName = inputFileName;
-    }
-
-    public String getOutputFileName() {
-        return outputFileName;
-    }
-
-    public void setOutputFileName(String outputFileName) {
-        this.outputFileName = outputFileName;
     }
 }
