@@ -2,6 +2,7 @@ package com.xmas.R.service;
 
 import com.xmas.dao.ScriptRepository;
 import com.xmas.entity.Script;
+import com.xmas.exceptions.ScriptEvaluationExceprion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,10 @@ import java.io.InputStreamReader;
 public class RService {
 
     @Autowired
-    RConnectionManager connectionManager;
+    ScriptEvaluatorService scriptEvaluator;
+
+    @Autowired
+    RequestDirectoriesProcessor directoriesProcessor;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -32,12 +36,24 @@ public class RService {
         scriptRepository.save(script);
     }
 
+    public String evaluateScript(Integer id){
+        String requestDirectory = directoriesProcessor.createDirectoriesForRequest().getPath();
+        String script = loadScript(scriptRepository.findOne(id).getScriptFileName());
 
+        scriptEvaluator.evaluateScript(script, requestDirectory);
 
-    protected String loadScript(String scriptName) throws IOException {
-        InputStream scriptResourceStream = this.getClass().getResource(scriptName).openStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(scriptResourceStream));
-        return reader.lines().reduce((acum, str) -> acum + "\n" + str).get();
+        return requestDirectory;
+    }
+
+    protected String loadScript(String scriptName){
+        try {
+            InputStream scriptResourceStream = this.getClass().getResource(scriptName).openStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(scriptResourceStream));
+            return reader.lines().reduce((acum, str) -> acum + "\n" + str).get();
+        }catch (IOException ioe){
+            throw new ScriptEvaluationExceprion(ioe);
+        }
+
     }
 
 
