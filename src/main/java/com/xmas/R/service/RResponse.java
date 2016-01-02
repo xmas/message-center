@@ -3,7 +3,6 @@ package com.xmas.R.service;
 import java.util.List;
 
 public class RResponse {
-    private String error;
     private String directory;
     private List<String> files;
 
@@ -14,18 +13,6 @@ public class RResponse {
     public RResponse(String directory, List<String> files) {
         this.directory = directory;
         this.files = files;
-    }
-
-    public RResponse(String error) {
-        this.error = error;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 
     public String getDirectory() {

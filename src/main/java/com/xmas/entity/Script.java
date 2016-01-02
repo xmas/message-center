@@ -13,6 +13,9 @@ public class Script {
     private String name;
     @Column
     private String scriptFileName;
+    @Column
+    private String description;
+
 
     public Script() {
     }
@@ -43,5 +46,13 @@ public class Script {
 
     public void setScriptFileName(String scriptFileName) {
         this.scriptFileName = scriptFileName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

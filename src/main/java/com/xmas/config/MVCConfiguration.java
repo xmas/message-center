@@ -2,25 +2,17 @@ package com.xmas.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
-
-import java.util.List;
 
 @Configuration
 @EnableWebMvc
 public class MVCConfiguration extends WebMvcConfigurerAdapter {
 
-    @Override
+/*    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/r/**").addResourceLocations("/r/");
-    }
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> converters) {
-        converters.add(new PageableHandlerMethodArgumentResolver());
-    }
+        registry.addResourceHandler("/R/data*//*//*output*//*.*").addResourceLocations("/R/data");
+    }*/
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {

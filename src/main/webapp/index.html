@@ -3,8 +3,9 @@
 <head>
     <title>title</title>
     <link rel="manifest" href="manifest.json">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="jquery.min.js"></script>
     <script src="index.js"></script>
+    <script src="scripts.js"></script>
 
 </head>
 <body>
@@ -29,5 +30,15 @@
 
 </form>
 
+<button class="getScripts" onclick="getScripts()">Get scripts</button>
+
+<form action="/push/R/" id="evForm" method="post" enctype="multipart/form-data" onsubmit="evalScripts()">
+    <input type="file" name="input">
+    <input type="text" name="id" id="scriptId">
+    <input type="submit" name="submit">
+</form>
+
+
+<ul id="scripts"></ul>
 </body>
 </html>

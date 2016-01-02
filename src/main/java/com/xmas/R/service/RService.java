@@ -52,20 +52,28 @@ public class RService {
         return script;
     }
 
-    public String evaluateScript(Integer id){
+    public String evaluateScript(Integer id, MultipartFile input){
         String requestDirectory = directoriesProcessor.createDirectoriesForRequest().getPath();
-        String script = loadScript(scriptRepository.findOne(id).getScriptFileName());
 
+        saveInputFile(requestDirectory, input);
+
+        String script = loadScript(scriptRepository.findOne(id).getScriptFileName());
         scriptEvaluator.evaluateScript(script, requestDirectory);
 
-        return requestDirectory;
+        return retrieveFinalDir(requestDirectory);
+    }
+
+    private String retrieveFinalDir(String fullPath){
+        String[] path = fullPath.split("/");
+        return path[path.length-1];
     }
 
     protected String loadScript(String scriptName){
         try {
-            InputStream scriptResourceStream = this.getClass().getResource(scriptName).openStream();
+            String appBaseFolder = servletContext.getRealPath("/");
+            InputStream scriptResourceStream = new FileInputStream(appBaseFolder + SCRIPTS_DIRECTORY + scriptName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(scriptResourceStream));
-            return reader.lines().reduce((acum, str) -> acum + "\n" + str).get();
+            return reader.lines().reduce((res, str) -> res + "\n" + str).get();
         }catch (IOException ioe){
             throw new ScriptEvaluationExceprion(ioe);
         }
@@ -80,16 +88,22 @@ public class RService {
     protected void saveScriptFile(String fileName, MultipartFile file){
         String appBaseFolder = servletContext.getRealPath("/");
         File scriptFile = new File(appBaseFolder + SCRIPTS_DIRECTORY + fileName);
+        saveFile(scriptFile, file);
+    }
+
+    protected void saveInputFile(String dir, MultipartFile file){
+        File inputFile = new File(dir + "/input/input.txt");
+        saveFile(inputFile, file);
+    }
+
+    private void saveFile(File outFile, MultipartFile file){
         try {
-            FileUtils.writeByteArrayToFile(scriptFile, file.getBytes());
+            FileUtils.writeByteArrayToFile(outFile, file.getBytes());
         }catch (IOException ioe){
             logger.error(ioe.getMessage());
             logger.debug(ioe.getMessage(), ioe);
             throw new ProcessingException("Cant save file.");
         }
-
-
     }
-
 
 }

@@ -22,7 +22,7 @@ public class RequestDirectoriesProcessor {
     private Random random = new Random();
 
     public File createDirectoriesForRequest(){
-        String baseDirName = servletContext.getRealPath("/") + getDirectoryName();
+        String baseDirName = servletContext.getRealPath("R/data/") + getDirectoryName();
         File baseDir = new File(baseDirName);
         if(!baseDir.mkdir()) throw new DirCreationException(baseDirName);
         File input = new File(baseDirName + INPUT_DIR_NAME);
