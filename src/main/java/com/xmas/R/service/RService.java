@@ -20,7 +20,7 @@ public class RService {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public static final String SCRIPTS_DIRECTORY = "/r/scripts/";
+    public static final String SCRIPTS_DIRECTORY = "/R/scripts/";
 
     @Autowired
     ServletContext servletContext;
@@ -87,7 +87,6 @@ public class RService {
             logger.debug(ioe.getMessage(), ioe);
             throw new ProcessingException("Cant save file.");
         }
-
 
 
     }

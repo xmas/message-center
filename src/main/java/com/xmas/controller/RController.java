@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/R/")
+@RequestMapping("/R")
 public class RController {
 
     @Autowired
@@ -24,7 +24,7 @@ public class RController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Script addScript(@RequestParam("file") MultipartFile file){
+    public Script addScript(@RequestParam MultipartFile file){
         return rService.createScript(file);
     }
 
