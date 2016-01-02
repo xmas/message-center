@@ -9,10 +9,10 @@ import org.springframework.web.servlet.config.annotation.*;
 @EnableWebMvc
 public class MVCConfiguration extends WebMvcConfigurerAdapter {
 
-/*    @Override
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/R/data*//*//*output*//*.*").addResourceLocations("/R/data");
-    }*/
+        registry.addResourceHandler("/R/data/**").addResourceLocations("classpath:/R/data/");
+    }
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {

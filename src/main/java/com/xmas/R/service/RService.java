@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.Random;
 
@@ -21,9 +20,6 @@ public class RService {
     private static final Logger logger = LogManager.getLogger();
 
     public static final String SCRIPTS_DIRECTORY = "/R/scripts/";
-
-    @Autowired
-    ServletContext servletContext;
 
     @Autowired
     ScriptEvaluatorService scriptEvaluator;
@@ -70,7 +66,7 @@ public class RService {
 
     protected String loadScript(String scriptName){
         try {
-            String appBaseFolder = servletContext.getRealPath("/");
+            String appBaseFolder = this.getClass().getResource("/").getPath();
             InputStream scriptResourceStream = new FileInputStream(appBaseFolder + SCRIPTS_DIRECTORY + scriptName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(scriptResourceStream));
             return reader.lines().reduce((res, str) -> res + "\n" + str).get();
@@ -86,7 +82,7 @@ public class RService {
     }
 
     protected void saveScriptFile(String fileName, MultipartFile file){
-        String appBaseFolder = servletContext.getRealPath("/");
+        String appBaseFolder = this.getClass().getResource("/").getPath();
         File scriptFile = new File(appBaseFolder + SCRIPTS_DIRECTORY + fileName);
         saveFile(scriptFile, file);
     }

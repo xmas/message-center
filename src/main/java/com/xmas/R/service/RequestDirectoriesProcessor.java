@@ -1,10 +1,8 @@
 package com.xmas.R.service;
 
 import com.xmas.exceptions.DirCreationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,13 +14,10 @@ public class RequestDirectoriesProcessor {
     public static final String INPUT_DIR_NAME = "/input";
     public static final String OUTPUT_DIR_NAME = "/output";
 
-    @Autowired
-    ServletContext servletContext;
-
     private Random random = new Random();
 
     public File createDirectoriesForRequest(){
-        String baseDirName = servletContext.getRealPath("R/data/") + getDirectoryName();
+        String baseDirName = this.getClass().getResource("/R/data/").getPath() + getDirectoryName();
         File baseDir = new File(baseDirName);
         if(!baseDir.mkdir()) throw new DirCreationException(baseDirName);
         File input = new File(baseDirName + INPUT_DIR_NAME);

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -16,9 +16,6 @@ public class RController {
 
     @Autowired
     RService rService;
-
-    @Autowired
-    ServletContext context;
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Script> getScripts(){
@@ -40,8 +37,8 @@ public class RController {
         return rService.evaluateScript(id, input);
     }
 
-    @RequestMapping(value = "/data/{dir}/output", method = RequestMethod.GET)
-    public List<String> getFiles(@PathVariable String dir){
-        return FileUtil.getFiles(context.getRealPath("R/data/" + dir + "/output"));
+    @RequestMapping(value = {"/data/{dir}", "/data/{dir}/output", "/data/{dir}/input"}, method = RequestMethod.GET)
+    public List<String> getFiles(HttpServletRequest request){
+        return FileUtil.getFiles(this.getClass().getResource(request.getServletPath()).getPath());
     }
 }
