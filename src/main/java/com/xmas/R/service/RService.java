@@ -39,10 +39,11 @@ public class RService {
         return scriptRepository.findOne(id);
     }
 
-    public Script createScript(MultipartFile file){
+    public Script createScript(MultipartFile file, String name, String description){
         String scriptFileName = generateScriptFileName(file.getOriginalFilename());
         Script script = new Script(scriptFileName);
-        script.setName(file.getOriginalFilename());
+        script.setName(name);
+        script.setDescription(description);
         saveScriptFile(scriptFileName, file);
         scriptRepository.save(script);
         return script;

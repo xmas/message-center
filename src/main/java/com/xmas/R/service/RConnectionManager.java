@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,7 +15,8 @@ public class RConnectionManager {
     public static final String R_SERVE_HOST = "localhost";
     public static final int R_SERVE_PORT = 6311;
 
-    public static final String R_START_COMMAND = "R CMD Rserve --no-save";
+    @Value("${rserve.bin.path}")
+    private String RSERVE_HOME_BIN;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -41,7 +43,7 @@ public class RConnectionManager {
 
     private synchronized void startRserve() {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(R_START_COMMAND.split(" "));
+            ProcessBuilder processBuilder = new ProcessBuilder(("R CMD " + RSERVE_HOME_BIN + " --no-save").split(" "));
             Process process = processBuilder.start();
             System.out.println(process.waitFor());
         } catch (InterruptedException e) {

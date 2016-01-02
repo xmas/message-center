@@ -25,19 +25,21 @@
 
 <hr>
 <form action="/push/R/" method="post" enctype="multipart/form-data">
-    <input type="file" name="file">
+    <label for="scriptFile">Script file</label>
+    <input type="file" id="scriptFile" name="file" title="Script file">
     <input type="submit" name="submit">
 
 </form>
 
-<button class="getScripts" onclick="getScripts()">Get scripts</button>
-
 <form action="/push/R/" id="evForm" method="post" enctype="multipart/form-data" onsubmit="evalScripts()">
-    <input type="file" name="input">
+    <label for="inputFile">Input file</label>
+    <input type="file" id="inputFile" name="input" title="Input file">
+    <label for="scriptId">Script id</label>
     <input type="text" name="id" id="scriptId">
     <input type="submit" name="submit">
 </form>
 
+<button class="getScripts" onclick="getScripts()">Get scripts</button>
 
 <ul id="scripts"></ul>
 </body>

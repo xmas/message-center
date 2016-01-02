@@ -28,8 +28,10 @@ public class RController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Script addScript(@RequestParam MultipartFile file){
-        return rService.createScript(file);
+    public Script addScript(@RequestParam MultipartFile file,
+                            @RequestParam(required = false, defaultValue = "script") String name,
+                            @RequestParam(required = false, defaultValue = "") String description){
+        return rService.createScript(file, name, description);
     }
 
     @RequestMapping(value = "/{id}/evaluate", method = RequestMethod.POST)
