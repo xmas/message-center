@@ -85,7 +85,7 @@ function unSubscribe() {
 
 function sendNotification() {
     if(!getUserId()) return;
-    var data = {
+    var data = [{
         "message": "Hello world!",
         "title": "Hello",
         "subTitle": "Hi",
@@ -96,7 +96,7 @@ function sendNotification() {
         "messageType": "Alert",
         "mediums": [{"name": "chrome"}],
         "users": [{"guid": getUserId()}]
-    };
+    }];
 
     jQuery.ajax({
         url: 'messages/v1',
