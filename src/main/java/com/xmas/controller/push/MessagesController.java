@@ -1,7 +1,7 @@
 package com.xmas.controller.push;
 
 import com.xmas.entity.push.Message;
-import com.xmas.service.MessagesService;
+import com.xmas.service.push.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

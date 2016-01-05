@@ -1,7 +1,7 @@
 package com.xmas.util;
 
 import com.xmas.exceptions.NotFoundException;
-import com.xmas.exceptions.ResourceNotFoundException;
+import com.xmas.exceptions.push.ResourceNotFoundException;
 
 import java.io.File;
 import java.io.IOException;

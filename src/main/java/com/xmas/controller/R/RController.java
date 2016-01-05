@@ -1,6 +1,6 @@
 package com.xmas.controller.R;
 
-import com.xmas.R.service.RService;
+import com.xmas.service.R.RService;
 import com.xmas.entity.R.Script;
 import com.xmas.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;

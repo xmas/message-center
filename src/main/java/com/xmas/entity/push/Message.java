@@ -1,7 +1,7 @@
 package com.xmas.entity.push;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.xmas.json.UserMessageJsonDeserializer;
+import com.xmas.util.json.UserMessageJsonDeserializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
