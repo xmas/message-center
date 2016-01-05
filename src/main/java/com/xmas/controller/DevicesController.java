@@ -1,6 +1,6 @@
 package com.xmas.controller;
 
-import com.xmas.entity.Device;
+import com.xmas.entity.push.Device;
 import com.xmas.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

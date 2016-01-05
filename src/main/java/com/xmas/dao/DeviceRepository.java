@@ -1,6 +1,6 @@
 package com.xmas.dao;
 
-import com.xmas.entity.Device;
+import com.xmas.entity.push.Device;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

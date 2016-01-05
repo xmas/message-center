@@ -3,7 +3,7 @@ package com.xmas.service;
 import com.xmas.dao.MediumsRepository;
 import com.xmas.dao.MessageRepository;
 import com.xmas.dao.UserMessageRepository;
-import com.xmas.entity.*;
+import com.xmas.entity.push.*;
 import com.xmas.exceptions.NoSuchUserFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.xmas.controller;
 
-import com.xmas.entity.Device;
-import com.xmas.entity.Medium;
-import com.xmas.entity.User;
+import com.xmas.entity.push.Device;
+import com.xmas.entity.push.Medium;
+import com.xmas.entity.push.User;
 import com.xmas.notifiers.safari.SafariLogJSONEntity;
 import com.xmas.notifiers.safari.pushpackage.ZipCreator;
 import com.xmas.service.UserService;

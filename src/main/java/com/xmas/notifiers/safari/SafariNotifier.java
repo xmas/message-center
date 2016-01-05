@@ -3,7 +3,7 @@ package com.xmas.notifiers.safari;
 import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 import com.notnoop.apns.ReconnectPolicy;
-import com.xmas.entity.Message;
+import com.xmas.entity.push.Message;
 import com.xmas.notifiers.Notifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

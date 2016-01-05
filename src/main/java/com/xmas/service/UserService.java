@@ -2,8 +2,8 @@ package com.xmas.service;
 
 import com.xmas.dao.DeviceRepository;
 import com.xmas.dao.UsersRepository;
-import com.xmas.entity.Device;
-import com.xmas.entity.User;
+import com.xmas.entity.push.Device;
+import com.xmas.entity.push.User;
 import com.xmas.exceptions.NoSuchDeviceFound;
 import com.xmas.exceptions.NoSuchUserFoundException;
 import com.xmas.exceptions.UserAlreadyPresentedException;

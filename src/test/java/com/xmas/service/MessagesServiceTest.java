@@ -3,7 +3,7 @@ package com.xmas.service;
 import com.xmas.dao.MediumsRepository;
 import com.xmas.dao.MessageRepository;
 import com.xmas.dao.UserMessageRepository;
-import com.xmas.entity.*;
+import com.xmas.entity.push.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

@@ -1,6 +1,6 @@
 package com.xmas.notifiers.email;
 
-import com.xmas.entity.Message;
+import com.xmas.entity.push.Message;
 import com.xmas.exceptions.NotificationSendingException;
 import com.xmas.notifiers.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;

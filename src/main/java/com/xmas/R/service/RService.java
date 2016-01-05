@@ -1,7 +1,7 @@
 package com.xmas.R.service;
 
 import com.xmas.dao.ScriptRepository;
-import com.xmas.entity.Script;
+import com.xmas.entity.R.Script;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.ScriptEvaluationExceprion;
 import org.apache.commons.io.FileUtils;

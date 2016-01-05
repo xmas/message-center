@@ -1,6 +1,6 @@
 package com.xmas.dao;
 
-import com.xmas.entity.User;
+import com.xmas.entity.push.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

@@ -1,6 +1,6 @@
 package com.xmas.notifiers;
 
-import com.xmas.entity.Message;
+import com.xmas.entity.push.Message;
 
 import java.util.List;
 

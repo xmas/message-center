@@ -1,4 +1,4 @@
-package com.xmas.entity;
+package com.xmas.entity.R;
 
 import javax.persistence.*;
 

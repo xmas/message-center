@@ -1,7 +1,7 @@
 package com.xmas.service;
 
-import com.xmas.entity.Medium;
-import com.xmas.entity.Message;
+import com.xmas.entity.push.Medium;
+import com.xmas.entity.push.Message;
 import com.xmas.notifiers.chrome.ChromeNotifier;
 import com.xmas.notifiers.email.EmailNotifier;
 import com.xmas.notifiers.safari.SafariNotifier;

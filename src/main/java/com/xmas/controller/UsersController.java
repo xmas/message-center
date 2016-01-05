@@ -1,6 +1,6 @@
 package com.xmas.controller;
 
-import com.xmas.entity.User;
+import com.xmas.entity.push.User;
 import com.xmas.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

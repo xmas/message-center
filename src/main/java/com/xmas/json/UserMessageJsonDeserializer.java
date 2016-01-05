@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.xmas.entity.User;
-import com.xmas.entity.UserMessage;
+import com.xmas.entity.push.User;
+import com.xmas.entity.push.UserMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
