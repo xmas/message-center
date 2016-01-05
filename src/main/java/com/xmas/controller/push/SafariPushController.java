@@ -1,4 +1,4 @@
-package com.xmas.controller;
+package com.xmas.controller.push;
 
 import com.xmas.entity.push.Device;
 import com.xmas.entity.push.Medium;

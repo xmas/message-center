@@ -1,4 +1,4 @@
-package com.xmas.controller;
+package com.xmas.controller.push;
 
 import com.xmas.entity.push.Message;
 import com.xmas.service.MessagesService;

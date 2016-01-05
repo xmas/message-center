@@ -1,4 +1,4 @@
-package com.xmas.controller;
+package com.xmas.controller.push;
 
 import com.xmas.dao.MediumsRepository;
 import com.xmas.entity.push.Medium;

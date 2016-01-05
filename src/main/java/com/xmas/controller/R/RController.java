@@ -1,4 +1,4 @@
-package com.xmas.controller;
+package com.xmas.controller.R;
 
 import com.xmas.R.service.RService;
 import com.xmas.entity.R.Script;
