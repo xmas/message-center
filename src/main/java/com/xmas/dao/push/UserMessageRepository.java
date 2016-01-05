@@ -1,4 +1,4 @@
-package com.xmas.dao;
+package com.xmas.dao.push;
 
 import com.xmas.entity.push.UserMessage;
 import org.springframework.data.jpa.repository.Query;

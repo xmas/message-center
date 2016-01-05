@@ -1,8 +1,8 @@
 package com.xmas.service;
 
-import com.xmas.dao.MediumsRepository;
-import com.xmas.dao.MessageRepository;
-import com.xmas.dao.UserMessageRepository;
+import com.xmas.dao.push.MediumsRepository;
+import com.xmas.dao.push.MessageRepository;
+import com.xmas.dao.push.UserMessageRepository;
 import com.xmas.entity.push.*;
 import com.xmas.exceptions.NoSuchUserFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

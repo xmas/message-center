@@ -1,6 +1,6 @@
 package com.xmas.controller.push;
 
-import com.xmas.dao.MediumsRepository;
+import com.xmas.dao.push.MediumsRepository;
 import com.xmas.entity.push.Medium;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

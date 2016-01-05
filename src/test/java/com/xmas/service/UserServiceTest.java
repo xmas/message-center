@@ -1,7 +1,7 @@
 package com.xmas.service;
 
-import com.xmas.dao.DeviceRepository;
-import com.xmas.dao.UsersRepository;
+import com.xmas.dao.push.DeviceRepository;
+import com.xmas.dao.push.UsersRepository;
 import com.xmas.entity.push.Device;
 import com.xmas.entity.push.Medium;
 import com.xmas.entity.push.User;
