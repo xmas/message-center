@@ -1,4 +1,4 @@
-package com.xmas.notifiers;
+package com.xmas.notifiers.chrome;
 
 import com.xmas.exceptions.NotificationSendingException;
 import org.apache.logging.log4j.LogManager;
@@ -49,12 +49,12 @@ public class MessageSanderBuilder {
 
                 InputStream stream = (InputStream) connection.getContent();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                String s = null;
+                String s;
                 while ((s = reader.readLine()) != null){
                     System.out.println(s);
                 }
 
-                logger.info("Notification sended. Response code : " + responseCode + ". ResponseMessage : " + result);
+                logger.info("Notification sent. Response code : " + responseCode + ". ResponseMessage : " + result);
 
                 if (connection.getResponseCode() > 300) {
                     throw new NotificationSendingException(connection.getResponseMessage());

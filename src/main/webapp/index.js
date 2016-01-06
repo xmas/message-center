@@ -1,12 +1,19 @@
-var chromePushManager;
+var pushManager;
 var subscripted;
 $(document).ready(function () {
-    var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-    if (!is_chrome) {
-        alert("No can do ... this demo requires Chrome 42+");
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+        addPushManagerScript('./ChromePushManager.js')
+    }else if('safari' in window){
+        addPushManagerScript("./SafariPushManager.js" )
     }
-
 });
+
+function addPushManagerScript(scriptUrl){
+    var script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = scriptUrl;
+    $("head").append( script );
+}
 
 function getUserId(){
     var expr = /^\d+$/;
@@ -18,15 +25,23 @@ function getUserId(){
 }
 
 function addUser(){
+    if(!getUserId()) return;
     jQuery.ajax({
         url: 'users/' + getUserId(),
         method: 'PUT',
-        contentType: "application/json"
+        contentType: "application/json",
+        success: function(){
+            alert("New user created");
+        },
+        error: function(e){
+            alert(e.responseText);
+        }
     });
 }
 
 function subscribe() {
-    chromePushManager = new ChromePushManager('./service-worker.js', function (error, registrationId) {
+    if(!getUserId()) return;
+    pushManager = new PushManager('./service-worker.js', function (error, registrationId) {
         if (error) {
             alert(error);
             console.log(error)
@@ -36,17 +51,41 @@ function subscribe() {
             $('.subscribe').prop("disabled", true);
             $('.unsubscribe').prop("disabled", false);
         }
+    }, getUserId());
+}
+
+function getUsers(){
+    $('#users').empty();
+    jQuery.ajax({
+        url: 'users',
+        method: 'GET',
+        contentType: "application/json",
+        success: function(data){
+            data.forEach(function(user){
+                $('#users').append('<li>' + user.guid + '</li>')
+            })
+        },
+        error: function (data) {
+            console.log('Error while sending to server: ' + data);
+        }
     });
 }
 
 function unSubscribe() {
-    chromePushManager.unSubscribe();
-    $('.subscribe').prop("disabled", false);
-    $('.unsubscribe').prop("disabled", true);
+    if(!getUserId()) return;
+    if(pushManager) {
+        pushManager.removeSubscription(removeSubscriptionFromServer);
+    }else{
+        pushManager = new PushManager('./service-worker.js', function(){}, getUserId());
+        pushManager.removeSubscription(removeSubscriptionFromServer);
+    }
+        $('.subscribe').prop("disabled", false);
+        $('.unsubscribe').prop("disabled", true);
 }
 
 function sendNotification() {
-    var data = {
+    if(!getUserId()) return;
+    var data = [{
         "message": "Hello world!",
         "title": "Hello",
         "subTitle": "Hi",
@@ -57,7 +96,7 @@ function sendNotification() {
         "messageType": "Alert",
         "mediums": [{"name": "chrome"}],
         "users": [{"guid": getUserId()}]
-    };
+    }];
 
     jQuery.ajax({
         url: 'messages/v1',
@@ -82,6 +121,37 @@ function sendSubscriptionToServer(subscriptionId) {
         method: 'POST',
         data: JSON.stringify(data),
         contentType: "application/json",
+        error: function (data) {
+            console.log('Error while sending to server: ' + data);
+        }
+    });
+}
+
+function removeSubscriptionFromServer(subscriptionId) {
+    jQuery.ajax({
+        url: 'users/' + getUserId() + '/devices/'+ subscriptionId,
+        method: 'DELETE',
+        contentType: "application/json",
+        success: function(){
+            alert("Subscription was deleted")
+        },
+        error: function (data) {
+            console.log('Error while sending to server: ' + data);
+        }
+    });
+}
+
+function getDevices(){
+    $('#devices').empty();
+    jQuery.ajax({
+        url: 'users/' + getUserId() + '/devices',
+        method: 'GET',
+        contentType: "application/json",
+        success: function(data){
+            data.forEach(function(device){
+                $('#devices').append('<li>' + device.medium.name + '-' + device.ip + ':' + device.location +'</li>')
+            })
+        },
         error: function (data) {
             console.log('Error while sending to server: ' + data);
         }

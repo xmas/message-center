@@ -3,22 +3,44 @@
 <head>
     <title>title</title>
     <link rel="manifest" href="manifest.json">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="jquery.cookie.js"></script>
-    <script src="ChromePushManager.js"></script>
+    <script src="jquery.min.js"></script>
     <script src="index.js"></script>
-    <script src="service-worker.js"></script>
+    <script src="scripts.js"></script>
 
 </head>
 <body>
+<label for="userGUID">Set up user Id</label>
 <input type="text" id="userGUID">
 <button class="adduser" onclick="addUser()">Add user</button>
 
 <button class="getusers" onclick="getUsers()">Get users</button>
+<button class="getdevices" onclick="getDevices()">Get devices</button>
 
 <button class="subscribe" onclick="subscribe()">Subscribe</button>
 <button class="unsubscribe" onclick="unSubscribe()">Unsubscribe</button>
 <button class="sendNotification" onclick="sendNotification()">Notify</button>
 
+<ul id="users"></ul>
+<ul id="devices"></ul>
+
+<hr>
+<form action="/push/R/" method="post" enctype="multipart/form-data">
+    <label for="scriptFile">Script file</label>
+    <input type="file" id="scriptFile" name="file" title="Script file">
+    <input type="submit" name="submit">
+
+</form>
+
+<form action="/push/R/" id="evForm" method="post" enctype="multipart/form-data" onsubmit="evalScripts()">
+    <label for="inputFile">Input file</label>
+    <input type="file" id="inputFile" name="input" title="Input file">
+    <label for="scriptId">Script id</label>
+    <input type="text" name="id" id="scriptId">
+    <input type="submit" name="submit">
+</form>
+
+<button class="getScripts" onclick="getScripts()">Get scripts</button>
+
+<ul id="scripts"></ul>
 </body>
 </html>

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public Iterable<User> getUsers(){

@@ -1,12 +1,17 @@
 package com.xmas.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.xmas.json.UserMessageJsonDeserializer;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "messages")
+@SuppressWarnings("UnusedDeclaration")
 public class Message {
 
     @Id
@@ -26,6 +31,9 @@ public class Message {
     private String icon;
 
     @Column
+    private ZonedDateTime pushTime;
+
+    @Column
     private LocalDateTime created;
 
     @Column
@@ -41,7 +49,10 @@ public class Message {
     private String messageType;
 
     @Column
-    private boolean accepted;
+    private boolean pushed;
+
+    @Transient
+    private List<String> emails;
 
     @ManyToMany
     @JoinTable(name = "messages_mediums",
@@ -50,11 +61,9 @@ public class Message {
     @Column(name = "medium", nullable = false)
     private Set<Medium> mediums;
 
-    @ManyToMany
-    @JoinTable(name = "user_message",
-            joinColumns = @JoinColumn(name = "messageId"),
-            inverseJoinColumns = @JoinColumn(name = "userId"))
-    private List<User> users;
+    @OneToMany(mappedBy = "message")
+    @JsonDeserialize(using = UserMessageJsonDeserializer.class)
+    private List<UserMessage> users;
 
     public Message() {
     }
@@ -97,6 +106,14 @@ public class Message {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public ZonedDateTime getPushTime() {
+        return pushTime;
+    }
+
+    public void setPushTime(ZonedDateTime pushTime) {
+        this.pushTime = pushTime;
     }
 
     public LocalDateTime getCreated() {
@@ -147,19 +164,27 @@ public class Message {
         this.mediums = mediums;
     }
 
-    public List<User> getUsers() {
+    public List<UserMessage> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(List<UserMessage> users) {
         this.users = users;
     }
 
-    public boolean isAccepted() {
-        return accepted;
+    public boolean isPushed() {
+        return pushed;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public void setPushed(boolean pushed) {
+        this.pushed = pushed;
+    }
+
+    public List<String> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
     }
 }

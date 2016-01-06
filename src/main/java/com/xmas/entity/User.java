@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@SuppressWarnings("UnusedDeclaration")
 public class User {
 
     @Id
@@ -26,9 +27,9 @@ public class User {
     @JsonIgnore
     private List<Device> devices;
 
-    @ManyToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private List<Message> messages;
+    private List<UserMessage> userMessages;
 
     public Integer getId() {
         return id;
@@ -54,12 +55,12 @@ public class User {
         this.devices = devices;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<UserMessage> getUserMessages() {
+        return userMessages;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setUserMessages(List<UserMessage> userMessages) {
+        this.userMessages = userMessages;
     }
 
     public String getName() {

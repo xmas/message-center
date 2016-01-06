@@ -1,4 +1,4 @@
-package com.xmas.notifiers;
+package com.xmas.notifiers.chrome;
 
 public interface ISender {
 

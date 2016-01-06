@@ -8,4 +8,12 @@ public class NotificationSendingException extends ProcessingException{
     public NotificationSendingException(String message) {
         super(message);
     }
+
+    public NotificationSendingException(Throwable cause) {
+        super(cause);
+    }
+
+    public NotificationSendingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

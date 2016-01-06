@@ -9,9 +9,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 import javax.persistence.ValidationMode;
 import javax.sql.DataSource;
@@ -23,7 +29,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.xmas")
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.xmas.dao")
-@Import({MVCConfiguration.class})
+@Import({MVCConfiguration.class, SchedulerConfig.class})
 public class AppContext {
 
     @Value("${jdbc.driver}")
@@ -31,9 +37,9 @@ public class AppContext {
     @Value("${jdbc.host}")
     private String host;
     @Value("${jdbc.user}")
-    private String user;
+    private String dbUser;
     @Value("${jdbc.password}")
-    private String pass;
+    private String dbPassword;
 
     @Value("${hibernate.show_sql}")
     private String showSql;
@@ -41,6 +47,15 @@ public class AppContext {
     private String dialect;
     @Value("${hibernate.hbm2ddl.auto}")
     private String hbm2ddl;
+
+    @Value("${mail.host}")
+    private String mailServerHost;
+    @Value("${mail.port}")
+    private Integer mailServerPort;
+    @Value("${mail.user}")
+    private String mailServerUser;
+    @Value("${mail.password}")
+    private String mailServerPassword;
 
     private Properties hibernateProperties(){
         Properties properties = new Properties();
@@ -52,12 +67,61 @@ public class AppContext {
 
 
     @Bean
+    JavaMailSender mailSender(){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+        Properties mailProperties = new Properties();
+        mailProperties.setProperty("mail.smtp.auth", "true");
+        mailProperties.setProperty("mail.smtp.starttls.enable", "true");
+        mailProperties.setProperty("mail.smtp.auth", "true");
+
+        mailSender.setJavaMailProperties(mailProperties);
+        mailSender.setDefaultEncoding("utf8");
+        mailSender.setHost(mailServerHost);
+        mailSender.setPort(mailServerPort);
+        mailSender.setUsername(mailServerUser);
+        mailSender.setPassword(mailServerPassword);
+        mailSender.setProtocol("smtp");
+
+        return mailSender;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.addTemplateResolver(fileTemplateResolver());
+        templateEngine.addTemplateResolver(classpathTemplateResolver());
+        return templateEngine;
+    }
+
+    /**
+     * THYMELEAF: Template Resolver for email templates.
+     */
+    private TemplateResolver fileTemplateResolver() {
+        TemplateResolver templateResolver = new FileTemplateResolver();
+        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setOrder(1);
+        return templateResolver;
+    }
+
+    /**
+     * THYMELEAF: Template Resolver for email templates.
+     */
+    private TemplateResolver classpathTemplateResolver() {
+        TemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("/email/");
+        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setOrder(2);
+        return templateResolver;
+    }
+
+    @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driver);
         dataSource.setUrl(host);
-        dataSource.setUsername(user);
-        dataSource.setPassword(pass);
+        dataSource.setUsername(dbUser);
+        dataSource.setPassword(dbPassword);
         return dataSource;
     }
 

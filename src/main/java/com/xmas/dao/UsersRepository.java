@@ -12,4 +12,7 @@ public interface UsersRepository extends CrudRepository<User, Long>{
 
     @Query("SELECT user from User user WHERE user.name = ?1")
     Optional<User> getUserByName(String name);
+
+    @Query("DELETE FROM User user WHERE user.guid=?1")
+    void delete(Long GUID);
 }

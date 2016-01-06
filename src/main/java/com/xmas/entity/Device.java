@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "devices")
+@SuppressWarnings("UnusedDeclaration")
 public class Device {
 
     @Id
@@ -21,6 +22,12 @@ public class Device {
     @Column(unique = true)
     @NotNull(message = "Token for devise must be presented.")
     private String token;
+
+    @Column
+    private String ip;
+
+    @Column
+    private String location;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -49,6 +56,22 @@ public class Device {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public User getUser() {

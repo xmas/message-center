@@ -1,5 +1,7 @@
 package com.xmas.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -7,6 +9,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import java.io.File;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -24,6 +27,11 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         entityManagerInView.setInitParameter("entityManagerFactoryBeanName", "entityManagerFactory");
         entityManagerInView.setInitParameter("flushMode", "AUTO");
         entityManagerInView.addMappingForUrlPatterns(null, true, "/*");
+
+        LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+        File file = new File(System.getProperty("user.home")+ "/.pushmessages/properties/log4j2.xml");
+        if(file.exists())
+            context.setConfigLocation(file.toURI());
     }
 
     @Override
@@ -39,6 +47,10 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     @Override
     protected String[] getServletMappings() {
         return new String[] {"/"};
+    }
+
+    private void initLogging(){
+
     }
 
 }

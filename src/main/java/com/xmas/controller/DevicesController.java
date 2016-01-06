@@ -5,12 +5,14 @@ import com.xmas.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/users/{GUID}/devices")
 public class DevicesController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Device> getDevices(@PathVariable Long GUID){
@@ -23,13 +25,13 @@ public class DevicesController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public void addDevice(@PathVariable Long GUID, @RequestBody Device device){
-        userService.addDevice(device, GUID);
+    public void addDevice(@PathVariable Long GUID, @RequestBody Device device, HttpServletRequest request){
+        userService.addDevice(device, GUID, request.getRemoteAddr());
     }
 
-    @RequestMapping(value = "/{deviceId}", method = RequestMethod.DELETE)
-    public void deleteDevice(@PathVariable Long GUID, @PathVariable Integer deviceId){
-        userService.deleteDevice(GUID, deviceId);
+    @RequestMapping(value = "/{token}", method = RequestMethod.DELETE)
+    public void deleteDevice(@PathVariable Long GUID, @PathVariable String token){
+        userService.deleteDevice(GUID, token);
     }
 
 }
