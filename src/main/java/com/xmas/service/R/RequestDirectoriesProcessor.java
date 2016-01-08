@@ -1,11 +1,10 @@
 package com.xmas.service.R;
 
 import com.xmas.exceptions.R.DirCreationException;
+import com.xmas.util.RandomNamesUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Service
@@ -28,14 +27,7 @@ public class RequestDirectoriesProcessor {
     }
 
     protected String getDirectoryName(){
-        LocalDateTime dateTime = LocalDateTime.now();
-        String timePart = dateTime.format(DateTimeFormatter.ofPattern("YYMMddhhmmss"));
-        Integer randomPart = random.nextInt(10000000);
-        return toHex(timePart + randomPart);
-    }
-
-    protected String toHex(String digits){
-        return Long.toHexString(Long.valueOf(digits));
+        return RandomNamesUtil.getRandomName();
     }
 
 }

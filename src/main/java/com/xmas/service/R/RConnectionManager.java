@@ -16,7 +16,7 @@ public class RConnectionManager {
     public static final int R_SERVE_PORT = 6311;
 
     @Value("${rserve.bin.path}")
-    private String RSERVE_HOME_BIN;
+    private String rserveHomeBin;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -43,7 +43,7 @@ public class RConnectionManager {
 
     private synchronized void startRserve() {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(("R CMD " + RSERVE_HOME_BIN + " --no-save").split(" "));
+            ProcessBuilder processBuilder = new ProcessBuilder(("R CMD " + rserveHomeBin + " --no-save").split(" "));
             Process process = processBuilder.start();
             System.out.println(process.waitFor());
         } catch (InterruptedException e) {
@@ -55,5 +55,13 @@ public class RConnectionManager {
             logger.error(e.getMessage());
             logger.debug(e.getMessage(), e);
         }
+    }
+
+    public String getRserveHomeBin() {
+        return rserveHomeBin;
+    }
+
+    public void setRserveHomeBin(String rserveHomeBin) {
+        this.rserveHomeBin = rserveHomeBin;
     }
 }

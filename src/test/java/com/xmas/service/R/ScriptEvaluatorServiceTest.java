@@ -31,6 +31,7 @@ public class ScriptEvaluatorServiceTest {
         dir = "/media/vdanyliuk/PROGRAMING/PROJECTS/UpWork/message-service/target/test-classes/R/data/123456";
 
         connectionManager = new RConnectionManager();
+        connectionManager.setRserveHomeBin("/usr/lib/R/site-library/Rserve/libs//Rserve");
         evaluatorService.setConnectionManager(connectionManager);
     }
 
