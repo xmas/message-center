@@ -4,6 +4,7 @@ import com.xmas.dao.R.ScriptRepository;
 import com.xmas.entity.R.Script;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.R.ScriptEvaluationExceprion;
+import com.xmas.util.RandomNamesUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Random;
 
 @Service
 public class RService {
@@ -77,9 +77,10 @@ public class RService {
     }
 
     protected String generateScriptFileName(String rawName){
-        Random random = new Random();
-
-        return rawName + "_" + random.nextLong();
+        return rawName.substring(0, rawName.lastIndexOf(".")) +
+                "_" +
+                RandomNamesUtil.getRandomName() +
+                rawName.substring(rawName.lastIndexOf("."));
     }
 
     protected void saveScriptFile(String fileName, MultipartFile file){

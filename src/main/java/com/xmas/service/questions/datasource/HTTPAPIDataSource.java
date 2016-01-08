@@ -1,14 +1,21 @@
 package com.xmas.service.questions.datasource;
 
 import com.xmas.exceptions.ProcessingException;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 public class HTTPAPIDataSource implements DataSource{
 
@@ -26,26 +33,28 @@ public class HTTPAPIDataSource implements DataSource{
     public byte[] getData() {
         try {
             return loadData();
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             logger.error(e.getMessage());
             logger.debug(e.getMessage(), e);
             throw new ProcessingException(EXCEPTION_MESSAGE + apiPath);
         }
     }
 
-    private byte[] loadData() throws IOException {
+    private byte[] loadData() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpEntity responseEntity = requestData().getEntity();
-        int dataLength = (int) responseEntity.getContentLength();
-        byte[] result = new byte[dataLength];
-
-        if(responseEntity.getContent().read(result, 0, dataLength) != dataLength)
-            throw new ProcessingException(EXCEPTION_MESSAGE + apiPath);
-
-        return result;
+        return readContent(responseEntity.getContent());
     }
 
-    private HttpResponse requestData() throws IOException {
-        HttpResponse res = new DefaultHttpClient().execute(new HttpGet(apiPath));
+    private byte[] readContent(InputStream stream) throws IOException {
+        return IOUtils.toByteArray(stream);
+    }
+
+    private HttpResponse requestData() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        HttpClient client = HttpClientBuilder.create().setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, (c, s) -> true).build())
+                .build();
+
+        HttpResponse res = client
+                .execute(new HttpGet(apiPath));
         if(res != null)
             return res;
         else throw new ProcessingException(EXCEPTION_MESSAGE + apiPath);
