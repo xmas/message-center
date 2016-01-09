@@ -1,6 +1,7 @@
 package com.xmas.service.questions.datasource;
 
 import com.xmas.exceptions.ProcessingException;
+import com.xmas.service.questions.DataSource;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,7 +18,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-public class HTTPAPIDataSource implements DataSource{
+public class HTTPAPIDataSource implements DataSource {
 
     private static final String EXCEPTION_MESSAGE = "Cant read response data from API: ";
 

@@ -1,7 +1,7 @@
 package com.xmas.service.questions.data;
 
 import com.xmas.exceptions.ProcessingException;
-import com.xmas.service.questions.datasource.DataSource;
+import com.xmas.service.questions.QuestionData;
 import com.xmas.util.RandomNamesUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public abstract class FileQuestionData implements QuestionData {
+public abstract class FileQuestionData implements QuestionData<String> {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -18,28 +18,22 @@ public abstract class FileQuestionData implements QuestionData {
 
     private String filePath;
 
-    private DataSource dataSource;
-
     @Override
     public DataType getType() {
         return DataType.FILE;
     }
 
     @Override
-    public void evaluateDailyData() {
-        saveFile();
+    public String evaluateData(byte[] data) {
+        saveFile(data);
+        return filePath;
     }
 
-    @Override
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    private void saveFile() {
+    private void saveFile(byte[] data) {
         filePath = dataDirPath + "/" + RandomNamesUtil.getRandomName() + getFileExtension();
         File file = new File(filePath);
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            outputStream.write(dataSource.getData());
+            outputStream.write(data);
         } catch (IOException e) {
             logger.error(e.getMessage());
             logger.debug(e.getMessage(), e);

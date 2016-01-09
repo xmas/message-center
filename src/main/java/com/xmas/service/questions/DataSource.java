@@ -1,4 +1,4 @@
-package com.xmas.service.questions.datasource;
+package com.xmas.service.questions;
 
 public interface DataSource {
     byte[] getData();
