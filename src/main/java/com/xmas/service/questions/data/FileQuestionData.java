@@ -1,7 +1,6 @@
 package com.xmas.service.questions.data;
 
 import com.xmas.exceptions.ProcessingException;
-import com.xmas.service.questions.QuestionData;
 import com.xmas.util.RandomNamesUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,28 +8,26 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public abstract class FileQuestionData implements QuestionData<String> {
+public abstract class FileQuestionData {
 
     private static final Logger logger = LogManager.getLogger();
 
     private String dataDirPath;
 
-    private String filePath;
-
-    @Override
-    public DataType getType() {
-        return DataType.FILE;
-    }
-
-    @Override
-    public String evaluateData(byte[] data) {
+    public void evaluateData(byte[] data) {
+        prepareDirectory();
         saveFile(data);
-        return filePath;
     }
 
     private void saveFile(byte[] data) {
-        filePath = dataDirPath + "/" + RandomNamesUtil.getRandomName() + getFileExtension();
+        String filePath = dataDirPath + "/" + RandomNamesUtil.getRandomName() + ".dat";
         File file = new File(filePath);
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(data);
@@ -41,6 +38,55 @@ public abstract class FileQuestionData implements QuestionData<String> {
         }
     }
 
+    private void prepareDirectory() {
+        File questionDir = new File(dataDirPath);
+        if (!questionDir.exists()) {
+            createQuestionDirectory(questionDir);
+        } else {
+            packagePreviousFiles(questionDir);
+        }
+    }
+
+    private void createQuestionDirectory(File directory) {
+        if (!directory.mkdirs()) {
+            throw new ProcessingException("Can't create directory for question data");
+        }
+    }
+
+    private void packagePreviousFiles(File directory) {
+        List<File> files = Stream.of(directory.listFiles())
+                .filter(File::isFile)
+                .collect(Collectors.toList());
+
+        if(!files.isEmpty()){
+            moveFiles(files, createDailyPackageDir(directory));
+        }
+    }
+
+    private File createDailyPackageDir(File parentDir) {
+        String dailyDirName = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("ddMMyyyy"));
+
+        File dailyDr = parentDir.toPath().resolve(dailyDirName).toFile();
+
+        if (dailyDr.mkdir())
+            return dailyDr;
+        else
+            throw new ProcessingException("Can't create directory for old question data");
+    }
+
+    private void moveFiles(List<File> files, File destinationDirectory){
+        files.stream().forEach(file -> {
+            try {
+                Files.move( file.toPath(),
+                            destinationDirectory
+                                    .toPath()
+                                    .resolve(file.toPath().getFileName().toString()));
+            } catch (IOException e) {
+                throw new ProcessingException("Can't move old files");
+            }
+        });
+    }
+
     public String getDataDirPath() {
         return dataDirPath;
     }
@@ -48,6 +94,4 @@ public abstract class FileQuestionData implements QuestionData<String> {
     public void setDataDirPath(String dataDirPath) {
         this.dataDirPath = dataDirPath;
     }
-
-    public abstract String getFileExtension();
 }
