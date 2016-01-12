@@ -2,10 +2,9 @@ package com.xmas.service.R;
 
 import com.xmas.dao.R.ScriptRepository;
 import com.xmas.entity.R.Script;
-import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.R.ScriptEvaluationExceprion;
+import com.xmas.util.FileUtil;
 import com.xmas.util.RandomNamesUtil;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,22 +85,13 @@ public class RService {
     protected void saveScriptFile(String fileName, MultipartFile file){
         String appBaseFolder = this.getClass().getResource("/").getPath();
         File scriptFile = new File(appBaseFolder + SCRIPTS_DIRECTORY + fileName);
-        saveFile(scriptFile, file);
+        FileUtil.saveUploadedFile(scriptFile, file);
     }
 
     protected void saveInputFile(String dir, MultipartFile file){
         File inputFile = new File(dir + "/input/input.txt");
-        saveFile(inputFile, file);
+        FileUtil.saveUploadedFile(inputFile, file);
     }
 
-    private void saveFile(File outFile, MultipartFile file){
-        try {
-            FileUtils.writeByteArrayToFile(outFile, file.getBytes());
-        }catch (IOException ioe){
-            logger.error(ioe.getMessage());
-            logger.debug(ioe.getMessage(), ioe);
-            throw new ProcessingException("Cant save file.");
-        }
-    }
 
 }

@@ -1,6 +1,7 @@
 package com.xmas.service.questions.data;
 
 import com.xmas.exceptions.ProcessingException;
+import com.xmas.util.FileUtil;
 import com.xmas.util.RandomNamesUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,15 +42,9 @@ public class FileQuestionData {
     private void prepareDirectory() {
         File questionDir = new File(dataDirPath);
         if (!questionDir.exists()) {
-            createQuestionDirectory(questionDir);
+            FileUtil.createDirectory(dataDirPath);
         } else {
             packagePreviousFiles(questionDir);
-        }
-    }
-
-    private void createQuestionDirectory(File directory) {
-        if (!directory.mkdirs()) {
-            throw new ProcessingException("Can't create directory for question data");
         }
     }
 

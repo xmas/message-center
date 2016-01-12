@@ -1,6 +1,6 @@
 package com.xmas.service.R;
 
-import com.xmas.exceptions.R.DirCreationException;
+import com.xmas.util.FileUtil;
 import com.xmas.util.RandomNamesUtil;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +17,11 @@ public class RequestDirectoriesProcessor {
 
     public File createDirectoriesForRequest(){
         String baseDirName = this.getClass().getResource("/R/data/").getPath() + getDirectoryName();
+
+        FileUtil.createDirectory(baseDirName + INPUT_DIR_NAME);
+        FileUtil.createDirectory(baseDirName + OUTPUT_DIR_NAME);
+
         File baseDir = new File(baseDirName);
-        if(!baseDir.mkdir()) throw new DirCreationException(baseDirName);
-        File input = new File(baseDirName + INPUT_DIR_NAME);
-        if(!input.mkdir()) throw new DirCreationException(baseDirName + INPUT_DIR_NAME);
-        File output = new File(baseDirName + OUTPUT_DIR_NAME);
-        if(!output.mkdir()) throw new DirCreationException(baseDirName + OUTPUT_DIR_NAME);
         return baseDir;
     }
 
