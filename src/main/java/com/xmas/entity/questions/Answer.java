@@ -1,7 +1,5 @@
 package com.xmas.entity.questions;
 
-import com.xmas.entity.push.User;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -18,9 +16,8 @@ public class Answer {
     private String details;
     @Column
     private LocalDate date;
-    @ManyToOne
-    @JoinColumn(name = "user")
-    private User user;
+    @Column
+    private Long guid;
 
     @ManyToOne
     @JoinColumn(name = "question")
@@ -66,11 +63,11 @@ public class Answer {
         this.date = date;
     }
 
-    public User getUser() {
-        return user;
+    public Long getGuid() {
+        return guid;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGuid(Long guid) {
+        this.guid = guid;
     }
 }
