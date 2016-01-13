@@ -11,7 +11,7 @@ import java.io.File;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScriptEvaluatorServiceTest {
+public class RScriptEvaluatorServiceTest {
 
     String script;
     String dir;
@@ -19,7 +19,7 @@ public class ScriptEvaluatorServiceTest {
     RConnectionManager connectionManager;
 
     @InjectMocks
-    ScriptEvaluatorService evaluatorService;
+    RScriptEvaluatorService evaluatorService;
 
     @Before
     public void setUp() throws Exception {

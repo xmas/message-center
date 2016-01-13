@@ -1,60 +1,60 @@
 package com.xmas.service.questions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xmas.entity.questions.*;
+import com.xmas.entity.questions.Answer;
+import com.xmas.entity.questions.Question;
 import com.xmas.exceptions.ProcessingException;
-import com.xmas.service.questions.script.ScriptEvaluator;
+import com.xmas.service.questions.script.ScriptFileUtil;
+import com.xmas.service.questions.script.ScriptService;
 import com.xmas.util.FileUtil;
+import com.xmas.util.RandomNamesUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class QuestionHelper implements Question{
-
-    public static final String SCRIPT_DIRECTORY_NAME = "script";
-    public static final String SCRIPT_FILE_NAME = "script.sc";
+@Service
+public class QuestionHelper {
 
     public static final String ANSWER_FILE_NAME = "answer.json";
 
-    private static final ObjectMapper maper = new ObjectMapper();
+    public static final String QUESTIONS_BASE_DIR_PATH = QuestionHelper.class.getResource("/questions").getPath();
 
-    private com.xmas.entity.questions.Question question;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    public QuestionHelper(com.xmas.entity.questions.Question question) {
-        this.question = question;
+    @Autowired
+    private ScriptService scriptService;
+
+    public void saveQuestion(Question question) {
+
     }
 
-    public String getScript(){
-        String scriptFilePath = Paths.get(question.getDirectoryPath(), SCRIPT_DIRECTORY_NAME, SCRIPT_FILE_NAME).toString();
-        return getFileAsString(scriptFilePath);
-    }
-
-    public Answer getAnsver(){
+    public Answer getAnsver(Question question) {
         try {
             String answerFilePath = Paths.get(question.getDirectoryPath(), ANSWER_FILE_NAME).toString();
 
-            String rawAnswerData = getFileAsString(answerFilePath);
+            String rawAnswerData = new String(FileUtil.getFile(answerFilePath));
 
-            return maper.reader().forType(Answer.class).readValue(rawAnswerData);
+            return mapper.reader().forType(Answer.class).readValue(rawAnswerData);
         } catch (IOException e) {
             throw new ProcessingException("Can't get answer from output file. Probably script evaluate wrong file structure");
         }
     }
 
-
-
-    private String getFileAsString(String filePath){
-        return new String(FileUtil.getFile(filePath));
+    public void evaluate(Question question) {
+        scriptService.evaluate(question.getScriptType(),
+                ScriptFileUtil.getScript(question.getDirectoryPath()),
+                question.getDirectoryPath());
     }
 
-    @Override
-    public void evaluate() {
+    private File createQuestionDirectory() {
+        String questionDirPath = Paths.get(QUESTIONS_BASE_DIR_PATH, RandomNamesUtil.getRandomName())
+                .toAbsolutePath()
+                .toString();
 
+        return FileUtil.createDirectory(questionDirPath);
     }
 
-    private ScriptEvaluator getScriptEvaluator(){
-        switch (question.getScriptType()){
-            case R : return new
-        }
-    }
 }

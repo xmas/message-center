@@ -9,10 +9,12 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.REngineException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScriptEvaluatorService implements ScriptEvaluator{
+@Qualifier("rScriptEvaluator")
+public class RScriptEvaluatorService implements ScriptEvaluator{
 
     private static final Logger logger = LogManager.getLogger();
 

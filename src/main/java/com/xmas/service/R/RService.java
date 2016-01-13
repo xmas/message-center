@@ -21,7 +21,7 @@ public class RService {
     public static final String SCRIPTS_DIRECTORY = "/R/scripts/";
 
     @Autowired
-    ScriptEvaluatorService scriptEvaluator;
+    RScriptEvaluatorService scriptEvaluator;
 
     @Autowired
     RequestDirectoriesProcessor directoriesProcessor;

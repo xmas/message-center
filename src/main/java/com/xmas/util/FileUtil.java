@@ -56,12 +56,13 @@ public class FileUtil {
         }
     }
 
-    public static void createDirectory(String dirPath) {
+    public static File createDirectory(String dirPath) {
         File dir = new File(dirPath);
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
                 throw new ProcessingException("Can't create directory " + dirPath);
             }
         }
+        return dir;
     }
 }
