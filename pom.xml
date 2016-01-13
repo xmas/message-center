@@ -98,6 +98,12 @@
             <version>${hibernate.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
         <!-- LOGGING -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
