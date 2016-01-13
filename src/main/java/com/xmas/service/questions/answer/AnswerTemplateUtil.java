@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.stream.Stream;
 
 public class AnswerTemplateUtil {
 
@@ -61,13 +63,32 @@ public class AnswerTemplateUtil {
             ObjectMapper mapper = new ObjectMapper();
             Answer template = mapper.reader().forType(Answer.class).readValue(file.getBytes());
 
+            checkRequiredFields(template);
 
         } catch (JsonProcessingException jpe) {
             throw new BadRequestException("Bad json structure uploaded", jpe);
         } catch (IOException e) {
             throw new ProcessingException("Can't read from uploaded file", e);
         }
+    }
 
+    private static boolean checkRequiredFields(Answer template) {
+        Stream.of(REQUIRED_FIELDS).forEach(field -> checkFieldExist(template, field));
+        return true;
+    }
+
+    private static boolean checkFieldExist(Answer template, String fieldName) {
+        try {
+            Field field = Answer.class.getField(fieldName);
+            field.setAccessible(true);
+
+            String value = (String) field.get(template);
+            if (value == null || value.isEmpty())
+                throw new BadRequestException("Answer template do not have required field " + fieldName + " or it is empty.");
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new BadRequestException("Answer template do not have required field " + fieldName + " or it is empty.");
+        }
+        return true;
     }
 
 
