@@ -2,6 +2,7 @@ package com.xmas.entity.questions;
 
 import com.xmas.service.questions.data.DataType;
 import com.xmas.service.questions.datasource.DataSourceType;
+import com.xmas.service.questions.script.ScriptType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,6 +33,9 @@ public class Question {
 
     @Enumerated(EnumType.STRING)
     private DataType dataType;
+
+    @Enumerated(EnumType.STRING)
+    private ScriptType scriptType;
 
     public Integer getId() {
         return id;
@@ -79,5 +83,13 @@ public class Question {
 
     public void setDataType(DataType dataType) {
         this.dataType = dataType;
+    }
+
+    public ScriptType getScriptType() {
+        return scriptType;
+    }
+
+    public void setScriptType(ScriptType scriptType) {
+        this.scriptType = scriptType;
     }
 }

@@ -1,6 +1,7 @@
 package com.xmas.service.R;
 
 import com.xmas.exceptions.R.ScriptEvaluationExceprion;
+import com.xmas.service.questions.script.ScriptEvaluator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rosuda.REngine.REXP;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScriptEvaluatorService {
+public class ScriptEvaluatorService implements ScriptEvaluator{
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -21,7 +22,7 @@ public class ScriptEvaluatorService {
     @Autowired
     private RConnectionManager connectionManager;
 
-    public void evaluateScript(String script, String requestDir){
+    public void evaluate(String script, String requestDir){
         try {
             REngine R = connectionManager.getConnection();
 

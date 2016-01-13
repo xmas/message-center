@@ -54,7 +54,7 @@ public class RService {
         saveInputFile(requestDirectory, input);
 
         String script = loadScript(scriptRepository.findOne(id).getScriptFileName());
-        scriptEvaluator.evaluateScript(script, requestDirectory);
+        scriptEvaluator.evaluate(script, requestDirectory);
 
         return retrieveFinalDir(requestDirectory);
     }

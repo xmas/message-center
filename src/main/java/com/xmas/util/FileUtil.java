@@ -17,12 +17,15 @@ import java.util.stream.Collectors;
 
 public class FileUtil {
     public static byte[] getResource(String fileName) {
+        return getFile(getFullPathFileName(fileName));
+    }
+
+    public static byte[] getFile(String fileName){
         try {
-            return Files.readAllBytes(Paths.get(getFullPathFileName(fileName)));
+            return Files.readAllBytes(Paths.get(fileName));
         } catch (IOException e) {
             throw new ResourceNotFoundException(e);
         }
-
     }
 
     public static String getFullPathFileName(String fileName) {

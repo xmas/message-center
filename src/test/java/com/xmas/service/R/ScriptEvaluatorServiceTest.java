@@ -37,7 +37,7 @@ public class ScriptEvaluatorServiceTest {
 
     @Test
     public void testEvaluateScript() throws Exception {
-        evaluatorService.evaluateScript(script, dir);
+        evaluatorService.evaluate(script, dir);
 
         assertTrue(new File(dir + "/output/output.png").exists());
     }
