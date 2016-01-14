@@ -79,7 +79,7 @@ public class AnswerTemplateUtil {
 
     private static boolean checkFieldExist(Answer template, String fieldName) {
         try {
-            Field field = Answer.class.getField(fieldName);
+            Field field = Answer.class.getDeclaredField(fieldName);
             field.setAccessible(true);
 
             String value = (String) field.get(template);

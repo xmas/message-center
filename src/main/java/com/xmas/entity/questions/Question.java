@@ -26,6 +26,9 @@ public class Question {
     private String directoryPath;
 
     @Column
+    private String dataSourceResource;
+
+    @Column
     private LocalDateTime lastTimeEvaluated;
 
     @Enumerated(EnumType.STRING)
@@ -36,6 +39,16 @@ public class Question {
 
     @Enumerated(EnumType.STRING)
     private ScriptType scriptType;
+
+    public Question() {
+    }
+
+    public Question(Collection<Tag> tags, DataSourceType dataSourceType, DataType dataType, ScriptType scriptType) {
+        this.tags = tags;
+        this.dataSourceType = dataSourceType;
+        this.dataType = dataType;
+        this.scriptType = scriptType;
+    }
 
     public Integer getId() {
         return id;
@@ -91,5 +104,13 @@ public class Question {
 
     public void setScriptType(ScriptType scriptType) {
         this.scriptType = scriptType;
+    }
+
+    public String getDataSourceResource() {
+        return dataSourceResource;
+    }
+
+    public void setDataSourceResource(String dataSourceResource) {
+        this.dataSourceResource = dataSourceResource;
     }
 }
