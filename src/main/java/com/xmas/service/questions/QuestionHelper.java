@@ -134,7 +134,7 @@ public class QuestionHelper {
     }
 
     private boolean isUnique(Answer a1, Answer a2){
-        return Objects.equals(a1.getQuestion(), a2.getQuestion()) &&
+        return !Objects.equals(a1.getQuestion(), a2.getQuestion()) &&
                 Objects.equals(a1.getDate(), a2.getDate()) &&
                 Objects.equals(a1.getGuid(), a2.getGuid());
     }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -60,7 +61,7 @@ public class FileQuestionData {
                 .filter(File::isFile)
                 .collect(Collectors.toList());
 
-        if(!files.isEmpty()){
+        if (!files.isEmpty()) {
             moveFiles(files, createDailyPackageDir(directory));
         }
     }
@@ -72,17 +73,20 @@ public class FileQuestionData {
 
         if (dailyDr.mkdir())
             return dailyDr;
+        else if (dailyDr.exists())
+            return dailyDr;
         else
             throw new ProcessingException("Can't create directory for old question data");
     }
 
-    private void moveFiles(List<File> files, File destinationDirectory){
+    private void moveFiles(List<File> files, File destinationDirectory) {
         files.stream().forEach(file -> {
             try {
-                Files.move( file.toPath(),
-                            destinationDirectory
-                                    .toPath()
-                                    .resolve(file.toPath().getFileName().toString()));
+                Files.move(file.toPath(),
+                        destinationDirectory
+                                .toPath()
+                                .resolve(file.toPath().getFileName().toString()),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new ProcessingException("Can't move old files");
             }
