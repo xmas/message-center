@@ -1,5 +1,7 @@
 package com.xmas.entity.questions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -21,6 +23,7 @@ public class Answer {
 
     @ManyToOne
     @JoinColumn(name = "question")
+    @JsonIgnore
     private Question question;
 
     public Long getId() {

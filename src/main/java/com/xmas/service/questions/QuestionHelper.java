@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,6 +78,7 @@ public class QuestionHelper {
         scriptService.evaluate(question.getScriptType(),
                 ScriptFileUtil.getScript(question.getDirectoryPath()),
                 question.getDirectoryPath());
+        question.setLastTimeEvaluated(LocalDateTime.now());
         saveAnswer(question);
     }
 
@@ -97,7 +100,12 @@ public class QuestionHelper {
     }
 
     private void saveAnswer(Question question){
-        answerRepository.save(parseAnswer(question));
+        answerRepository.save(
+                answerRepository
+                        .findAnswer(question, LocalDate.now())
+                        .map(answer -> updateDataFields(answer, parseAnswer(question)))
+                        .orElse(parseAnswer(question)));
+
     }
 
     private Answer parseAnswer(Question question){
@@ -117,6 +125,18 @@ public class QuestionHelper {
         }
     }
 
+    private Answer updateDataFields(Answer fromDb, Answer newAnswer){
+        if (isUnique(fromDb, newAnswer)) return newAnswer;
 
+        fromDb.setTitle(newAnswer.getTitle());
+        fromDb.setDetails(newAnswer.getDetails());
+        return fromDb;
+    }
+
+    private boolean isUnique(Answer a1, Answer a2){
+        return Objects.equals(a1.getQuestion(), a2.getQuestion()) &&
+                Objects.equals(a1.getDate(), a2.getDate()) &&
+                Objects.equals(a1.getGuid(), a2.getGuid());
+    }
 
 }
