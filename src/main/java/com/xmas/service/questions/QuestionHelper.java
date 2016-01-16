@@ -1,12 +1,14 @@
 package com.xmas.service.questions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xmas.dao.questions.AnswerRepository;
 import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.dao.questions.TagsRepository;
 import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.service.questions.answer.AnswerTemplateUtil;
+import com.xmas.service.questions.datasource.DataService;
 import com.xmas.service.questions.script.ScriptFileUtil;
 import com.xmas.service.questions.script.ScriptService;
 import com.xmas.util.FileUtil;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +43,14 @@ public class QuestionHelper {
     @Autowired
     private TagsRepository tagsRepository;
 
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    DataService dataService;
+
     public void saveQuestion(Question question, MultipartFile scriptFile, MultipartFile anwerTemplateFile) {
 
         File questionDir = createQuestionDirectory();
@@ -52,22 +63,20 @@ public class QuestionHelper {
         saveToDB(question);
     }
 
-    public Answer getAnsver(Question question) {
-        try {
-            String answerFilePath = Paths.get(question.getDirectoryPath(), ANSWER_FILE_NAME).toString();
-
-            String rawAnswerData = new String(FileUtil.getFile(answerFilePath));
-
-            return mapper.reader().forType(Answer.class).readValue(rawAnswerData);
-        } catch (IOException e) {
-            throw new ProcessingException("Can't get answer from output file. Probably script evaluate wrong file structure");
-        }
-    }
-
     public void evaluate(Question question) {
+        dataService.evaluateData(question, question.getDataSourceResource());
         scriptService.evaluate(question.getScriptType(),
                 ScriptFileUtil.getScript(question.getDirectoryPath()),
                 question.getDirectoryPath());
+        saveAnswer(question);
+    }
+
+    public void evaluate(Question question, Object data){
+        dataService.evaluateData(question, data);
+        scriptService.evaluate(question.getScriptType(),
+                ScriptFileUtil.getScript(question.getDirectoryPath()),
+                question.getDirectoryPath());
+        saveAnswer(question);
     }
 
     private File createQuestionDirectory() {
@@ -86,5 +95,28 @@ public class QuestionHelper {
 
         questionRepository.save(question);
     }
+
+    private void saveAnswer(Question question){
+        answerRepository.save(parseAnswer(question));
+    }
+
+    private Answer parseAnswer(Question question){
+        try {
+            String answerFilePath = Paths.get(question.getDirectoryPath(), ANSWER_FILE_NAME).toString();
+
+            String rawAnswerData = new String(FileUtil.getFile(answerFilePath));
+
+            Answer answer =  mapper.reader().forType(Answer.class).readValue(rawAnswerData);
+
+            answer.setDate(LocalDate.now());
+            answer.setQuestion(question);
+
+            return answer;
+        } catch (IOException e) {
+            throw new ProcessingException("Can't get answer from output file. Probably script evaluate wrong file structure");
+        }
+    }
+
+
 
 }

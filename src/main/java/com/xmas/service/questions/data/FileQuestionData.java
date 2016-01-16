@@ -2,7 +2,6 @@ package com.xmas.service.questions.data;
 
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.util.FileUtil;
-import com.xmas.util.RandomNamesUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +19,13 @@ public class FileQuestionData {
 
     private static final Logger logger = LogManager.getLogger();
 
+    public static final String INPUT_FILE_NAME = "input.dat";
+
     private String dataDirPath;
+
+    public FileQuestionData(String dataDirPath) {
+        this.dataDirPath = dataDirPath;
+    }
 
     public void evaluateData(byte[] data) {
         prepareDirectory();
@@ -28,7 +33,7 @@ public class FileQuestionData {
     }
 
     private void saveFile(byte[] data) {
-        String filePath = dataDirPath + "/" + RandomNamesUtil.getRandomName() + ".dat";
+        String filePath = dataDirPath + "/" + INPUT_FILE_NAME;
         File file = new File(filePath);
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(data);
@@ -49,7 +54,9 @@ public class FileQuestionData {
     }
 
     private void packagePreviousFiles(File directory) {
-        List<File> files = Stream.of(directory.listFiles())
+        File[] filesInDir = directory.listFiles();
+
+        List<File> files = Stream.of(filesInDir == null ? new File[]{} : filesInDir)
                 .filter(File::isFile)
                 .collect(Collectors.toList());
 
@@ -80,13 +87,5 @@ public class FileQuestionData {
                 throw new ProcessingException("Can't move old files");
             }
         });
-    }
-
-    public String getDataDirPath() {
-        return dataDirPath;
-    }
-
-    public void setDataDirPath(String dataDirPath) {
-        this.dataDirPath = dataDirPath;
     }
 }

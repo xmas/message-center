@@ -9,7 +9,7 @@ public class Answer {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     @Column
     private String title;
     @Column
@@ -23,11 +23,11 @@ public class Answer {
     @JoinColumn(name = "question")
     private Question question;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

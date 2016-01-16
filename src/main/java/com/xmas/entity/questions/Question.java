@@ -10,6 +10,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "questions")
+@SuppressWarnings("unused")
 public class Question {
 
     @Id
@@ -43,11 +44,12 @@ public class Question {
     public Question() {
     }
 
-    public Question(Collection<Tag> tags, DataSourceType dataSourceType, DataType dataType, ScriptType scriptType) {
+    public Question(Collection<Tag> tags, DataSourceType dataSourceType, String dataSourceResource, DataType dataType, ScriptType scriptType) {
         this.tags = tags;
         this.dataSourceType = dataSourceType;
         this.dataType = dataType;
         this.scriptType = scriptType;
+        this.dataSourceResource = dataSourceResource;
     }
 
     public Integer getId() {
