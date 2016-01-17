@@ -73,5 +73,16 @@ public class QuestionsController {
                         "Maybe script is wrong."));
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public void updateQuestion(@RequestParam MultipartFile script,
+                               @RequestParam MultipartFile answerTemplate,
+                               @RequestParam DataSourceType dataSourceType,
+                               @RequestParam DataType dataType,
+                               @RequestParam ScriptType scriptType,
+                               @RequestParam List<Tag> tags,
+                               @RequestParam(required = false) String dataSourceResource){
+
+    }
+
 
 }
