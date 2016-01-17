@@ -77,6 +77,7 @@ public class QuestionHelper {
     }
 
     public void evaluate(Question question, Object data){
+        checkInput(question, data);
 
         dataService.evaluateData(question, data);
         scriptService.evaluate(question.getScriptType(),
