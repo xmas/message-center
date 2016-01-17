@@ -21,7 +21,7 @@ public class DataService {
             throw new ProcessingException("Unsupported data for " + dataSourceType.getDescription());
 
         switch (dataSourceType) {
-            case HTTP_APY: return new HTTPAPIDataSource((String) resource);
+            case HTTP_API: return new HTTPAPIDataSource((String) resource);
             case FILE_UPLOAD: return new FileUploadDataSource((MultipartFile) resource);
             default: throw new ProcessingException("Unsupported data source type");
         }
