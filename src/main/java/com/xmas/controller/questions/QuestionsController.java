@@ -5,8 +5,8 @@ import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
 import com.xmas.entity.questions.Tag;
-import com.xmas.exceptions.NotFoundException;
 import com.xmas.exceptions.ProcessingException;
+import com.xmas.exceptions.questions.QuestionNotFoundException;
 import com.xmas.service.questions.QuestionHelper;
 import com.xmas.service.questions.data.DataType;
 import com.xmas.service.questions.datasource.DataSourceType;
@@ -41,8 +41,7 @@ public class QuestionsController {
 
     @RequestMapping("/{id}")
     public Question getQuestion(@PathVariable Integer id){
-        return questionRepository.getById(id)
-                .orElseThrow(() -> new NotFoundException("There is no question with such id."));
+        return questionRepository.getById(id).orElseThrow(QuestionNotFoundException::new);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -60,8 +59,7 @@ public class QuestionsController {
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public Answer evalQuestion(@PathVariable Integer id, @RequestParam(required = false) MultipartFile data){
-        Question question = questionRepository.getById(id)
-                .orElseThrow(() -> new NotFoundException("There is no question with such id."));
+        Question question = questionRepository.getById(id).orElseThrow(QuestionNotFoundException::new);
 
         if(data == null)
             questionHelper.evaluate(question);
@@ -73,15 +71,17 @@ public class QuestionsController {
                         "Maybe script is wrong."));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public void updateQuestion(@RequestParam MultipartFile script,
-                               @RequestParam MultipartFile answerTemplate,
-                               @RequestParam DataSourceType dataSourceType,
-                               @RequestParam DataType dataType,
-                               @RequestParam ScriptType scriptType,
-                               @RequestParam List<Tag> tags,
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public void updateQuestion(@PathVariable Integer id,
+                               @RequestParam(required = false) MultipartFile script,
+                               @RequestParam(required = false) MultipartFile answerTemplate,
+                               @RequestParam(required = false) DataSourceType dataSourceType,
+                               @RequestParam(required = false) DataType dataType,
+                               @RequestParam(required = false) ScriptType scriptType,
+                               @RequestParam(required = false) List<Tag> tags,
                                @RequestParam(required = false) String dataSourceResource){
-
+        Question question = new Question(tags, dataSourceType, dataSourceResource, dataType, scriptType);
+        questionHelper.updateQuestion(id, question, script, answerTemplate);
     }
 
 

@@ -3,6 +3,8 @@ package com.xmas.service.questions;
 import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.dao.questions.TagsRepository;
 import com.xmas.entity.questions.Question;
+import com.xmas.exceptions.ProcessingException;
+import com.xmas.exceptions.questions.QuestionNotFoundException;
 import com.xmas.service.questions.answer.AnswerHelper;
 import com.xmas.service.questions.answer.AnswerTemplateUtil;
 import com.xmas.service.questions.datasource.DataService;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -41,16 +44,24 @@ public class QuestionHelper {
     @Autowired
     DataService dataService;
 
-    public void saveQuestion(Question question, MultipartFile scriptFile, MultipartFile anwerTemplateFile) {
+    public void saveQuestion(Question question, MultipartFile scriptFile, MultipartFile answerTemplateFile) {
 
         File questionDir = createQuestionDirectory();
 
         ScriptFileUtil.saveScript(questionDir.getAbsolutePath(), scriptFile);
-        AnswerTemplateUtil.saveTemplate(questionDir.getAbsolutePath(), anwerTemplateFile);
+        AnswerTemplateUtil.saveTemplate(questionDir.getAbsolutePath(), answerTemplateFile);
 
         question.setDirectoryPath(questionDir.getAbsolutePath());
 
         saveToDB(question);
+    }
+
+    public void updateQuestion(Integer qId, Question question, MultipartFile scriptFile, MultipartFile answerTemplateFile){
+        Question fromDb = questionRepository.getById(qId).orElseThrow(QuestionNotFoundException::new);
+        updateExistingFields(fromDb, question);
+        questionRepository.save(fromDb);
+        if(scriptFile != null) ScriptFileUtil.replaceScript(fromDb.getDirectoryPath(), scriptFile);
+        if(answerTemplateFile != null) AnswerTemplateUtil.replaceTemplate(fromDb.getDirectoryPath(), answerTemplateFile);
     }
 
     public void evaluate(Question question) {
@@ -81,6 +92,20 @@ public class QuestionHelper {
                 .collect(Collectors.toList()));
 
         questionRepository.save(question);
+    }
+
+    private Question updateExistingFields(Question fromDb, Question patch) {
+        try {
+            for (Field field : Question.class.getDeclaredFields()) {
+                field.setAccessible(true);
+                Object value = field.get(patch) != null ? field.get(patch) : field.get(fromDb);
+                field.set(fromDb, value);
+            }
+            return fromDb;
+        }catch (IllegalAccessException iae){
+            throw new ProcessingException("Can't update question.", iae);
+        }
+
     }
 
 
