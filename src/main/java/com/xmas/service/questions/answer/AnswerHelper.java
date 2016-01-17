@@ -5,6 +5,7 @@ import com.xmas.dao.questions.AnswerRepository;
 import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
 import com.xmas.exceptions.ProcessingException;
+import com.xmas.service.questions.QuestionHelper;
 import com.xmas.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class AnswerHelper {
 
     private Answer parseAnswer(Question question){
         try {
-            String answerFilePath = Paths.get(question.getDirectoryPath(), ANSWER_FILE_NAME).toString();
+            String answerFilePath = Paths.get(QuestionHelper.getQuestionDirFullPath(question), ANSWER_FILE_NAME).toString();
 
             String rawAnswerData = new String(FileUtil.getFile(answerFilePath));
 

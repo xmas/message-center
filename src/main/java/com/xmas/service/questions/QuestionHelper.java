@@ -41,6 +41,7 @@ public class QuestionHelper {
     @Autowired
     private TagsRepository tagsRepository;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private AnswerHelper answerHelper;
 
@@ -54,7 +55,7 @@ public class QuestionHelper {
         ScriptFileUtil.saveScript(questionDir.getAbsolutePath(), scriptFile);
         AnswerTemplateUtil.saveTemplate(questionDir.getAbsolutePath(), answerTemplateFile);
 
-        question.setDirectoryPath(questionDir.getAbsolutePath());
+        question.setDirectoryPath(questionDir.toPath().getFileName().toString());
 
         saveToDB(question);
     }
@@ -64,8 +65,8 @@ public class QuestionHelper {
 
         updateExistingFields(fromDb, question);
 
-        if(scriptFile != null) ScriptFileUtil.replaceScript(fromDb.getDirectoryPath(), scriptFile);
-        if(answerTemplateFile != null) AnswerTemplateUtil.replaceTemplate(fromDb.getDirectoryPath(), answerTemplateFile);
+        if(scriptFile != null) ScriptFileUtil.replaceScript(getQuestionDirFullPath(fromDb), scriptFile);
+        if(answerTemplateFile != null) AnswerTemplateUtil.replaceTemplate(getQuestionDirFullPath(fromDb), answerTemplateFile);
 
         saveToDB(fromDb);
     }
@@ -81,8 +82,8 @@ public class QuestionHelper {
 
         dataService.evaluateData(question, data);
         scriptService.evaluate(question.getScriptType(),
-                ScriptFileUtil.getScript(question.getDirectoryPath()),
-                question.getDirectoryPath());
+                ScriptFileUtil.getScript(getQuestionDirFullPath(question)),
+                getQuestionDirFullPath(question));
         question.setLastTimeEvaluated(LocalDateTime.now());
         answerHelper.saveAnswer(question);
     }
@@ -129,6 +130,12 @@ public class QuestionHelper {
             throw new ProcessingException("Can't update question.", iae);
         }
 
+    }
+
+    public static String getQuestionDirFullPath(Question question){
+        if(question == null || question.getDirectoryPath() == null)
+            throw new IllegalArgumentException("Cant evaluate dir for this question.");
+        return QUESTIONS_BASE_DIR_PATH + "/" +  question.getDirectoryPath();
     }
 
 
