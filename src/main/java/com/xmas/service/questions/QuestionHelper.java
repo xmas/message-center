@@ -4,11 +4,13 @@ import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.dao.questions.TagsRepository;
 import com.xmas.entity.questions.Question;
 import com.xmas.entity.questions.Tag;
+import com.xmas.exceptions.BadRequestException;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.questions.QuestionNotFoundException;
 import com.xmas.service.questions.answer.AnswerHelper;
 import com.xmas.service.questions.answer.AnswerTemplateUtil;
 import com.xmas.service.questions.datasource.DataService;
+import com.xmas.service.questions.datasource.DataSourceType;
 import com.xmas.service.questions.script.ScriptFileUtil;
 import com.xmas.service.questions.script.ScriptService;
 import com.xmas.util.FileUtil;
@@ -69,6 +71,8 @@ public class QuestionHelper {
     }
 
     public void evaluate(Question question) {
+        if(question.getDataSourceType().equals(DataSourceType.FILE_UPLOAD))
+            throw new BadRequestException("Cant evaluate this question without uploaded data");
         evaluate(question, question.getDataSourceResource());
     }
 
