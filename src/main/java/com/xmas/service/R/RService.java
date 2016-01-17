@@ -5,8 +5,6 @@ import com.xmas.entity.R.Script;
 import com.xmas.exceptions.R.ScriptEvaluationExceprion;
 import com.xmas.util.FileUtil;
 import com.xmas.util.RandomNamesUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +13,6 @@ import java.io.*;
 
 @Service
 public class RService {
-
-    private static final Logger logger = LogManager.getLogger();
 
     public static final String SCRIPTS_DIRECTORY = "/R/scripts/";
 

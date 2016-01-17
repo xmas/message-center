@@ -73,12 +73,18 @@ public class QuestionHelper {
     }
 
     public void evaluate(Question question, Object data){
+
         dataService.evaluateData(question, data);
         scriptService.evaluate(question.getScriptType(),
                 ScriptFileUtil.getScript(question.getDirectoryPath()),
                 question.getDirectoryPath());
         question.setLastTimeEvaluated(LocalDateTime.now());
         answerHelper.saveAnswer(question);
+    }
+
+    private void checkInput(Question question, Object data){
+        if(question == null) throw new IllegalArgumentException("Cant evaluate empty question.");
+        if(data == null) throw new IllegalArgumentException("Cant evaluate question with empty data.");
     }
 
     private File createQuestionDirectory() {
