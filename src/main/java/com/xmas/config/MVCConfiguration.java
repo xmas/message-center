@@ -18,6 +18,7 @@ public class MVCConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/R/data/**").addResourceLocations("classpath:/R/data/");
+        registry.addResourceHandler("/questions/data/**").addResourceLocations("classpath:/questions/");
     }
 
     @Bean
