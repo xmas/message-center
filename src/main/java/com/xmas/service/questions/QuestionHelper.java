@@ -3,6 +3,7 @@ package com.xmas.service.questions;
 import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.dao.questions.TagsRepository;
 import com.xmas.entity.questions.Question;
+import com.xmas.entity.questions.Tag;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.questions.QuestionNotFoundException;
 import com.xmas.service.questions.answer.AnswerHelper;
@@ -58,10 +59,13 @@ public class QuestionHelper {
 
     public void updateQuestion(Integer qId, Question question, MultipartFile scriptFile, MultipartFile answerTemplateFile){
         Question fromDb = questionRepository.getById(qId).orElseThrow(QuestionNotFoundException::new);
+
         updateExistingFields(fromDb, question);
-        questionRepository.save(fromDb);
+
         if(scriptFile != null) ScriptFileUtil.replaceScript(fromDb.getDirectoryPath(), scriptFile);
         if(answerTemplateFile != null) AnswerTemplateUtil.replaceTemplate(fromDb.getDirectoryPath(), answerTemplateFile);
+
+        saveToDB(fromDb);
     }
 
     public void evaluate(Question question) {
@@ -87,11 +91,19 @@ public class QuestionHelper {
 
     private void saveToDB(Question question){
         question.setTags(question.getTags().stream()
-                .map(tag -> tagsRepository.getByName(tag.getName()) == null ? tag : tagsRepository.getByName(tag.getName()))
-                .peek(tagsRepository::save)
+                .map(this::getSavedOrNew)
                 .collect(Collectors.toList()));
 
         questionRepository.save(question);
+    }
+
+    private Tag getSavedOrNew(Tag newTag){
+        Tag saved = tagsRepository.getByName(newTag.getName());
+        if(saved != null){
+            newTag.setId(saved.getId());
+        }
+        tagsRepository.save(newTag);
+        return newTag;
     }
 
     private Question updateExistingFields(Question fromDb, Question patch) {
