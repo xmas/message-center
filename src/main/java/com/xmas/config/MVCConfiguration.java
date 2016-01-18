@@ -48,8 +48,8 @@ public class MVCConfiguration extends WebMvcConfigurerAdapter {
 
         @Override
         public boolean isMultipart(HttpServletRequest request) {
-            if (request == null) return false;
-            return ALLOWED_MULTIPART_METHODS.contains(request.getMethod().toUpperCase()) &&
+            return  request != null &&
+                    ALLOWED_MULTIPART_METHODS.contains(request.getMethod().toUpperCase()) &&
                     FileUploadBase.isMultipartContent(new ServletRequestContext(request));
         }
     }

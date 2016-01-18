@@ -5,6 +5,9 @@ import com.xmas.entity.questions.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TagsService {
 
@@ -30,5 +33,11 @@ public class TagsService {
 
     public void deleteTag(Integer id){
         tagsRepository.delete(id);
+    }
+
+    public List<Tag> mapTagsToEntitiesFromDB(List<String> tags){
+        return tags.stream()
+                .map(this::getTag)
+                .collect(Collectors.toList());
     }
 }

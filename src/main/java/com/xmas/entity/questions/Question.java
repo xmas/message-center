@@ -18,7 +18,7 @@ public class Question {
     private Integer id;
 
     @ManyToMany
-    @JoinTable(name = "messages_tags",
+    @JoinTable(name = "questions_tags",
             joinColumns = @JoinColumn(name = "message"),
             inverseJoinColumns = @JoinColumn(name = "tag"))
     private Collection<Tag> tags;
