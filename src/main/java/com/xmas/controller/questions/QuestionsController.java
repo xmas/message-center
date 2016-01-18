@@ -36,7 +36,7 @@ public class QuestionsController {
                             @RequestParam MultipartFile answerTemplate,
                             @RequestParam DataSourceType dataSourceType,
                             @RequestParam DataType dataType,
-                            @RequestParam String cron,
+                            @RequestParam(required = false) String cron,
                             @RequestParam ScriptType scriptType,
                             @RequestParam List<Tag> tags,
                             @RequestParam(required = false) String dataSourceResource) {
@@ -58,7 +58,7 @@ public class QuestionsController {
                                @RequestParam(required = false) DataSourceType dataSourceType,
                                @RequestParam(required = false) DataType dataType,
                                @RequestParam(required = false) ScriptType scriptType,
-                               @RequestParam String cron,
+                               @RequestParam(required = false) String cron,
                                @RequestParam(required = false) List<Tag> tags,
                                @RequestParam(required = false) String dataSourceResource) {
         Question question = new Question(tags, dataSourceType, dataSourceResource, dataType, scriptType, cron);

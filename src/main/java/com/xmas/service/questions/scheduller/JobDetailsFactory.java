@@ -1,5 +1,6 @@
 package com.xmas.service.questions.scheduller;
 
+import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.entity.questions.Question;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
@@ -29,11 +31,27 @@ public class JobDetailsFactory {
     @Autowired
     private JobFactory jobFactory;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
+    private QuestionRepository questionRepository;
+
     @PostConstruct
     public void init() throws SchedulerException {
         SchedulerFactory schedulerFactory = new org.quartz.impl.StdSchedulerFactory();
         scheduler = schedulerFactory.getScheduler();
         scheduler.setJobFactory(jobFactory);
+        scheduler.start();
+
+        standUpScheduler();
+    }
+
+    @PreDestroy
+    public void destroy(){
+        try {
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addQuestionJob(Question question) {
@@ -57,6 +75,10 @@ public class JobDetailsFactory {
         return newTrigger()
                 .withSchedule(cronSchedule(question.getCron()))
                 .build();
+    }
+
+    private void standUpScheduler(){
+        questionRepository.getScheduled().forEach(this::addQuestionJob);
     }
 
 }
