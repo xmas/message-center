@@ -19,7 +19,7 @@ public class Question {
 
     @ManyToMany
     @JoinTable(name = "questions_tags",
-            joinColumns = @JoinColumn(name = "message"),
+            joinColumns = @JoinColumn(name = "question"),
             inverseJoinColumns = @JoinColumn(name = "tag"))
     private Collection<Tag> tags;
 
@@ -41,15 +41,23 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private ScriptType scriptType;
 
+    private String cron;
+
     public Question() {
     }
 
-    public Question(Collection<Tag> tags, DataSourceType dataSourceType, String dataSourceResource, DataType dataType, ScriptType scriptType) {
+    public Question(Collection<Tag> tags,
+                    DataSourceType dataSourceType,
+                    String dataSourceResource,
+                    DataType dataType,
+                    ScriptType scriptType,
+                    String cron) {
         this.tags = tags;
         this.dataSourceType = dataSourceType;
         this.dataType = dataType;
         this.scriptType = scriptType;
         this.dataSourceResource = dataSourceResource;
+        this.cron = cron;
     }
 
     public Integer getId() {
@@ -114,5 +122,13 @@ public class Question {
 
     public void setDataSourceResource(String dataSourceResource) {
         this.dataSourceResource = dataSourceResource;
+    }
+
+    public String getCron() {
+        return cron;
+    }
+
+    public void setCron(String cron) {
+        this.cron = cron;
     }
 }

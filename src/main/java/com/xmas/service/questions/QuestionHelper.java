@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
-public class QuestionHelper {
+public class QuestionHelper implements QuestionEvaluator{
 
     public static final String QUESTIONS_BASE_DIR_PATH = QuestionHelper.class.getResource("/questions").getPath();
 
