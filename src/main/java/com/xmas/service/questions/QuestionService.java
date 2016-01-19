@@ -51,7 +51,8 @@ public class QuestionService {
 
     public void addQuestion(Question question, MultipartFile script, MultipartFile answerTemplate) {
         questionHelper.saveQuestion(question, script, answerTemplate);
-        scheduleQuestionEvaluating(question);
+        if(question.getCron() != null)
+            scheduleQuestionEvaluating(question);
     }
 
     public Answer evalQuestion(Integer id, MultipartFile data){
