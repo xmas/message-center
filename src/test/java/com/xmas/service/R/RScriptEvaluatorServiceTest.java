@@ -28,7 +28,7 @@ public class RScriptEvaluatorServiceTest {
                 "barplot(table(dat))\n" +
                 "dev.off()";
 
-        dir = "/media/vdanyliuk/PROGRAMING/PROJECTS/UpWork/message-service/target/test-classes/R/data/123456";
+        dir = this.getClass().getResource("/R").getPath() + "/data/123456";
 
         connectionManager = new RConnectionManager();
         connectionManager.setRserveHomeBin("/usr/lib/R/site-library/Rserve/libs//Rserve");
