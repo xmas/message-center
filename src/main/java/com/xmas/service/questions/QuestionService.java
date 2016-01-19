@@ -4,6 +4,7 @@ import com.xmas.dao.questions.AnswerRepository;
 import com.xmas.dao.questions.QuestionRepository;
 import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
+import com.xmas.entity.questions.Tag;
 import com.xmas.exceptions.BadRequestException;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.questions.QuestionNotFoundException;
@@ -37,10 +38,12 @@ public class QuestionService {
     private TagsService tagsService;
 
     public List<Question> getQuestions(List<String> tags) {
-        if (tags == null || tags.isEmpty())
+        if (tags == null || tags.isEmpty()) {
             return questionRepository.getAll();
-        else
-            return questionRepository.getByTags(tagsService.mapTagsToEntitiesFromDB(tags));
+        } else {
+            List<Tag> tagsFromDb = tagsService.mapTagsToEntitiesFromDB(tags);
+            return tagsFromDb.isEmpty() ? questionRepository.getAll() : questionRepository.getByTags(tagsFromDb);
+        }
     }
 
     public Question getById(Integer id) {
@@ -51,11 +54,11 @@ public class QuestionService {
 
     public void addQuestion(Question question, MultipartFile script, MultipartFile answerTemplate) {
         questionHelper.saveQuestion(question, script, answerTemplate);
-        if(question.getCron() != null)
+        if (question.getCron() != null)
             scheduleQuestionEvaluating(question);
     }
 
-    public Answer evalQuestion(Integer id, MultipartFile data){
+    public Answer evalQuestion(Integer id, MultipartFile data) {
         Question question = questionRepository.getById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (data == null)
@@ -68,14 +71,14 @@ public class QuestionService {
                         "Maybe script is wrong."));
     }
 
-    public void updateQuestion(Integer id, Question question, MultipartFile script, MultipartFile answerTemplate){
+    public void updateQuestion(Integer id, Question question, MultipartFile script, MultipartFile answerTemplate) {
         questionHelper.updateQuestion(id, question, script, answerTemplate);
     }
 
     private void scheduleQuestionEvaluating(Question question) {
         if (!canBeScheduled(question)) {
             throw new BadRequestException("Question with such type can't be scheduled for evaluating.");
-        } else if(question.getCron() != null){
+        } else if (question.getCron() != null) {
             jobDetailsFactory.addQuestionJob(question);
         }
     }

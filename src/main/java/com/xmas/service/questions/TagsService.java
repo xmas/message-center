@@ -38,6 +38,7 @@ public class TagsService {
     public List<Tag> mapTagsToEntitiesFromDB(List<String> tags){
         return tags.stream()
                 .map(this::getTag)
+                .filter(tag -> tag != null)
                 .collect(Collectors.toList());
     }
 }
