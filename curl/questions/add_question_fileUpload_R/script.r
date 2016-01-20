@@ -1,3 +1,4 @@
+library(sensitivity)
 dat <- readLines(paste(dir, "input.dat", sep="/"))
 tempFile <- paste(dir,"template/template.json", sep="/")
 templ <- readChar(tempFile, file.info(tempFile)$size)
@@ -7,4 +8,3 @@ templ.rpl1 <- template.replace(templ, repl, key.pattern = "\\$\\{KEY\\}")
 fileConn<-file(paste(dir, "answer.json", sep = "/"))
 writeLines(templ.rpl1, fileConn)
 close(fileConn)
-

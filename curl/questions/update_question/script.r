@@ -1,10 +1,10 @@
+library(sensitivity)
 dat <- readLines(paste(dir, "input.dat", sep="/"))
 tempFile <- paste(dir,"template/template.json", sep="/")
 templ <- readChar(tempFile, file.info(tempFile)$size)
 val = mean(as.numeric(dat))
-repl <- list(user="SUser", value=val)
+repl <- list(user="UpdatedUser", value=val)
 templ.rpl1 <- template.replace(templ, repl, key.pattern = "\\$\\{KEY\\}")
 fileConn<-file(paste(dir, "answer.json", sep = "/"))
 writeLines(templ.rpl1, fileConn)
 close(fileConn)
-

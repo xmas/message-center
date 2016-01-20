@@ -1,0 +1,9 @@
+{
+  "title": "Hello ${user}",
+  "details": "Hi, it new value ${value}",
+  "guid": ""
+}
+
+[{"id":3,"tags":[{"id":1,"name":"tag1"},{"id":2,"name":"tag2"}],"directoryPath":"163889a3e23ad0d9","dataSourceResource":null,"lastTimeEvaluated":null,"dataSourceType":"FILE_UPLOAD","dataType":"FILE","scriptType":"PYTHON"},
+  {"id":3,"tags":[{"id":1,"name":"tag1"},{"id":2,"name":"tag2"}],"directoryPath":"163889a3e23ad0d9","dataSourceResource":null,"lastTimeEvaluated":null,"dataSourceType":"FILE_UPLOAD","dataType":"FILE","scriptType":"PYTHON"},
+  {"id":5,"tags":[{"id":2,"name":"tag2"},{"id":4,"name":"tag3"}],"directoryPath":"163889a3e4ab459b","dataSourceResource":"https://schemata.io/query/query?queryToken=PSLXNBJ9EJPIJM2I1GRSKEPBVGF4H338HY6XSN3Q","lastTimeEvaluated":null,"dataSourceType":"HTTP_API","dataType":"FILE","scriptType":"R"}]

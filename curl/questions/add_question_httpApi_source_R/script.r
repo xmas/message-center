@@ -1,10 +1,10 @@
-dat <- readLines(paste(dir, "input.dat", sep="/"))
+library(sensitivity)
+dat <- read.table(paste(dir, "input.dat", sep="/"), sep=",", header=TRUE)
 tempFile <- paste(dir,"template/template.json", sep="/")
 templ <- readChar(tempFile, file.info(tempFile)$size)
-val = mean(as.numeric(dat))
+val = sum(dat[1], na.rm=TRUE)
 repl <- list(user="SUser", value=val)
 templ.rpl1 <- template.replace(templ, repl, key.pattern = "\\$\\{KEY\\}")
 fileConn<-file(paste(dir, "answer.json", sep = "/"))
 writeLines(templ.rpl1, fileConn)
 close(fileConn)
-

@@ -1,0 +1,15 @@
+[
+  {
+    "message": "Hello world!",
+    "title": "Hello ))))))))",
+    "subTitle": "Hi",
+    "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/SrinagarHouseboat_003.jpg/1920px-SrinagarHouseboat_003.jpg",
+    "expiration": "2015-12-12T19:20:39",
+    "notificationAppURL": "http://www.google.com.ua",
+    "mimeType": "text/plain",
+    "messageType": "Alert",
+    "mediums": [{"name": "email"}],
+    "users": [],
+    "emails" : ["DrBAXA@hotmail.com"]
+  }
+]
