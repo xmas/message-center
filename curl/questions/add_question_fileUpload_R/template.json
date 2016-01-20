@@ -1,5 +1,21 @@
-{
-  "title": "Hello ${user}",
-  "details": "Hi, it new value ${value}",
-  "guid": ""
-}
+[
+
+  {
+    "title": "Hello ${user}",
+    "details": "Hi, it new value ${value}",
+    "guid": ""
+  },
+
+  {
+    "title": "Hello ${user}",
+    "details": "Hi, it new value ${value}",
+    "guid": ""
+  },
+
+  {
+    "title": "Hello ${user}",
+    "details": "Hi, it new value ${value}",
+    "guid": ""
+  }
+
+]

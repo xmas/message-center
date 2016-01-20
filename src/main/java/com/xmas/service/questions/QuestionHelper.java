@@ -84,7 +84,7 @@ public class QuestionHelper implements QuestionEvaluator{
                 ScriptFileUtil.getScript(getQuestionDirFullPath(question)),
                 getQuestionDirFullPath(question));
         question.setLastTimeEvaluated(LocalDateTime.now());
-        answerHelper.saveAnswer(question);
+        answerHelper.saveAnswers(question);
     }
 
     private void checkInput(Question question, Object data){
