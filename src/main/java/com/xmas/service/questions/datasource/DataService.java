@@ -4,7 +4,7 @@ import com.xmas.entity.questions.Question;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.service.questions.DataSource;
 import com.xmas.service.questions.QuestionHelper;
-import com.xmas.service.questions.data.FileQuestionData;
+import com.xmas.service.questions.data.FileSystemQuestionData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class DataService {
 
     public void evaluateData(Question question, Object data) {
-        new FileQuestionData(QuestionHelper.getQuestionDirFullPath(question))
+        new FileSystemQuestionData(QuestionHelper.getQuestionDirFullPath(question))
                 .evaluateData(getDataSource(question.getDataSourceType(), data)
                         .getData());
     }
@@ -22,6 +22,7 @@ public class DataService {
             throw new ProcessingException("Unsupported data for " + dataSourceType.getDescription());
 
         switch (dataSourceType) {
+            case NONE: return new NoneDataSource();
             case HTTP_API: return new HTTPAPIDataSource((String) resource);
             case FILE_UPLOAD: return new FileUploadDataSource((MultipartFile) resource);
             default: throw new ProcessingException("Unsupported data source type");
@@ -30,7 +31,7 @@ public class DataService {
 
 
     private boolean checkDataType(DataSourceType dataSourceType, Object data) {
-        return dataSourceType.getSupportedData().isAssignableFrom(data.getClass());
+        return !dataSourceType.requireData() || dataSourceType.getSupportedData().isAssignableFrom(data.getClass());
     }
 
 

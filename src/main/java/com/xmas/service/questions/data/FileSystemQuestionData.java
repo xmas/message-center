@@ -19,22 +19,25 @@ import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.*;
 
-public class FileQuestionData {
+public class FileSystemQuestionData {
 
     private static final Logger logger = LogManager.getLogger();
 
     public static final String INPUT_FILE_NAME = "input.dat";
     public static final String INFO_FILE_NAME = ".info";
 
+    public static final String DIR_NAME_PATTERN = "dd-MM-yyyy_HH-mm-ss";
+
     private String dataDirPath;
 
-    public FileQuestionData(String dataDirPath) {
+    public FileSystemQuestionData(String dataDirPath) {
         this.dataDirPath = dataDirPath;
     }
 
     public void evaluateData(byte[] data) {
         prepareDirectory();
-        saveFile(data);
+        if(data != null)
+            saveFile(data);
     }
 
     private void saveFile(byte[] data) {
@@ -105,7 +108,7 @@ public class FileQuestionData {
     private void addInfoFile(String questionDir){
         Path infoFile = new File(questionDir).toPath().resolve(INFO_FILE_NAME);
         try {
-            String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss"));
+            String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DIR_NAME_PATTERN));
             Files.write(infoFile, data.getBytes(), WRITE, TRUNCATE_EXISTING, CREATE);
         } catch (IOException e) {
             logger.error(e.getMessage());

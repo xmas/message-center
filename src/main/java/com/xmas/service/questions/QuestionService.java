@@ -62,7 +62,7 @@ public class QuestionService {
         Question question = questionRepository.getById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (data == null)
-            questionHelper.evaluate(question);
+            questionHelper.evaluate(question, question.getDataSourceResource());
         else
             questionHelper.evaluate(question, data);
 

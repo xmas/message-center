@@ -10,7 +10,6 @@ import com.xmas.exceptions.questions.QuestionNotFoundException;
 import com.xmas.service.questions.answer.AnswerHelper;
 import com.xmas.service.questions.answer.AnswerTemplateUtil;
 import com.xmas.service.questions.datasource.DataService;
-import com.xmas.service.questions.datasource.DataSourceType;
 import com.xmas.service.questions.script.ScriptFileUtil;
 import com.xmas.service.questions.script.ScriptService;
 import com.xmas.util.FileUtil;
@@ -72,7 +71,7 @@ public class QuestionHelper implements QuestionEvaluator{
     }
 
     public void evaluate(Question question) {
-        if(question.getDataSourceType().equals(DataSourceType.FILE_UPLOAD))
+        if(question.getDataSourceType().requireData() && question.getDataSourceResource() == null)
             throw new BadRequestException("Cant evaluate this question without uploaded data");
         evaluate(question, question.getDataSourceResource());
     }
@@ -90,7 +89,8 @@ public class QuestionHelper implements QuestionEvaluator{
 
     private void checkInput(Question question, Object data){
         if(question == null) throw new IllegalArgumentException("Cant evaluate empty question.");
-        if(data == null) throw new IllegalArgumentException("Cant evaluate question with empty data.");
+        if(data == null && question.getDataSourceType().requireData())
+            throw new IllegalArgumentException("Cant evaluate question with empty data.");
     }
 
     private File createQuestionDirectory() {
