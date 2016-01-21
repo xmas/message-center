@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,8 +24,6 @@ public class FileSystemQuestionData {
 
     public static final String INPUT_FILE_NAME = "input.dat";
     public static final String INFO_FILE_NAME = ".info";
-
-    public static final String DIR_NAME_PATTERN = "dd-MM-yyyy_HH-mm-ss";
 
     private String dataDirPath;
 
@@ -110,7 +107,7 @@ public class FileSystemQuestionData {
         Path infoFile = new File(questionDir).toPath().resolve(INFO_FILE_NAME);
         try {
             LocalDateTime now = LocalDateTime.now();
-            String data = now.format(DateTimeFormatter.ofPattern(DIR_NAME_PATTERN));
+            String data = now.toString();
             Files.write(infoFile, data.getBytes(), WRITE, TRUNCATE_EXISTING, CREATE);
             return now;
         } catch (IOException e) {

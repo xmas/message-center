@@ -1,8 +1,10 @@
 package com.xmas.entity.questions;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xmas.service.questions.data.DataType;
 import com.xmas.service.questions.datasource.DataSourceType;
 import com.xmas.service.questions.script.ScriptType;
+import com.xmas.util.json.LocalDateTimeSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class Question {
     private String dataSourceResource;
 
     @Column
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime lastTimeEvaluated;
 
     @Enumerated(EnumType.STRING)
