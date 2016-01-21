@@ -6,7 +6,6 @@ import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
 import com.xmas.entity.questions.Tag;
 import com.xmas.exceptions.BadRequestException;
-import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.questions.QuestionNotFoundException;
 import com.xmas.service.questions.scheduller.JobDetailsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +51,13 @@ public class QuestionService {
                 .orElseThrow(QuestionNotFoundException::new);
     }
 
-    public void addQuestion(Question question, MultipartFile script, MultipartFile answerTemplate) {
-        questionHelper.saveQuestion(question, script, answerTemplate);
+    public void addQuestion(Question question, MultipartFile script) {
+        questionHelper.saveQuestion(question, script);
         if (question.getCron() != null)
             scheduleQuestionEvaluating(question);
     }
 
-    public Answer evalQuestion(Integer id, MultipartFile data) {
+    public List<Answer> evalQuestion(Integer id, MultipartFile data) {
         Question question = questionRepository.getById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (data == null)
@@ -66,13 +65,11 @@ public class QuestionService {
         else
             questionHelper.evaluate(question, data);
 
-        return answerRepository.findAnswer(question, LocalDate.now())
-                .orElseThrow(() -> new ProcessingException("Answer is not evaluated. " +
-                        "Maybe script is wrong."));
+        return answerRepository.findAnswers(question, LocalDate.now().atStartOfDay());
     }
 
-    public void updateQuestion(Integer id, Question question, MultipartFile script, MultipartFile answerTemplate) {
-        questionHelper.updateQuestion(id, question, script, answerTemplate);
+    public void updateQuestion(Integer id, Question question, MultipartFile script) {
+        questionHelper.updateQuestion(id, question, script);
     }
 
     private void scheduleQuestionEvaluating(Question question) {

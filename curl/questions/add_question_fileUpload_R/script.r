@@ -1,10 +1,26 @@
-library(sensitivity)
 dat <- readLines(paste(dir, "input.dat", sep="/"))
-tempFile <- paste(dir,"template/template.json", sep="/")
-templ <- readChar(tempFile, file.info(tempFile)$size)
 val = mean(as.numeric(dat))
-repl <- list(user="SUser", value=val)
-templ.rpl1 <- template.replace(templ, repl, key.pattern = "\\$\\{KEY\\}")
-fileConn<-file(paste(dir, "answer.json", sep = "/"))
-writeLines(templ.rpl1, fileConn)
+user = "RUser"
+templ <- sprintf('[
+                          {
+                              "title": "Hello, " + "%s",
+                              "details": "New value is " + "%s",
+                              "path": "Path1",
+                              "guid": 0
+                          },
+                          {
+                              "title": "Hello, " + "%s",
+                              "details": "New value is " + "%s",
+                              "path": "Path2",
+                              "guid": 0
+                          },
+                          {
+                              "title": "Hello, " + "%s",
+                              "details": "New value is " + "%s",
+                              "path": "Path3",
+                              "guid": 0
+                          }
+                      ]', user, val/2, user, val/3, user, val/4)
+fileConn<-file(paste(dir, "answers.json", sep = "/"))
+writeLines(templ, fileConn)
 close(fileConn)

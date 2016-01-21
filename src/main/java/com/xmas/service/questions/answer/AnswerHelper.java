@@ -35,20 +35,28 @@ public class AnswerHelper {
         try {
             return collect(mapper.reader()
                     .forType(Answer.class)
-                    .readValues(getRawData(question)));
+                    .readValues(getRawData(question)), question);
         } catch (IOException e) {
             throw new ProcessingException("Can't get answer from output file. Probably script evaluate wrong file structure");
         }
     }
 
-    private List<Answer> collect(Iterator<Answer> answerIterator){
+    private List<Answer> collect(Iterator<Answer> answerIterator ,Question question){
         List<Answer> answers = new ArrayList<>();
-        answerIterator.forEachRemaining(answers::add);
+        answerIterator.forEachRemaining(answer -> {
+            answers.add(fillDefaultFields(answer, question));
+        });
         return answers;
     }
 
     private String getRawData(Question question){
         String answersFilePath = Paths.get(QuestionHelper.getQuestionDirFullPath(question), ANSWERS_FILE_NAME).toString();
         return new String(FileUtil.getFile(answersFilePath));
+    }
+
+    private Answer fillDefaultFields(Answer answer, Question question){
+        answer.setQuestion(question);
+        answer.setDate(question.getLastTimeEvaluated());
+        return answer;
     }
 }

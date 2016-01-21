@@ -1,9 +1,11 @@
 package com.xmas.entity.questions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.xmas.util.json.LocalDateTimeSerializer;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="answers")
@@ -17,7 +19,10 @@ public class Answer {
     @Column
     private String details;
     @Column
-    private LocalDate date;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime date;
+    @Column
+    private String path;
     @Column
     private Long guid;
 
@@ -58,11 +63,11 @@ public class Answer {
         this.details = details;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -72,5 +77,13 @@ public class Answer {
 
     public void setGuid(Long guid) {
         this.guid = guid;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

@@ -8,13 +8,14 @@ import com.xmas.service.questions.data.FileSystemQuestionData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+
 @Service
 public class DataService {
 
-    public void evaluateData(Question question, Object data) {
-        new FileSystemQuestionData(QuestionHelper.getQuestionDirFullPath(question))
-                .evaluateData(getDataSource(question.getDataSourceType(), data)
-                        .getData());
+    public LocalDateTime evaluateData(Question question, Object data) {
+        return new FileSystemQuestionData(QuestionHelper.getQuestionDirFullPath(question))
+                .evaluateData(getDataSource(question.getDataSourceType(), data).getData());
     }
 
     private DataSource getDataSource(DataSourceType dataSourceType, Object resource) {

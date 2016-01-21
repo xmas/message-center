@@ -34,10 +34,11 @@ public class FileSystemQuestionData {
         this.dataDirPath = dataDirPath;
     }
 
-    public void evaluateData(byte[] data) {
-        prepareDirectory();
+    public LocalDateTime evaluateData(byte[] data) {
+        LocalDateTime evaluationTime = prepareDirectory();
         if(data != null)
             saveFile(data);
+        return evaluationTime;
     }
 
     private void saveFile(byte[] data) {
@@ -52,14 +53,14 @@ public class FileSystemQuestionData {
         }
     }
 
-    private void prepareDirectory() {
+    private LocalDateTime prepareDirectory() {
         File questionDir = new File(dataDirPath);
         if (!questionDir.exists()) {
             FileUtil.createDirectory(dataDirPath);
         } else {
             packagePreviousFiles(questionDir);
         }
-        addInfoFile(dataDirPath);
+        return addInfoFile(dataDirPath);
     }
 
     private void packagePreviousFiles(File directory) {
@@ -105,11 +106,13 @@ public class FileSystemQuestionData {
         }
     }
 
-    private void addInfoFile(String questionDir){
+    private LocalDateTime addInfoFile(String questionDir){
         Path infoFile = new File(questionDir).toPath().resolve(INFO_FILE_NAME);
         try {
-            String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DIR_NAME_PATTERN));
+            LocalDateTime now = LocalDateTime.now();
+            String data = now.format(DateTimeFormatter.ofPattern(DIR_NAME_PATTERN));
             Files.write(infoFile, data.getBytes(), WRITE, TRUNCATE_EXISTING, CREATE);
+            return now;
         } catch (IOException e) {
             logger.error(e.getMessage());
             logger.debug(e.getMessage(), e);

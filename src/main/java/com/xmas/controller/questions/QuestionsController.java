@@ -33,7 +33,6 @@ public class QuestionsController {
 
     @RequestMapping(method = RequestMethod.POST)
     public void addQuestion(@RequestParam MultipartFile script,
-                            @RequestParam MultipartFile answerTemplate,
                             @RequestParam DataSourceType dataSourceType,
                             @RequestParam DataType dataType,
                             @RequestParam(required = false) String cron,
@@ -42,19 +41,18 @@ public class QuestionsController {
                             @RequestParam(required = false) String dataSourceResource) {
 
         Question question = new Question(tags, dataSourceType, dataSourceResource, dataType, scriptType, cron);
-        questionService.addQuestion(question, script, answerTemplate);
+        questionService.addQuestion(question, script);
 
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public Answer evalQuestion(@PathVariable Integer id, @RequestParam(required = false) MultipartFile data) {
+    public List<Answer> evalQuestion(@PathVariable Integer id, @RequestParam(required = false) MultipartFile data) {
         return questionService.evalQuestion(id, data);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public void updateQuestion(@PathVariable Integer id,
                                @RequestParam(required = false) MultipartFile script,
-                               @RequestParam(required = false) MultipartFile answerTemplate,
                                @RequestParam(required = false) DataSourceType dataSourceType,
                                @RequestParam(required = false) DataType dataType,
                                @RequestParam(required = false) ScriptType scriptType,
@@ -62,7 +60,7 @@ public class QuestionsController {
                                @RequestParam(required = false) List<Tag> tags,
                                @RequestParam(required = false) String dataSourceResource) {
         Question question = new Question(tags, dataSourceType, dataSourceResource, dataType, scriptType, cron);
-        questionService.updateQuestion(id, question, script, answerTemplate);
+        questionService.updateQuestion(id, question, script);
     }
 
 

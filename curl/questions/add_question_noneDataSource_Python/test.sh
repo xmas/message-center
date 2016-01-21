@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 curl -i -X POST -H "Content-Type: multipart/form-data"  \
   -F "script=@script.py" \
-  -F "answerTemplate=@template.json" \
   -F "dataSourceType=NONE" \
   -F "scriptType=PYTHON" \
   -F "dataType=FILE" \
