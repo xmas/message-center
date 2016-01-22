@@ -41,7 +41,6 @@ public class NotifierServiceTest {
     @Before
     public void init() throws Exception {
         mockStatic(LocalDateTime.class);
-        //when(LocalDateTime.now()).thenReturn(LocalDateTime.of(2015, 12, 26, 11, 29, 40));
         doReturn(LocalDateTime.of(2015, 12, 26, 11, 29, 40)).when(LocalDateTime.now());
     }
     

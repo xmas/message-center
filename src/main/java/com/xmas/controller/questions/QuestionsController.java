@@ -3,6 +3,7 @@ package com.xmas.controller.questions;
 import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
 import com.xmas.entity.questions.Tag;
+import com.xmas.exceptions.push.ResourceNotFoundException;
 import com.xmas.service.questions.QuestionService;
 import com.xmas.service.questions.data.DataType;
 import com.xmas.service.questions.datasource.DataSourceType;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/questions")
@@ -65,12 +68,16 @@ public class QuestionsController {
         questionService.updateQuestion(id, question, script);
     }
 
-    @RequestMapping(value = {"/data/{a}", "/data/{a/{b}", "/data/{a}/{b}/{c}", "/data/{a}/{b}/{c}/{d}"}, method = RequestMethod.GET)
-    public Object getFiles(HttpServletRequest request){
-        return FileUtil.getFilesInDirOrFileContent(this.getClass().getResource(mapRequestPathToResource(request)).getPath());
+    @RequestMapping(value = {"/data/{a}", "/data/{a}/{b}", "/data/{a}/{b}/{c}", "/data/{a}/{b}/{c}/{d}"}, method = RequestMethod.GET)
+    public Object getFiles(HttpServletRequest request) {
+        return Optional.ofNullable(this.getClass()
+                .getResource(mapRequestPathToResource(request)))
+                .map(URL::getPath)
+                .map(FileUtil::getFilesInDirOrFileContent)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
-    private String mapRequestPathToResource(HttpServletRequest request){
+    private String mapRequestPathToResource(HttpServletRequest request) {
         return request.getServletPath().replace("/data", "");
     }
 
