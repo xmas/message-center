@@ -34,7 +34,7 @@ def temp():
 
     json_data = json.dumps(data)
 
-    file_out = open(question_dir + "/answer.json", "w")
+    file_out = open(question_dir + "/answers.json", "w")
     file_out.write(json_data)
     file_out.close()
 

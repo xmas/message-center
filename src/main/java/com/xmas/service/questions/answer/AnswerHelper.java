@@ -23,7 +23,7 @@ public class AnswerHelper {
     @Autowired
     private AnswerRepository answerRepository;
 
-    public static final String ANSWERS_FILE_NAME = "answer.json";
+    public static final String ANSWERS_FILE_NAME = "answers.json";
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

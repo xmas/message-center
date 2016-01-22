@@ -3,20 +3,20 @@ val = mean(as.numeric(dat))
 user = "RUser"
 templ <- sprintf('[
                           {
-                              "title": "Hello, " + "%s",
-                              "details": "New value is " + "%s",
+                              "title": "Hello, %s",
+                              "details": "New value is %s",
                               "path": "Path1",
                               "guid": 0
                           },
                           {
-                              "title": "Hello, " + "%s",
-                              "details": "New value is " + "%s",
+                              "title": "Hello, %s",
+                              "details": "New value is %s",
                               "path": "Path2",
                               "guid": 0
                           },
                           {
-                              "title": "Hello, " + "%s",
-                              "details": "New value is " + "%s",
+                              "title": "Hello, %s",
+                              "details": "New value is %s",
                               "path": "Path3",
                               "guid": 0
                           }
