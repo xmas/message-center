@@ -28,6 +28,14 @@ public class FileUtil {
         }
     }
 
+    public static byte[] getFile(File file){
+        try {
+            return Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new ResourceNotFoundException(e);
+        }
+    }
+
     public static String getFullPathFileName(String fileName) {
         URL resource = FileUtil.class.getClassLoader().getResource(fileName);
         if (resource != null) {
@@ -64,5 +72,20 @@ public class FileUtil {
             }
         }
         return dir;
+    }
+
+    public static Object getFilesInDirOrFileContent(String path) {
+        File dirOrFile = new File(path);
+        if (!dirOrFile.exists()) throw new NotFoundException("Resource nor found.");
+        return dirOrFile.isDirectory() ? getFilesInDir(dirOrFile) : getFile(dirOrFile);
+    }
+
+    private static Object getFilesInDir(File dir){
+        if (!dir.exists()) throw new NotFoundException("Resource nor found.");
+        return Arrays.stream(dir.list()).collect(Collectors.toList());
+    }
+
+    private static Object getFileContent(File file){
+        return new String(getFile(file));
     }
 }

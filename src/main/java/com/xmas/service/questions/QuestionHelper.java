@@ -82,6 +82,7 @@ public class QuestionHelper implements QuestionEvaluator{
                 getQuestionDirFullPath(question));
         question.setLastTimeEvaluated(evaluationTime);
         answerHelper.saveAnswers(question);
+        dataService.packageQuestionData(question);
     }
 
     private void checkInput(Question question, Object data){

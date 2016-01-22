@@ -12,10 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.xmas.util.json.LocalDateTimeSerializer.DATE_TIME_FORMAT;
 import static java.nio.file.StandardOpenOption.*;
 
 public class FileSystemQuestionData {
@@ -24,6 +27,9 @@ public class FileSystemQuestionData {
 
     public static final String INPUT_FILE_NAME = "input.dat";
     public static final String INFO_FILE_NAME = ".info";
+    public static final String SCRIPT_DIR_NAME = "script";
+
+    public static final Pattern TEMP_DIR_NAME_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}");
 
     private String dataDirPath;
 
@@ -54,21 +60,22 @@ public class FileSystemQuestionData {
         File questionDir = new File(dataDirPath);
         if (!questionDir.exists()) {
             FileUtil.createDirectory(dataDirPath);
-        } else {
-            packagePreviousFiles(questionDir);
         }
         return addInfoFile(dataDirPath);
     }
 
-    private void packagePreviousFiles(File directory) {
-        File[] filesInDir = directory.listFiles();
+    public void packageQuestionFiles() {
+        File questionDir = new File(dataDirPath);
+        File[] filesInDir = questionDir.listFiles();
 
         List<File> files = Stream.of(filesInDir == null ? new File[]{} : filesInDir)
-                .filter(File::isFile)
+                .filter(this::notBackupDirectory)
+                .filter(this::notInfoFile)
+                .filter(this::notScriptDirectory)
                 .collect(Collectors.toList());
 
         if (!files.isEmpty()) {
-            moveFiles(files, createDailyPackageDir(directory));
+            moveFiles(files, createDailyPackageDir(questionDir));
         }
     }
 
@@ -86,28 +93,43 @@ public class FileSystemQuestionData {
     }
 
     private void moveFiles(List<File> files, File destinationDirectory) {
-        files.stream()
-                .filter(file -> !file.toPath().getFileName().toString().equals(INFO_FILE_NAME))
-                .forEach(file -> moveFile(file, destinationDirectory));
+        files.stream().forEach(file -> moveFile(file, destinationDirectory));
+    }
+
+    private boolean notInfoFile(File file){
+        return !getFileName(file).equals(INFO_FILE_NAME);
+    }
+
+    private boolean notBackupDirectory(File file){
+        return !TEMP_DIR_NAME_PATTERN.matcher(getFileName(file)).matches();
+    }
+
+    private boolean notScriptDirectory(File file){
+        return !getFileName(file).equals(SCRIPT_DIR_NAME);
+    }
+
+    private String getFileName(File file){
+        return file.toPath().getFileName().toString();
     }
 
     private void moveFile(File file, File destinationDirectory){
         try {
-            Files.move(file.toPath(),
-                    destinationDirectory
-                            .toPath()
-                            .resolve(file.toPath().getFileName().toString()),
-                    StandardCopyOption.REPLACE_EXISTING);
+            Files.move(file.toPath(), resolveDestFile(file, destinationDirectory), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new ProcessingException("Can't move old files");
         }
+    }
+
+    private Path resolveDestFile(File file, File destinationDirectory){
+        return destinationDirectory.toPath()
+                .resolve(file.toPath().getFileName().toString());
     }
 
     private LocalDateTime addInfoFile(String questionDir){
         Path infoFile = new File(questionDir).toPath().resolve(INFO_FILE_NAME);
         try {
             LocalDateTime now = LocalDateTime.now();
-            String data = now.toString();
+            String data = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).format(now);
             Files.write(infoFile, data.getBytes(), WRITE, TRUNCATE_EXISTING, CREATE);
             return now;
         } catch (IOException e) {

@@ -25,7 +25,8 @@ public class Answer {
     private String path;
     @Column
     private Long guid;
-
+    @Transient
+    private String dataDir;
     @ManyToOne
     @JoinColumn(name = "question")
     @JsonIgnore
@@ -85,5 +86,13 @@ public class Answer {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getDataDir() {
+        return question.getDirectoryPath();
+    }
+
+    public void setDataDir(String dataDir) {
+        this.dataDir = dataDir;
     }
 }

@@ -7,10 +7,12 @@ import com.xmas.service.questions.QuestionService;
 import com.xmas.service.questions.data.DataType;
 import com.xmas.service.questions.datasource.DataSourceType;
 import com.xmas.service.questions.script.ScriptType;
+import com.xmas.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -63,5 +65,13 @@ public class QuestionsController {
         questionService.updateQuestion(id, question, script);
     }
 
+    @RequestMapping(value = {"/data/{a}", "/data/{a/{b}", "/data/{a}/{b}/{c}", "/data/{a}/{b}/{c}/{d}"}, method = RequestMethod.GET)
+    public Object getFiles(HttpServletRequest request){
+        return FileUtil.getFilesInDirOrFileContent(this.getClass().getResource(mapRequestPathToResource(request)).getPath());
+    }
+
+    private String mapRequestPathToResource(HttpServletRequest request){
+        return request.getServletPath().replace("/data", "");
+    }
 
 }

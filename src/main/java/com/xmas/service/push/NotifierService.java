@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +50,7 @@ public class NotifierService {
         }
     }
 
-    protected long calculateDelay(ZonedDateTime time){
+    protected long calculateDelay(LocalDateTime time){
         return Duration.between(LocalDateTime.now(Clock.systemUTC()), time).getSeconds();
     }
 }
