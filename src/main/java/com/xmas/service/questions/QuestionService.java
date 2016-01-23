@@ -53,7 +53,7 @@ public class QuestionService {
 
     public void addQuestion(Question question, MultipartFile script) {
         questionHelper.saveQuestion(question, script);
-        if (question.getCron() != null)
+        if (question.getCron() != null && question.getDataSourceType().supportScheduling())
             scheduleQuestionEvaluating(question);
     }
 
