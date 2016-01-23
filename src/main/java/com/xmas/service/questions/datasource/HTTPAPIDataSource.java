@@ -60,12 +60,4 @@ public class HTTPAPIDataSource implements DataSource {
             return res;
         else throw new ProcessingException(EXCEPTION_MESSAGE + apiPath);
     }
-
-    public String getApiPath() {
-        return apiPath;
-    }
-
-    public void setApiPath(String apiPath) {
-        this.apiPath = apiPath;
-    }
 }

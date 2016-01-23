@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
 public class QuestionHelper implements QuestionEvaluator{
 
@@ -31,15 +32,12 @@ public class QuestionHelper implements QuestionEvaluator{
     @Autowired
     private ScriptService scriptService;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionRepository questionRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private TagsRepository tagsRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private AnswerHelper answerHelper;
 

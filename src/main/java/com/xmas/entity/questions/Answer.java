@@ -7,6 +7,7 @@ import com.xmas.util.json.LocalDateTimeSerializer;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name="answers")
 public class Answer {

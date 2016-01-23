@@ -1,5 +1,5 @@
 package com.xmas.service.push.notifiers.safari;
-
+@SuppressWarnings("unused")
 public class SafariLogJSONEntity {
     private String[] logs;
 

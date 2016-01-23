@@ -15,18 +15,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
 public class QuestionService {
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionHelper questionHelper;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionRepository questionRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private AnswerRepository answerRepository;
 

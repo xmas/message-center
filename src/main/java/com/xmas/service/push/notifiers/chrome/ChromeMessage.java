@@ -2,6 +2,7 @@ package com.xmas.service.push.notifiers.chrome;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ChromeMessage {
 
     private List<String> registration_ids;
