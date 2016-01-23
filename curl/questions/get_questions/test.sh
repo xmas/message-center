@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-curl -G "localhost:8080/push/questions"
+curl -k -G "https://pushserver.currentactions.com:8443/push/questions"
