@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -148,7 +149,8 @@ public class AppContext {
         PropertyPlaceholderConfigurer props = new PropertyPlaceholderConfigurer();
         props.setLocations(new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/app.properties"),
                            new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/jdbc.properties"),
-                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/hibernate.properties"));
+                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/hibernate.properties"),
+                           new ClassPathResource("config/application.properties"));
         return props;
     }
 
