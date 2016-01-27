@@ -3,7 +3,6 @@ package com.xmas.service.push;
 import com.xmas.service.push.notifiers.chrome.ChromeNotifier;
 import com.xmas.service.push.notifiers.email.EmailNotifier;
 import com.xmas.service.push.notifiers.safari.SafariNotifier;
-import com.xmas.service.push.NotifierService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static org.junit.Assert.assertEquals;
@@ -43,13 +41,12 @@ public class NotifierServiceTest {
     @Before
     public void init() throws Exception {
         mockStatic(LocalDateTime.class);
-        //when(LocalDateTime.now()).thenReturn(LocalDateTime.of(2015, 12, 26, 11, 29, 40));
         doReturn(LocalDateTime.of(2015, 12, 26, 11, 29, 40)).when(LocalDateTime.now());
     }
     
     @Test
     @Ignore
     public void testCalculateDelay() throws Exception {
-        assertEquals(3600*3, notifierService.calculateDelay(ZonedDateTime.parse("2015-12-26T11:29:40+03:00")));
+        assertEquals(3600*3, notifierService.calculateDelay(LocalDateTime.parse("2015-12-26T11:29:40")));
     }
 }

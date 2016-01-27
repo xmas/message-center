@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 curl -i -X POST -H "Content-Type: multipart/form-data"  \
   -F "script=@script.py" \
-  -F "dataSourceType=FILE_UPLOAD" \
+  -F "dataSourceType=NONE" \
   -F "scriptType=PYTHON" \
   -F "dataType=FILE" \
   -F "tags=tag1" \

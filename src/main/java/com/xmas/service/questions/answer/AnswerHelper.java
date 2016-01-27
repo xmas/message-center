@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class AnswerHelper {
@@ -22,47 +23,40 @@ public class AnswerHelper {
     @Autowired
     private AnswerRepository answerRepository;
 
-    public static final String ANSWER_FILE_NAME = "answer.json";
+    public static final String ANSWERS_FILE_NAME = "answers.json";
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public void saveAnswer(Question question){
-        answerRepository.save(
-                answerRepository
-                        .findAnswer(question, LocalDate.now())
-                        .map(answer -> updateDataFields(answer, parseAnswer(question)))
-                        .orElse(parseAnswer(question)));
-
+    public void saveAnswers(Question question) {
+        answerRepository.save(parseAnswers(question));
     }
 
-    private Answer parseAnswer(Question question){
+    private List<Answer> parseAnswers(Question question) {
         try {
-            String answerFilePath = Paths.get(QuestionHelper.getQuestionDirFullPath(question), ANSWER_FILE_NAME).toString();
-
-            String rawAnswerData = new String(FileUtil.getFile(answerFilePath));
-
-            Answer answer =  mapper.reader().forType(Answer.class).readValue(rawAnswerData);
-
-            answer.setDate(LocalDate.now());
-            answer.setQuestion(question);
-
-            return answer;
+            return collect(mapper.reader()
+                    .forType(Answer.class)
+                    .readValues(getRawData(question)), question);
         } catch (IOException e) {
             throw new ProcessingException("Can't get answer from output file. Probably script evaluate wrong file structure");
         }
     }
 
-    private Answer updateDataFields(Answer fromDb, Answer newAnswer){
-        if (isUnique(fromDb, newAnswer)) return newAnswer;
-
-        fromDb.setTitle(newAnswer.getTitle());
-        fromDb.setDetails(newAnswer.getDetails());
-        return fromDb;
+    private List<Answer> collect(Iterator<Answer> answerIterator ,Question question){
+        List<Answer> answers = new ArrayList<>();
+        answerIterator.forEachRemaining(answer -> {
+            answers.add(fillDefaultFields(answer, question));
+        });
+        return answers;
     }
 
-    private boolean isUnique(Answer a1, Answer a2){
-        return !Objects.equals(a1.getQuestion(), a2.getQuestion()) &&
-                Objects.equals(a1.getDate(), a2.getDate()) &&
-                Objects.equals(a1.getGuid(), a2.getGuid());
+    private String getRawData(Question question){
+        String answersFilePath = Paths.get(QuestionHelper.getQuestionDirFullPath(question), ANSWERS_FILE_NAME).toString();
+        return new String(FileUtil.getFile(answersFilePath));
+    }
+
+    private Answer fillDefaultFields(Answer answer, Question question){
+        answer.setQuestion(question);
+        answer.setDate(question.getLastTimeEvaluated());
+        return answer;
     }
 }

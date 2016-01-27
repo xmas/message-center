@@ -1,11 +1,12 @@
 package com.xmas.entity.push;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.xmas.util.json.LocalDateTimeSerializer;
 import com.xmas.util.json.UserMessageJsonDeserializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -31,12 +32,15 @@ public class Message {
     private String icon;
 
     @Column
-    private ZonedDateTime pushTime;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime pushTime;
 
     @Column
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime created;
 
     @Column
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime expiration;
 
     @Column
@@ -108,11 +112,11 @@ public class Message {
         this.icon = icon;
     }
 
-    public ZonedDateTime getPushTime() {
+    public LocalDateTime getPushTime() {
         return pushTime;
     }
 
-    public void setPushTime(ZonedDateTime pushTime) {
+    public void setPushTime(LocalDateTime pushTime) {
         this.pushTime = pushTime;
     }
 

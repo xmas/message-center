@@ -1,11 +1,7 @@
-from string import Template
+import json
 
 
 def temp():
-    template_name = question_dir + '/template/template.json'
-    filein = open(template_name)
-    src = Template(filein.read())
-
     value = 0
 
     with open(question_dir + '/input.dat') as f:
@@ -16,15 +12,32 @@ def temp():
             value += val
 
     value = value/len(content)
-
     user = "PythonUser"
+    data = [
+        {
+            'title': 'Hello, ' + user,
+            'details': 'New value is ' + str(value/2),
+            'path': 'Path1',
+            'guid': 0
+        },
+        {
+            'title': 'Hello, ' + user,
+            'details': 'New value is ' + str(value/3),
+            'path': 'Path2',
+            'guid': 0
+        },
+        {
+            'title': 'Hello, ' + user,
+            'details': 'New value is ' + str(value/4),
+            'path': 'Path3',
+            'guid': 0
+        }
+    ]
 
-    d = {'user': user, 'value': value}
+    json_data = json.dumps(data)
 
-    result = src.substitute(d)
-
-    file_out = open(question_dir + "/answer.json", "w")
-    file_out.write(result)
+    file_out = open(question_dir + "/answers.json", "w")
+    file_out.write(json_data)
     file_out.close()
 
 
