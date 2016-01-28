@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+read -r server < ../server.info
 curl -i -X PUT -H "Content-Type: multipart/form-data"  \
   -F "script=@script.r" \
   -F "answerTemplate=@template.json" \
@@ -6,4 +7,4 @@ curl -i -X PUT -H "Content-Type: multipart/form-data"  \
   -F "scriptType=R" \
   -F "dataType=FILE" \
   -F "tags=tag1" \
-  localhost:8080/push/questions/3
+  ${server}"/questions/questions/3"

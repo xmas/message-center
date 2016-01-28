@@ -9,5 +9,5 @@ curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
   -F "cron=0 0 3 * * ?" \
   -F "tags=tag3" \
   -F "tags=tag2" \
-  ${server}"/push/questions"
+  ${server}"/questions/questions"
 
