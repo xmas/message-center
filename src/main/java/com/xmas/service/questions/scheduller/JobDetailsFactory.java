@@ -78,7 +78,9 @@ public class JobDetailsFactory {
     }
 
     private void standUpScheduler(){
-        questionRepository.getScheduled().forEach(this::addQuestionJob);
+        questionRepository.getScheduled().stream()
+                .filter(question -> question.getDataSourceType().supportScheduling())
+                .forEach(this::addQuestionJob);
     }
 
 }

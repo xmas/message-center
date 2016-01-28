@@ -14,23 +14,18 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
 public class UserService {
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     UsersRepository usersRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     DeviceRepository deviceRepository;
 
     @Autowired
     IPLocationProvider locationProvider;
-
-    public boolean exist(User user){
-        return usersRepository.getUserByGUID(user.getGuid()).isPresent();
-    }
 
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
@@ -40,10 +35,6 @@ public class UserService {
 
     public User getUser(Long GUID) {
         return usersRepository.getUserByGUID(GUID).orElseThrow(() -> new NoSuchUserFoundException(GUID));
-    }
-
-    public User getUser(String userName) {
-        return usersRepository.getUserByName(userName).orElseThrow(() -> new NoSuchUserFoundException(userName));
     }
 
     public void addUser(Long GUID) {

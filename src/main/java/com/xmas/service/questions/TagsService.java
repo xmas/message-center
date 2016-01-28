@@ -27,10 +27,6 @@ public class TagsService {
         return tagsRepository.getByName(name);
     }
 
-    public Tag getTag(Integer id){
-        return tagsRepository.findOne(id);
-    }
-
     public void deleteTag(Integer id){
         tagsRepository.delete(id);
     }

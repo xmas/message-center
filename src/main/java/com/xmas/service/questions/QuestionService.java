@@ -15,18 +15,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
 public class QuestionService {
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionHelper questionHelper;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionRepository questionRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private AnswerRepository answerRepository;
 
@@ -53,7 +51,7 @@ public class QuestionService {
 
     public void addQuestion(Question question, MultipartFile script) {
         questionHelper.saveQuestion(question, script);
-        if (question.getCron() != null)
+        if (question.getCron() != null && question.getDataSourceType().supportScheduling())
             scheduleQuestionEvaluating(question);
     }
 

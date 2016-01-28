@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-curl -i -X POST -H "Content-Type: multipart/form-data"  \
+read -r server < ../server.info
+curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
   -F "data=" \
-  localhost:8080/push/questions/3
+  ${server}"/push/questions/3"

@@ -15,18 +15,21 @@ public class ScriptService {
     @Qualifier("pythonScriptEvaluator")
     private ScriptEvaluator pythonScriptEvaluator;
 
-    public void evaluate(ScriptType type, String script, String workDir) {
-        getEvaluator(type).evaluate(script, workDir);
-    }
+    @Autowired
+    @Qualifier("nodeScriptEvaluator")
+    private ScriptEvaluator nodeScriptEvaluator;
 
-    private ScriptEvaluator getEvaluator(ScriptType scriptType) {
-        switch (scriptType) {
+    public void evaluate(ScriptType type, String workDir) {
+        switch (type) {
             case R:
-                return rScriptEvaluator;
+                rScriptEvaluator.evaluate(ScriptFileUtil.getScript(workDir), workDir); break;
             case PYTHON:
-                return pythonScriptEvaluator;
+                pythonScriptEvaluator.evaluate(ScriptFileUtil.getScript(workDir), workDir); break;
+            case NODE:
+                nodeScriptEvaluator.evaluate(null, workDir); break;
             default:
                 throw new RuntimeException("Unsupported script type exception");
         }
     }
+
 }

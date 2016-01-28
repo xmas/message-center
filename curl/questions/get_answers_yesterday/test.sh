@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
+read -r server < ../server.info
 yesterday="from="$(date -d "1 days ago" +"%Y-%m-%d")
-curl -G "localhost:8080/push/questions/3/answers" -d ${yesterday}
+curl --silent -k -G ${server}"/push/questions/3/answers" -d ${yesterday} | python -m json.tool

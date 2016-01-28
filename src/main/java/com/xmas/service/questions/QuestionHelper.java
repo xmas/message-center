@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
 public class QuestionHelper implements QuestionEvaluator{
 
@@ -31,15 +32,12 @@ public class QuestionHelper implements QuestionEvaluator{
     @Autowired
     private ScriptService scriptService;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionRepository questionRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private TagsRepository tagsRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private AnswerHelper answerHelper;
 
@@ -77,9 +75,7 @@ public class QuestionHelper implements QuestionEvaluator{
         checkInput(question, data);
 
         LocalDateTime evaluationTime = dataService.evaluateData(question, data);
-        scriptService.evaluate(question.getScriptType(),
-                ScriptFileUtil.getScript(getQuestionDirFullPath(question)),
-                getQuestionDirFullPath(question));
+        scriptService.evaluate(question.getScriptType(), getQuestionDirFullPath(question));
         question.setLastTimeEvaluated(evaluationTime);
         answerHelper.saveAnswers(question);
         dataService.packageQuestionData(question);

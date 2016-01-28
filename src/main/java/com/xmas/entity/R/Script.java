@@ -1,7 +1,7 @@
 package com.xmas.entity.R;
 
 import javax.persistence.*;
-
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "scripts")
 public class Script {

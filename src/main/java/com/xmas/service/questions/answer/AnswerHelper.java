@@ -43,9 +43,7 @@ public class AnswerHelper {
 
     private List<Answer> collect(Iterator<Answer> answerIterator ,Question question){
         List<Answer> answers = new ArrayList<>();
-        answerIterator.forEachRemaining(answer -> {
-            answers.add(fillDefaultFields(answer, question));
-        });
+        answerIterator.forEachRemaining(answer -> answers.add(fillDefaultFields(answer, question)));
         return answers;
     }
 

@@ -1,6 +1,6 @@
 # message-center
- #To deploy to remote server from command prompt you need:
-    # Create file settings.xml in local machine ${user.home}/.m2 folder wich contains nex text
+### To deploy to remote server from command prompt you need:
+* Create file settings.xml in local machine ${user.home}/.m2 folder wich contains nex text
     
        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -43,14 +43,13 @@
        
        </settings>
     
- # Create directory .pushmessages/properties in ${user.home} and put jdbc.properties,  hibernate.properties and app.properties there
- # Create directory .pushmessages/email in ${user.home} and put there template.html.
+* Create directory .pushmessages/properties in ${user.home} and put jdbc.properties,  hibernate.properties and app.properties there
+* Create directory .pushmessages/email in ${user.home} and put there template.html.
    It will be used for creating html emails for user. Example of template.html in resources.
    Placeholders used in this example can be used in different html tags.
    If template.html will be not found there default will be used
 
-
- # R integration
+### R integration
   Install R if not installed yet: sudo apt-get install r-base
   Install rserve if not installed yet: sudo apt-get install r-cran-rserve
 
