@@ -5,6 +5,7 @@ import com.xmas.service.questions.script.ScriptEvaluator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -17,6 +18,9 @@ public class NodeScriptEvaluator implements ScriptEvaluator{
     private static final Logger logger = LogManager.getLogger();
 
     public static final String SCRIPT_FILE = "/script/script.sc";
+
+    @Value("${node.global.lib}")
+    private String nodePath;
 
     @Override
     public void evaluate(String scriptFileName, String workDir){
@@ -39,12 +43,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator{
     }
 
     private String[] getEnvironment(){
-        return System.getenv()
-                .keySet()
-                .stream()
-                .map(key -> key+ "=" + System.getenv().get(key))
-                .peek(System.out::println)
-                .toArray((l) -> new String[l]);
+        return new String[]{"NODE_PATH="+nodePath};
     }
 
     private String getError(InputStream errorStream){
