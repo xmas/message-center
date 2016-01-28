@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-curl -k -G "https://pushserver.currentactions.com:8443/push/questions"
+curl --silent -G "localhost:8080/push/questions" | python -m json.tool

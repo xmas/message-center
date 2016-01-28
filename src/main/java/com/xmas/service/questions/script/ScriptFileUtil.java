@@ -26,6 +26,7 @@ public class ScriptFileUtil {
                 .toFile();
 
         FileUtil.saveUploadedFile(savedFile, scriptFile);
+        savedFile.setExecutable(true);
     }
 
     public static void replaceScript(String questionDir, MultipartFile scriptFile){

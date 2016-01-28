@@ -75,9 +75,7 @@ public class QuestionHelper implements QuestionEvaluator{
         checkInput(question, data);
 
         LocalDateTime evaluationTime = dataService.evaluateData(question, data);
-        scriptService.evaluate(question.getScriptType(),
-                ScriptFileUtil.getScript(getQuestionDirFullPath(question)),
-                getQuestionDirFullPath(question));
+        scriptService.evaluate(question.getScriptType(), getQuestionDirFullPath(question));
         question.setLastTimeEvaluated(evaluationTime);
         answerHelper.saveAnswers(question);
         dataService.packageQuestionData(question);
