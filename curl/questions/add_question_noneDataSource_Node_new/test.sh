@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 read -r server < ../server.info
 curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
-  -F "script=@script.py" \
-  -F "dataSourceType=FILE_UPLOAD" \
-  -F "scriptType=PYTHON" \
+  -F "script=@report.js" \
+  -F "dataSourceType=NONE" \
+  -F "scriptType=NODE" \
   -F "dataType=FILE" \
   -F "tags=tag1" \
   -F "tags=tag2" \

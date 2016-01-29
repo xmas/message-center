@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Collections;
 
 @Service
 public class RService {
@@ -50,7 +51,7 @@ public class RService {
         saveInputFile(requestDirectory, input);
 
         String script = loadScript(scriptRepository.findOne(id).getScriptFileName());
-        scriptEvaluator.evaluate(script, requestDirectory);
+        scriptEvaluator.evaluate(script, requestDirectory, Collections.emptyMap());
 
         return retrieveFinalDir(requestDirectory);
     }

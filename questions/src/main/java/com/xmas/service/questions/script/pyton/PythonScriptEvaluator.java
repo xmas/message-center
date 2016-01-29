@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @Qualifier("pythonScriptEvaluator")
 public class PythonScriptEvaluator implements ScriptEvaluator{
@@ -22,11 +24,11 @@ public class PythonScriptEvaluator implements ScriptEvaluator{
     private PythonInterpreterManager interpreterManager;
 
     @Override
-    public void evaluate(String script, String workDir) {
+    public void evaluate(String script, String workDir, Map<String, String> args) {
         try {
             PythonInterpreter interpreter = interpreterManager.getInterpreter();
 
-            interpreter.set(DIR_ARG_NAME, workDir);
+            setArgs(interpreter, args, workDir);
             interpreter.execfile(workDir + SCRIPT_FILE);
         }catch (Exception pyException){
             logger.error("Error during executind script " + workDir + SCRIPT_FILE);
@@ -34,6 +36,11 @@ public class PythonScriptEvaluator implements ScriptEvaluator{
             throw new ProcessingException(pyException);
         }
 
+    }
+
+    private void setArgs(PythonInterpreter interpreter, Map<String, String> args, String workDir){
+        interpreter.set(DIR_ARG_NAME, workDir);
+        args.keySet().stream().forEach(key -> interpreter.set(key, args.get(key)));
     }
 
 }

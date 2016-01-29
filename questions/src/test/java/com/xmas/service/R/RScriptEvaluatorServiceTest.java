@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
+import java.util.Collections;
 
 import static org.junit.Assert.assertTrue;
 
@@ -37,7 +38,7 @@ public class RScriptEvaluatorServiceTest {
 
     @Test
     public void testEvaluateScript() throws Exception {
-        evaluatorService.evaluate(script, dir);
+        evaluatorService.evaluate(script, dir, Collections.emptyMap());
 
         assertTrue(new File(dir + "/output/output.png").exists());
     }

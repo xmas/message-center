@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,10 +24,11 @@ public class NodeScriptEvaluator implements ScriptEvaluator{
     private String nodePath;
 
     @Override
-    public void evaluate(String scriptFileName, String workDir){
+    public void evaluate(String scriptFileName, String workDir, Map<String, String> args){
         try {
 
-            Process process = Runtime.getRuntime().exec(workDir + SCRIPT_FILE, getEnvironment(), new File(workDir));
+            Process process = Runtime.getRuntime()
+                    .exec(buildExecString(workDir, args), getEnvironment(), new File(workDir));
 
             int processResult = process.waitFor();
 
@@ -40,6 +42,16 @@ public class NodeScriptEvaluator implements ScriptEvaluator{
             logger.debug(e.getMessage(), e);
             throw new ProcessingException(e);
         }
+    }
+
+    private String buildExecString(String workDir, Map<String, String> args){
+        return workDir + SCRIPT_FILE + " " + buildScriptArgsString(args);
+    }
+
+    private String buildScriptArgsString(Map<String, String> args){
+        return args.keySet().stream()
+                .map(key -> "-"+ key + " " + args.get(key))
+                .collect(Collectors.joining(" "));
     }
 
     private String[] getEnvironment(){

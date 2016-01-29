@@ -9,6 +9,7 @@ import com.xmas.util.json.LocalDateTimeSerializer;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Map;
 
 @Entity
 @Table(name = "questions")
@@ -44,7 +45,14 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private ScriptType scriptType;
 
+    @Column
     private String cron;
+
+    @ElementCollection
+    @CollectionTable(name="script_args")
+    @MapKeyColumn (name="name")
+    @Column(name="value")
+    private Map<String, String> scriptArgs;
 
     public Question() {
     }
@@ -133,5 +141,13 @@ public class Question {
 
     public void setCron(String cron) {
         this.cron = cron;
+    }
+
+    public Map<String, String> getScriptArgs() {
+        return scriptArgs;
+    }
+
+    public void setScriptArgs(Map<String, String> scriptArgs) {
+        this.scriptArgs = scriptArgs;
     }
 }

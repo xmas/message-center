@@ -2,8 +2,6 @@ package com.xmas.service.R;
 
 import com.xmas.exceptions.R.ScriptEvaluationExceprion;
 import com.xmas.service.questions.script.ScriptEvaluator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngine;
@@ -12,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @Qualifier("rScriptEvaluator")
 public class RScriptEvaluatorService implements ScriptEvaluator{
-
-    private static final Logger logger = LogManager.getLogger();
 
     public static final String R_DIR_ARG_NAME = "dir";
     public static final String FUNCTION_NAME = "mainEvaluatingFunction";
@@ -24,11 +22,11 @@ public class RScriptEvaluatorService implements ScriptEvaluator{
     @Autowired
     private RConnectionManager connectionManager;
 
-    public void evaluate(String script, String requestDir){
+    public void evaluate(String script, String requestDir, Map<String, String> args){
         try {
             REngine R = connectionManager.getConnection();
 
-            R.assign(R_DIR_ARG_NAME, requestDir);
+            setArgs(R, args, requestDir);
 
             R.parseAndEval(createFunction(script));
             REXP r = R.parseAndEval("try(" + FUNCTION_NAME + "(), silent=FALSE)");
@@ -36,8 +34,19 @@ public class RScriptEvaluatorService implements ScriptEvaluator{
                 throw new ScriptEvaluationExceprion(r.asString());
 
         }catch (REngineException | REXPMismatchException e){
-            logger.error(e.getMessage());
-            logger.debug(e.getMessage(), e);
+            throw new ScriptEvaluationExceprion(e);
+        }
+    }
+
+    private void setArgs(REngine R, Map<String, String> args, String workDir) throws REngineException {
+        R.assign(R_DIR_ARG_NAME, workDir);
+        args.keySet().stream().forEach(key -> assignArg(R, key, args.get(key)));
+    }
+
+    private void assignArg(REngine R, String argName, String argValue){
+        try {
+            R.assign(argName, argValue);
+        } catch (REngineException e) {
             throw new ScriptEvaluationExceprion(e);
         }
     }

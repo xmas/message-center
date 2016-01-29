@@ -4,6 +4,7 @@ import com.xmas.entity.questions.Answer;
 import com.xmas.entity.questions.Question;
 import com.xmas.entity.questions.Tag;
 import com.xmas.exceptions.ResourceNotFoundException;
+import com.xmas.service.questions.QuestionBuilder;
 import com.xmas.service.questions.QuestionService;
 import com.xmas.service.questions.data.DataType;
 import com.xmas.service.questions.datasource.DataSourceType;
@@ -41,11 +42,22 @@ public class QuestionsController {
                             @RequestParam DataSourceType dataSourceType,
                             @RequestParam DataType dataType,
                             @RequestParam(required = false) String cron,
+                            @RequestParam(required = false) String scriptArgs,
                             @RequestParam ScriptType scriptType,
                             @RequestParam List<Tag> tags,
                             @RequestParam(required = false) String dataSourceResource) {
 
-        Question question = new Question(tags, dataSourceType, dataSourceResource, dataType, scriptType, cron);
+        Question question = QuestionBuilder
+                .createQuestion()
+                .withCron(cron)
+                .withDataSourceResource(dataSourceResource)
+                .withDataSourceType(dataSourceType)
+                .withDataType(dataType)
+                .withScriptType(scriptType)
+                .withTags(tags)
+                .withScriptArgs(scriptArgs)
+                .build();
+
         questionService.addQuestion(question, script);
 
     }
@@ -61,10 +73,22 @@ public class QuestionsController {
                                @RequestParam(required = false) DataSourceType dataSourceType,
                                @RequestParam(required = false) DataType dataType,
                                @RequestParam(required = false) ScriptType scriptType,
+                               @RequestParam(required = false) String scriptArgs,
                                @RequestParam(required = false) String cron,
                                @RequestParam(required = false) List<Tag> tags,
                                @RequestParam(required = false) String dataSourceResource) {
-        Question question = new Question(tags, dataSourceType, dataSourceResource, dataType, scriptType, cron);
+
+        Question question = QuestionBuilder
+                .createQuestion()
+                .withCron(cron)
+                .withDataSourceResource(dataSourceResource)
+                .withDataSourceType(dataSourceType)
+                .withDataType(dataType)
+                .withScriptType(scriptType)
+                .withTags(tags)
+                .withScriptArgs(scriptArgs)
+                .build();
+
         questionService.updateQuestion(id, question, script);
     }
 
