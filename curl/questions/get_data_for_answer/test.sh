@@ -6,6 +6,6 @@ pathVariables=(`
     grep -Po '((?<=dataDir":\s")[1-9a-f]+)|(((?<=date":\s")[^",]+))'
 `)
 
-curl -k -G ${server}"/questions/questions/data/${pathVariables[0]}/${pathVariables[1]}/" -stderr
+curl -k -G ${server}"/questions/data/${pathVariables[0]}/${pathVariables[1]}/" -stderr
 
 

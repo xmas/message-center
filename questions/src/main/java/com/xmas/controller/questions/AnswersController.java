@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/questions/{qId}/answers")
+@RequestMapping("/{qId}/answers")
 public class AnswersController {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")

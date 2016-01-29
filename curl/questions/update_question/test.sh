@@ -7,4 +7,4 @@ curl -i -X PUT -H "Content-Type: multipart/form-data"  \
   -F "scriptType=R" \
   -F "dataType=FILE" \
   -F "tags=tag1" \
-  ${server}"/questions/questions/3"
+  ${server}"/questions/3"
