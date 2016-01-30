@@ -48,7 +48,7 @@ public class Question {
     @Column
     private String cron;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name="script_args")
     @MapKeyColumn (name="name")
     @Column(name="value")

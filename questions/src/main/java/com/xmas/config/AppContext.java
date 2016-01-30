@@ -24,7 +24,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.xmas")
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.xmas.dao")
-@Import({MVCConfiguration.class, SchedulerConfig.class})
+@Import({MVCConfiguration.class})
 public class AppContext {
 
     @Value("${jdbc.driver}")
