@@ -1,6 +1,6 @@
-package com.xmas.service.R;
+package com.xmas.service.questions.script.R;
 
-import com.xmas.exceptions.R.ScriptEvaluationExceprion;
+import com.xmas.exceptions.questions.ScriptEvaluationExceprion;
 import com.xmas.service.questions.script.ScriptEvaluator;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;

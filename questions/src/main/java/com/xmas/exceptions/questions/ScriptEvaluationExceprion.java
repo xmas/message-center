@@ -1,4 +1,4 @@
-package com.xmas.exceptions.R;
+package com.xmas.exceptions.questions;
 
 import com.xmas.exceptions.ProcessingException;
 
