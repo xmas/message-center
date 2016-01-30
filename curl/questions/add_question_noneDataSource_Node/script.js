@@ -2,6 +2,12 @@
 var jsforce = require('jsforce');
 var fs = require('fs');
 
+var args = [];
+
+process.argv.forEach(function (val, index, array) {
+    args[index] = val;
+});
+
 var conn = new jsforce.Connection({
   // you can change loginUrl to connect to sandbox or prerelease env.
   //loginUrl : 'https://na34.salesforce.com'
@@ -26,12 +32,14 @@ function getReports() {
 
         console.log("reports length: "+reports.length);
 
-        var lines = [];
+        var lines = {};
+        lines.args=args;
+        lines.arr = [];
         for (var i=0; i < reports.length; i++) {
             console.log(reports[i].id);
             console.log(reports[i].name);
             var line = [reports[i].id, reports[i].name];
-            lines.push(line);
+            lines.arr.push(line);
         }
         saveOutput("out.json", JSON.stringify(lines));
 

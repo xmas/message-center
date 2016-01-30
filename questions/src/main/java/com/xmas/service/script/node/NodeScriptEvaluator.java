@@ -50,7 +50,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator{
 
     private String buildScriptArgsString(Map<String, String> args){
         return args.keySet().stream()
-                .map(key -> "-"+ key + " " + args.get(key))
+                .map(key -> key + " " + args.get(key))
                 .collect(Collectors.joining(" "));
     }
 
