@@ -1,7 +1,7 @@
-package com.xmas.service.script.node;
+package com.xmas.util.script.node;
 
 import com.xmas.exceptions.ProcessingException;
-import com.xmas.service.script.ScriptEvaluator;
+import com.xmas.util.script.ScriptEvaluator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Qualifier("nodeScriptEvaluator")
-public class NodeScriptEvaluator implements ScriptEvaluator{
+public class NodeScriptEvaluator implements ScriptEvaluator {
 
     private static final Logger logger = LogManager.getLogger();
 

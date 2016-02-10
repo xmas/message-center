@@ -1,7 +1,7 @@
-package com.xmas.service.script.R;
+package com.xmas.util.script.R;
 
 import com.xmas.exceptions.ScriptEvaluationExceprion;
-import com.xmas.service.script.ScriptEvaluator;
+import com.xmas.util.script.ScriptEvaluator;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngine;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Service
 @Qualifier("rScriptEvaluator")
-public class RScriptEvaluatorService implements ScriptEvaluator{
+public class RScriptEvaluatorService implements ScriptEvaluator {
 
     public static final String R_DIR_ARG_NAME = "dir";
     public static final String FUNCTION_NAME = "mainEvaluatingFunction";

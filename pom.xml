@@ -12,6 +12,7 @@
         <module>auth</module>
         <module>push</module>
         <module>questions</module>
+        <module>insights</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -202,6 +203,13 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
 

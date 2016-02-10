@@ -1,4 +1,4 @@
-package com.xmas.service.script;
+package com.xmas.util.script;
 
 public enum ScriptType {
     R, PYTHON, NODE, PERL

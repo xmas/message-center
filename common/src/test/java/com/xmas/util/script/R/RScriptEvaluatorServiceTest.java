@@ -1,4 +1,4 @@
-package com.xmas.service.script.R;
+package com.xmas.util.script.R;
 
 import org.junit.Before;
 import org.junit.Test;

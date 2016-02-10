@@ -6,7 +6,7 @@ import com.xmas.entity.Tag;
 import com.xmas.exceptions.BadRequestException;
 import com.xmas.service.data.DataType;
 import com.xmas.service.datasource.DataSourceType;
-import com.xmas.service.script.ScriptType;
+import com.xmas.util.script.ScriptType;
 
 import java.io.IOException;
 import java.util.Collection;

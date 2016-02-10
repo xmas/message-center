@@ -3,8 +3,8 @@ package com.xmas.entity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xmas.service.data.DataType;
 import com.xmas.service.datasource.DataSourceType;
-import com.xmas.service.script.ScriptType;
 import com.xmas.util.json.LocalDateTimeSerializer;
+import com.xmas.util.script.ScriptType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -1,7 +1,7 @@
-package com.xmas.service.script.pyton;
+package com.xmas.util.script.pyton;
 
 import com.xmas.exceptions.ProcessingException;
-import com.xmas.service.script.ScriptEvaluator;
+import com.xmas.util.script.ScriptEvaluator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.python.util.PythonInterpreter;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Service
 @Qualifier("pythonScriptEvaluator")
-public class PythonScriptEvaluator implements ScriptEvaluator{
+public class PythonScriptEvaluator implements ScriptEvaluator {
 
     private static final Logger logger = LogManager.getLogger();
 

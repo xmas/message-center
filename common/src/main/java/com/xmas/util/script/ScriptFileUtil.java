@@ -1,4 +1,4 @@
-package com.xmas.service.script;
+package com.xmas.util.script;
 
 import com.xmas.util.FileUtil;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,4 +1,4 @@
-package com.xmas.service.script.R;
+package com.xmas.util.script.R;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

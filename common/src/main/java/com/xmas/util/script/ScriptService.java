@@ -1,4 +1,4 @@
-package com.xmas.service.script;
+package com.xmas.util.script;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,4 +1,4 @@
-package com.xmas.service.script;
+package com.xmas.util.script;
 
 import java.util.Map;
 

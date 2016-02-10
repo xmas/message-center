@@ -1,4 +1,4 @@
-package com.xmas.service.script.pyton;
+package com.xmas.util.script.pyton;
 
 import org.python.util.PythonInterpreter;
 import org.springframework.stereotype.Service;
