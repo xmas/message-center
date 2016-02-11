@@ -1,4 +1,4 @@
-package com.xmas.service.data;
+package com.xmas.util.data;
 
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.util.FileUtil;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import static com.xmas.util.json.LocalDateTimeSerializer.DATE_TIME_FORMAT;
 import static java.nio.file.StandardOpenOption.*;
 
-public class FileSystemQuestionData {
+public class FileSystemData {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -33,7 +33,7 @@ public class FileSystemQuestionData {
 
     private String dataDirPath;
 
-    public FileSystemQuestionData(String dataDirPath) {
+    public FileSystemData(String dataDirPath) {
         this.dataDirPath = dataDirPath;
     }
 
@@ -69,9 +69,9 @@ public class FileSystemQuestionData {
         File[] filesInDir = questionDir.listFiles();
 
         List<File> files = Stream.of(filesInDir == null ? new File[]{} : filesInDir)
-                .filter(this::notBackupDirectory)
-                .filter(this::notInfoFile)
-                .filter(this::notScriptDirectory)
+                .filter(d -> ! isBackupDirectory(d))
+                .filter(f -> ! isInfoFile(f))
+                .filter(d -> ! isScriptDirectory(d))
                 .collect(Collectors.toList());
 
         if (!files.isEmpty()) {
@@ -96,16 +96,16 @@ public class FileSystemQuestionData {
         files.stream().forEach(file -> moveFile(file, destinationDirectory));
     }
 
-    private boolean notInfoFile(File file){
-        return !getFileName(file).equals(INFO_FILE_NAME);
+    private boolean isInfoFile(File file){
+        return getFileName(file).equals(INFO_FILE_NAME);
     }
 
-    private boolean notBackupDirectory(File file){
+    private boolean isBackupDirectory(File file){
         return !TEMP_DIR_NAME_PATTERN.matcher(getFileName(file)).matches();
     }
 
-    private boolean notScriptDirectory(File file){
-        return !getFileName(file).equals(SCRIPT_DIR_NAME);
+    private boolean isScriptDirectory(File file){
+        return getFileName(file).equals(SCRIPT_DIR_NAME);
     }
 
     private String getFileName(File file){

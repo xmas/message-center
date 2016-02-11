@@ -6,7 +6,7 @@ import com.xmas.entity.Tag;
 import com.xmas.exceptions.ResourceNotFoundException;
 import com.xmas.service.QuestionBuilder;
 import com.xmas.service.QuestionService;
-import com.xmas.service.data.DataType;
+import com.xmas.util.data.DataType;
 import com.xmas.service.datasource.DataSourceType;
 import com.xmas.util.FileUtil;
 import com.xmas.util.script.ScriptType;

@@ -1,4 +1,4 @@
-package com.xmas.service.data;
+package com.xmas.util.data;
 
 public enum DataType {
     FILE

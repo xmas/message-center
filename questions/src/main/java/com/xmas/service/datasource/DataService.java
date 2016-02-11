@@ -3,7 +3,7 @@ package com.xmas.service.datasource;
 import com.xmas.entity.Question;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.service.DataSource;
-import com.xmas.service.data.FileSystemQuestionData;
+import com.xmas.util.data.FileSystemData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +15,7 @@ import static com.xmas.service.QuestionHelper.getQuestionDirFullPath;
 public class DataService {
 
     public LocalDateTime evaluateData(Question question, Object data) {
-        return new FileSystemQuestionData(getQuestionDirFullPath(question))
+        return new FileSystemData(getQuestionDirFullPath(question))
                 .evaluateData(getDataSource(question.getDataSourceType(), data).getData());
     }
 
@@ -38,6 +38,6 @@ public class DataService {
 
 
     public void packageQuestionData(Question question) {
-        new FileSystemQuestionData(getQuestionDirFullPath(question)).packageQuestionFiles();
+        new FileSystemData(getQuestionDirFullPath(question)).packageQuestionFiles();
     }
 }
