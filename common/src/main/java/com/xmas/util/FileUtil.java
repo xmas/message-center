@@ -12,7 +12,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileUtil {
@@ -45,23 +44,20 @@ public class FileUtil {
         }
     }
 
-    public static List<String> getFiles(String folder) {
-        File dir = new File(folder);
-        if (!dir.exists()) throw new NotFoundException("Resource nor found.");
-        return Arrays.stream(dir.list()).collect(Collectors.toList());
-    }
-
-    public static void saveUploadedFile(File destDir, String fileName, MultipartFile fileToSave) {
-        File file = destDir.toPath().resolve(fileName).toFile();
-        saveUploadedFile(file, fileToSave);
-    }
-
     public static void saveUploadedFile(File destFile, MultipartFile fileToSave) {
         try {
             FileUtils.writeByteArrayToFile(destFile, fileToSave.getBytes());
         } catch (IOException e) {
             throw new ProcessingException("Cant store file: " + destFile);
         }
+    }
+
+    public static File createRandomNameDirInThis(String thisDirName){
+        String questionDirPath = Paths.get(thisDirName, RandomNamesUtil.getRandomName())
+                .toAbsolutePath()
+                .toString();
+
+        return FileUtil.createDirectory(questionDirPath);
     }
 
     public static File createDirectory(String dirPath) {
@@ -83,9 +79,5 @@ public class FileUtil {
     private static Object getFilesInDir(File dir){
         if (!dir.exists()) throw new NotFoundException("Resource nor found.");
         return Arrays.stream(dir.list()).collect(Collectors.toList());
-    }
-
-    private static Object getFileContent(File file){
-        return new String(getFile(file));
     }
 }

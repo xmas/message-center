@@ -10,7 +10,6 @@ import com.xmas.exceptions.QuestionNotFoundException;
 import com.xmas.service.answer.AnswerHelper;
 import com.xmas.service.datasource.DataService;
 import com.xmas.util.FileUtil;
-import com.xmas.util.RandomNamesUtil;
 import com.xmas.util.script.ScriptFileUtil;
 import com.xmas.util.script.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -46,7 +44,7 @@ public class QuestionHelper implements QuestionEvaluator{
 
     public void saveQuestion(Question question, MultipartFile scriptFile) {
 
-        File questionDir = createQuestionDirectory();
+        File questionDir = FileUtil.createRandomNameDirInThis(QUESTIONS_BASE_DIR_PATH);
 
         ScriptFileUtil.saveScript(questionDir.getAbsolutePath(), scriptFile);
 
@@ -85,14 +83,6 @@ public class QuestionHelper implements QuestionEvaluator{
         if(question == null) throw new IllegalArgumentException("Cant evaluate empty question.");
         if(data == null && question.getDataSourceType().requireData())
             throw new IllegalArgumentException("Cant evaluate question with empty data.");
-    }
-
-    private File createQuestionDirectory() {
-        String questionDirPath = Paths.get(QUESTIONS_BASE_DIR_PATH, RandomNamesUtil.getRandomName())
-                .toAbsolutePath()
-                .toString();
-
-        return FileUtil.createDirectory(questionDirPath);
     }
 
     private void saveToDB(Question question){
