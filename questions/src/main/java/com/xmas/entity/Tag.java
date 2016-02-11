@@ -1,9 +1,14 @@
 package com.xmas.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="tags")
+@Data
+@NoArgsConstructor
 public class Tag {
 
     @Id
@@ -12,26 +17,8 @@ public class Tag {
     @Column
     private String name;
 
-    public Tag() {
-    }
-
     public Tag(String name) {
         this.name = name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
