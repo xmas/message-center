@@ -3,6 +3,7 @@ package com.xmas.insight.entity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xmas.util.json.LocalDateTimeSerializer;
 import com.xmas.util.script.ScriptType;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import static com.xmas.util.ValidationUtil.CRON_REGEX;
 @Entity
 @Table(name = "insight_data")
 @Data
+@Builder
 public class InsightEvaluator {
     @Id
     @GeneratedValue

@@ -32,12 +32,12 @@ if (clargs.server) {
 }
 var options = {
     host: server,
-    port: 8080,
+    port: 8080
 };
 
 var parser = function parseQuestions(body) {
     var questions = JSON.parse(body);
-    //console.log(JSON.stringify(questions, null, 4));
+
 };
 
 var parserA = function parseAnswers(body, caller) {

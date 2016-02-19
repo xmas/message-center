@@ -20,12 +20,19 @@ public class InsightEvaluatorService {
     @Autowired
     private InsightEvaluatorRepository evaluatorRepository;
 
-    public Iterable<InsightEvaluator> getInsights() {
-        return evaluatorRepository.findAll();
+    public Iterable<InsightEvaluator> getInsights(Long questionId) {
+        validateQuestion(questionId);
+        return evaluatorRepository.getByQuestionId(questionId);
     }
 
-    public InsightEvaluator getEvaluator(Long id) {
-        return evaluatorRepository.findOne(id);
+    public InsightEvaluator getEvaluator(Long questionId, Long id) {
+        validateQuestion(questionId);
+        InsightEvaluator evaluator = evaluatorRepository.findOne(id);
+        if(evaluator.getQuestionId().equals(questionId)){
+            return evaluator;
+        }else {
+            throw new NotFoundException("This question don't has insight with such id.");
+        }
     }
 
     public void addInsightEvaluator(InsightEvaluator evaluator, MultipartFile script) {
