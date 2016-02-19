@@ -1,16 +1,15 @@
 package com.xmas.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xmas.entity.Question;
 import com.xmas.entity.Tag;
-import com.xmas.exceptions.BadRequestException;
-import com.xmas.util.data.DataType;
 import com.xmas.service.datasource.DataSourceType;
+import com.xmas.util.data.DataType;
 import com.xmas.util.script.ScriptType;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+
+import static com.xmas.util.json.MapParser.parseScriptArgs;
 
 public class QuestionBuilder {
 
@@ -83,13 +82,4 @@ public class QuestionBuilder {
         return question;
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<String, String> parseScriptArgs(String string){
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(string, Map.class);
-        } catch (IOException e) {
-            throw new BadRequestException("Can't parse string \"" + string + "\" as script arguments.", e);
-        }
-    }
 }

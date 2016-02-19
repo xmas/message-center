@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
+import static com.xmas.util.json.MapParser.parseScriptArgs;
 
 @RestController
 @RequestMapping("/questions/{questionId}/insightEval")
@@ -16,7 +16,7 @@ public class InsightEvaluatorController {
     @Autowired
     private InsightEvaluatorService insightEvaluatorService;
 
-    @RequestMapping("/")
+    @RequestMapping
     public Iterable<InsightEvaluator> getInsightEvaluators(@PathVariable Long questionId) {
         return insightEvaluatorService.getInsights(questionId);
     }
@@ -27,12 +27,14 @@ public class InsightEvaluatorController {
         return insightEvaluatorService.getEvaluator(questionId, insightId);
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public void addInsightEvaluator(@PathVariable Long questionId,
                                     @RequestParam MultipartFile script,
+                                    @RequestParam(required = false) String scriptArgs,
                                     @RequestParam(required = false) String cron,
                                     @RequestParam ScriptType scriptType) {
         InsightEvaluator evaluator = InsightEvaluator.builder()
+                .scriptArgs(parseScriptArgs(scriptArgs))
                 .cron(cron)
                 .questionId(questionId)
                 .scriptType(scriptType)
@@ -41,11 +43,9 @@ public class InsightEvaluatorController {
         insightEvaluatorService.addInsightEvaluator(evaluator, script);
     }
 
+    @RequestMapping(value = "/{insightId}", method = RequestMethod.POST)
+    public void evaluateInsight(){
 
-    @PostConstruct
-    public void init(){
-        System.out.println("=================================================");
-        System.out.println("==========FUCKING CONTROLLER+++++++==============");
-        System.out.println("=================================================");
     }
+
 }

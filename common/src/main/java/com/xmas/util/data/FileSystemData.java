@@ -64,7 +64,7 @@ public class FileSystemData {
         return addInfoFile(dataDirPath);
     }
 
-    public void packageQuestionFiles() {
+    public void packageEvaluatedFiles() {
         File questionDir = new File(dataDirPath);
         File[] filesInDir = questionDir.listFiles();
 

@@ -1,7 +1,11 @@
 package com.xmas.config;
 
+import com.xmas.entity.Answer;
+import com.xmas.entity.EntityHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +55,9 @@ public class AppContext {
     @Value("${mail.password}")
     private String mailServerPassword;
 
+    @Autowired
+    ApplicationContext applicationContext;
+
     private Properties hibernateProperties(){
         Properties properties = new Properties();
         properties.put("hibernate.show_sql",showSql);
@@ -94,6 +101,11 @@ public class AppContext {
                            new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/jdbc.properties"),
                            new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/hibernate.properties"));
         return props;
+    }
+
+    @Bean
+    public EntityHelper<Answer> answerHelper(){
+        return new EntityHelper<>(Answer.class, applicationContext);
     }
 
 }

@@ -38,6 +38,6 @@ public class DataService {
 
 
     public void packageQuestionData(Question question) {
-        new FileSystemData(getQuestionDirFullPath(question)).packageQuestionFiles();
+        new FileSystemData(getQuestionDirFullPath(question)).packageEvaluatedFiles();
     }
 }

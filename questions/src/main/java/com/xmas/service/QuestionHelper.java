@@ -2,12 +2,13 @@ package com.xmas.service;
 
 import com.xmas.dao.QuestionRepository;
 import com.xmas.dao.TagsRepository;
+import com.xmas.entity.Answer;
+import com.xmas.entity.EntityHelper;
 import com.xmas.entity.Question;
 import com.xmas.entity.Tag;
 import com.xmas.exceptions.BadRequestException;
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.QuestionNotFoundException;
-import com.xmas.service.answer.AnswerHelper;
 import com.xmas.service.datasource.DataService;
 import com.xmas.util.FileUtil;
 import com.xmas.util.script.ScriptFileUtil;
@@ -37,7 +38,7 @@ public class QuestionHelper implements QuestionEvaluator{
     private TagsRepository tagsRepository;
 
     @Autowired
-    private AnswerHelper answerHelper;
+    private EntityHelper<Answer> answerHelper;
 
     @Autowired
     DataService dataService;
@@ -75,7 +76,7 @@ public class QuestionHelper implements QuestionEvaluator{
         LocalDateTime evaluationTime = dataService.evaluateData(question, data);
         scriptService.evaluate(question.getScriptType(), getQuestionDirFullPath(question), question.getScriptArgs());
         question.setLastTimeEvaluated(evaluationTime);
-        answerHelper.saveAnswers(question);
+        answerHelper.save(getQuestionDirFullPath(question), question);
         dataService.packageQuestionData(question);
     }
 

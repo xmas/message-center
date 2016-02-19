@@ -2,6 +2,7 @@ package com.xmas.insight.service;
 
 import com.xmas.exceptions.NotFoundException;
 import com.xmas.insight.dao.InsightEvaluatorRepository;
+import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.insight.validator.questionid.QuestionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,16 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 public class InsightEvaluatorService {
 
     @Value("${questions.api.url}")
     private String questionsApiUrl;
+
+    @Autowired
+    private InsightEvaluatorHelper helper;
 
     @Autowired
     private InsightEvaluatorRepository evaluatorRepository;
@@ -37,6 +43,11 @@ public class InsightEvaluatorService {
 
     public void addInsightEvaluator(InsightEvaluator evaluator, MultipartFile script) {
         validateQuestion(evaluator.getQuestionId());
+        helper.saveInsightEvaluator(evaluator, script);
+    }
+
+    public List<Insight> evaluate(InsightEvaluator evaluator){
+        return null;
     }
 
     public void validateQuestion(Long id) {

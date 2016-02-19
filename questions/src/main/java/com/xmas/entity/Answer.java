@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="answers")
 @Data
-public class Answer {
+public class Answer implements EvaluatedEntity{
 
     @Id
     @GeneratedValue
@@ -35,4 +35,12 @@ public class Answer {
     @JsonIgnore
     private Question question;
 
+    @Override
+    public void setParent(Object parent) {
+        if(parent instanceof Question){
+            setQuestion((Question) parent);
+        } else {
+            throw new IllegalArgumentException("Parent for answer should be instance of Question class.");
+        }
+    }
 }
