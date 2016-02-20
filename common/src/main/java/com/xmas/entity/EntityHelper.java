@@ -21,7 +21,7 @@ import java.util.List;
  * Application context has to have CrudRepository for this class with name [classname]Repository
  * @param <T> type of served entity
  */
-public class EntityHelper<T extends EvaluatedEntity> {
+public class EntityHelper<T extends EvaluatedEntity, P> {
 
     private ApplicationContext applicationContext;
 
@@ -43,7 +43,14 @@ public class EntityHelper<T extends EvaluatedEntity> {
         entitiesJsonFileName = getEntitiesJsonFileName();
     }
 
-    public void save(String fullDirPath, Object parent) {
+    /**
+     * Saves entities created by script to database
+     * This entities have to be placed in JSON file in {@param fullDirPath}
+     * JSON file have to be named as <plural of entity>.json(i.e. answers.json)
+     * @param fullDirPath full path to directory with entities file
+     * @param parent Parent entity for saved entities (i.e. Question for answers)
+     */
+    public void save(String fullDirPath, P parent) {
         repository.save(parse(fullDirPath, parent));
     }
 
@@ -63,7 +70,7 @@ public class EntityHelper<T extends EvaluatedEntity> {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private List<T> parse(String fullDirPath, Object parent) {
+    private List<T> parse(String fullDirPath, P parent) {
         try {
             return collect(mapper.reader()
                     .forType(entityClass)
@@ -73,7 +80,7 @@ public class EntityHelper<T extends EvaluatedEntity> {
         }
     }
 
-    private List<T> collect(Iterator<T> answerIterator, Object parent) {
+    private List<T> collect(Iterator<T> answerIterator, P parent) {
         List<T> res = new ArrayList<>();
         answerIterator.forEachRemaining(e -> res.add(fillDefaultFields(e, parent)));
         return res;
@@ -84,7 +91,7 @@ public class EntityHelper<T extends EvaluatedEntity> {
         return new String(FileUtil.getFile(answersFilePath));
     }
 
-    private T fillDefaultFields(T entity, Object parent){
+    private T fillDefaultFields(T entity, P parent){
         entity.setParent(parent);
         entity.setDate(LocalDateTime.now());
         return entity;

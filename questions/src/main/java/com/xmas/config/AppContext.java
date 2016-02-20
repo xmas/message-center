@@ -2,6 +2,7 @@ package com.xmas.config;
 
 import com.xmas.entity.Answer;
 import com.xmas.entity.EntityHelper;
+import com.xmas.entity.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -104,7 +105,7 @@ public class AppContext {
     }
 
     @Bean
-    public EntityHelper<Answer> answerHelper(){
+    public EntityHelper<Answer, Question> answerHelper(){
         return new EntityHelper<>(Answer.class, applicationContext);
     }
 

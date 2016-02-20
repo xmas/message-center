@@ -1,10 +1,15 @@
 package com.xmas.insight.config;
 
+import com.xmas.entity.EntityHelper;
+import com.xmas.insight.entity.Insight;
+import com.xmas.insight.entity.InsightEvaluator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.FileSystemResource;
@@ -41,6 +46,9 @@ public class AppConfig {
     private String dialect;
     @Value("${hibernate.hbm2ddl.auto}")
     private String hbm2ddl;
+
+    @Autowired
+    private ApplicationContext context;
 
     public static void main(String[] args) {
         SpringApplication.run(AppConfig.class, args);
@@ -89,5 +97,10 @@ public class AppConfig {
                 new FileSystemResource(System.getProperty("user.home")+ "/.insights/properties/jdbc.properties"),
                 new FileSystemResource(System.getProperty("user.home")+ "/.insights/properties/hibernate.properties"));
         return props;
+    }
+
+    @Bean
+    EntityHelper<Insight, InsightEvaluator> insightHelper(){
+        return new EntityHelper<>(Insight.class, context);
     }
 }

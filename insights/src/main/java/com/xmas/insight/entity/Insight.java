@@ -1,5 +1,6 @@
 package com.xmas.insight.entity;
 
+import com.xmas.entity.EvaluatedEntity;
 import com.xmas.util.NonePredefinedAttributesConverter;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 @Entity
 @Table(name = "insights")
 @Data
-public class Insight {
+public class Insight implements EvaluatedEntity{
     @Id
     @GeneratedValue
     private Long id;
@@ -41,4 +42,9 @@ public class Insight {
 
     @Column
     private String source;
+
+    @Override
+    public void setParent(Object parent) {
+
+    }
 }

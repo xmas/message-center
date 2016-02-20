@@ -38,7 +38,7 @@ public class QuestionHelper implements QuestionEvaluator{
     private TagsRepository tagsRepository;
 
     @Autowired
-    private EntityHelper<Answer> answerHelper;
+    private EntityHelper<Answer, Question> answerHelper;
 
     @Autowired
     DataService dataService;

@@ -1,6 +1,8 @@
 package com.xmas.insight.service;
 
+import com.xmas.entity.EntityHelper;
 import com.xmas.insight.dao.InsightEvaluatorRepository;
+import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.util.FileUtil;
 import com.xmas.util.data.FileSystemData;
@@ -22,6 +24,9 @@ public class InsightEvaluatorHelper {
     @Autowired
     private ScriptService scriptService;
 
+    @Autowired
+    private EntityHelper<Insight, InsightEvaluator> insightHelper;
+
     private static String EVALUATORS_BASE_DIR = InsightEvaluatorHelper.class.getResource("/insights").getPath();
 
     public void saveInsightEvaluator(InsightEvaluator evaluator, MultipartFile scriptFile){
@@ -36,15 +41,15 @@ public class InsightEvaluatorHelper {
     }
 
     public void evaluate(InsightEvaluator evaluator){
-        FileSystemData fileSystemData  = new FileSystemData(getQuestionDirFullPath(evaluator));
+        FileSystemData fileSystemData  = new FileSystemData(getDataDirFullPath(evaluator));
         LocalDateTime evaluationTime = fileSystemData.evaluateData(null);
-        scriptService.evaluate(evaluator.getScriptType(), getQuestionDirFullPath(evaluator), evaluator.getScriptArgs());
+        scriptService.evaluate(evaluator.getScriptType(), getDataDirFullPath(evaluator), evaluator.getScriptArgs());
         evaluator.setLastTimeEvaluated(evaluationTime);
-        //answerHelper.saveAnswers(question);
+        insightHelper.save(getDataDirFullPath(evaluator), evaluator);
         fileSystemData.packageEvaluatedFiles();
     }
 
-    private String getQuestionDirFullPath(InsightEvaluator evaluator) {
+    private String getDataDirFullPath(InsightEvaluator evaluator) {
         return "/insights/" + evaluator.getDirectoryPath();
     }
 
