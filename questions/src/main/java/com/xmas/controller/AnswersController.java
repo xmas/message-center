@@ -28,7 +28,7 @@ public class AnswersController {
 
 
     @RequestMapping
-    public Iterable<Answer> getAnswers(@PathVariable Integer qId,
+    public Iterable<Answer> getAnswers(@PathVariable Long qId,
                                        @RequestParam(required = false)
                                        @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate from,
                                        @RequestParam(required = false)

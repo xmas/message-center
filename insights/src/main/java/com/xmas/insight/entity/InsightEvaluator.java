@@ -44,7 +44,7 @@ public class InsightEvaluator {
     private String cron;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="script_args")
+    @CollectionTable(name="insight_script_args")
     @MapKeyColumn (name="name")
     @Column(name="value")
     private Map<String, String> scriptArgs;

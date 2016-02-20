@@ -21,7 +21,7 @@ public class Question {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToMany
     @JoinTable(name = "questions_tags",

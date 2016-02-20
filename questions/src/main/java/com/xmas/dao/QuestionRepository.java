@@ -8,13 +8,13 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuestionRepository extends CrudRepository<Question, Integer>{
+public interface QuestionRepository extends CrudRepository<Question, Long>{
 
     @Query("SELECT question from Question question")
     List<Question> getAll();
 
     @Query("SELECT question from Question question WHERE question.id = ?1")
-    Optional<Question> getById(Integer id);
+    Optional<Question> getById(Long id);
 
     @Query("SELECT DISTINCT question from Question question INNER JOIN question.tags t WHERE t IN ?1")
     List<Question> getByTags(List<Tag> tags);

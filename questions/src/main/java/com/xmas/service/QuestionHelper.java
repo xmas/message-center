@@ -54,7 +54,7 @@ public class QuestionHelper implements QuestionEvaluator{
         saveToDB(question);
     }
 
-    public void updateQuestion(Integer qId, Question question, MultipartFile scriptFile){
+    public void updateQuestion(Long qId, Question question, MultipartFile scriptFile){
         Question fromDb = questionRepository.getById(qId).orElseThrow(QuestionNotFoundException::new);
 
         updateExistingFields(fromDb, question);

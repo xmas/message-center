@@ -50,7 +50,7 @@ public class InsightEvaluatorHelper {
     }
 
     private String getDataDirFullPath(InsightEvaluator evaluator) {
-        return "/insights/" + evaluator.getDirectoryPath();
+        return this.getClass().getResource("/insights/").getPath() + evaluator.getDirectoryPath();
     }
 
 }

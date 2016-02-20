@@ -2,6 +2,7 @@ package com.xmas.insight.service;
 
 import com.xmas.exceptions.NotFoundException;
 import com.xmas.insight.dao.InsightEvaluatorRepository;
+import com.xmas.insight.dao.InsightRepository;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.insight.validator.questionid.QuestionTemplate;
@@ -26,6 +27,9 @@ public class InsightEvaluatorService {
     @Autowired
     private InsightEvaluatorRepository evaluatorRepository;
 
+    @Autowired
+    private InsightRepository insightRepository;
+
     public Iterable<InsightEvaluator> getInsights(Long questionId) {
         validateQuestion(questionId);
         return evaluatorRepository.getByQuestionId(questionId);
@@ -46,8 +50,12 @@ public class InsightEvaluatorService {
         helper.saveInsightEvaluator(evaluator, script);
     }
 
-    public List<Insight> evaluate(InsightEvaluator evaluator){
-        return null;
+    public List<Insight> evaluate(Long evaluatorId){
+        InsightEvaluator evaluator = evaluatorRepository.findOne(evaluatorId);
+        if(evaluator == null) throw new NotFoundException("Evaluator with id " + evaluatorId + " not found.");
+        helper.evaluate(evaluator);
+        return insightRepository.find(evaluator, evaluator.getLastTimeEvaluated());
+
     }
 
     public void validateQuestion(Long id) {

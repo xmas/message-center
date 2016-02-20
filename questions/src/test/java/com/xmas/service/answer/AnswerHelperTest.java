@@ -2,6 +2,7 @@ package com.xmas.service.answer;
 
 import com.xmas.dao.AnswerRepository;
 import com.xmas.entity.Answer;
+import com.xmas.entity.EntityHelper;
 import com.xmas.entity.Question;
 import com.xmas.util.FileUtil;
 import org.junit.Before;
@@ -57,7 +58,7 @@ public class AnswerHelperTest {
     AnswerRepository answerRepository;
 
     @InjectMocks
-    AnswerHelper answerHelper;
+    EntityHelper<Answer, Question> answerHelper;
 
     @Captor
     private ArgumentCaptor<List<Answer>> argumentCaptor;
@@ -72,7 +73,7 @@ public class AnswerHelperTest {
 
     @Test
     public void testSaveAnswers() throws Exception {
-        answerHelper.saveAnswers(question);
+        answerHelper.save(question.getDirectoryPath(), question);
 
         verify(answerRepository, times(1)).save(argumentCaptor.capture());
 

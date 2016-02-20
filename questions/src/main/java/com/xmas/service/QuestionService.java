@@ -43,7 +43,7 @@ public class QuestionService {
         }
     }
 
-    public Question getById(Integer id) {
+    public Question getById(Long id) {
         return questionRepository
                 .getById(id)
                 .orElseThrow(QuestionNotFoundException::new);
@@ -55,7 +55,7 @@ public class QuestionService {
             scheduleQuestionEvaluating(question);
     }
 
-    public List<Answer> evalQuestion(Integer id, MultipartFile data) {
+    public List<Answer> evalQuestion(Long id, MultipartFile data) {
         Question question = questionRepository.getById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (data == null)
@@ -66,7 +66,7 @@ public class QuestionService {
         return answerRepository.findAnswers(question, LocalDate.now().atStartOfDay());
     }
 
-    public void updateQuestion(Integer id, Question question, MultipartFile script) {
+    public void updateQuestion(Long id, Question question, MultipartFile script) {
         questionHelper.updateQuestion(id, question, script);
     }
 

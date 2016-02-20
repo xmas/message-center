@@ -12,7 +12,7 @@ import java.util.Map;
 @Entity
 @Table(name = "insights")
 @Data
-public class Insight implements EvaluatedEntity{
+public class Insight implements EvaluatedEntity {
     @Id
     @GeneratedValue
     private Long id;
@@ -25,9 +25,9 @@ public class Insight implements EvaluatedEntity{
     private List<Long> answers;
 
     @ElementCollection
-    @CollectionTable(name="insight_parameters", joinColumns=@JoinColumn(name="insight"))
-    @MapKeyColumn(name="name")
-    @Column(name="value")
+    @CollectionTable(name = "insight_parameters", joinColumns = @JoinColumn(name = "insight"))
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
     @Convert(converter = NonePredefinedAttributesConverter.class, attributeName = "value")
     private Map<String, Object> parameters;
 
@@ -43,8 +43,13 @@ public class Insight implements EvaluatedEntity{
     @Column
     private String source;
 
+    @ManyToOne
+    private InsightEvaluator evaluator;
+
     @Override
     public void setParent(Object parent) {
-
+        if (parent instanceof InsightEvaluator) {
+            setEvaluator((InsightEvaluator) parent);
+        } else throw new IllegalArgumentException("Parent for insight should be instance of InsightEvaluator class.");
     }
 }

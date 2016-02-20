@@ -45,7 +45,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
     }
 
     private String buildExecString(String workDir, Map<String, String> args){
-        return workDir + SCRIPT_FILE + " " + buildScriptArgsString(args);
+        return "node " +  workDir + SCRIPT_FILE + " " + buildScriptArgsString(args);
     }
 
     private String buildScriptArgsString(Map<String, String> args){

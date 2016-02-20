@@ -30,7 +30,7 @@ public class QuestionJobFactory implements JobFactory {
 
     private Question getQuestion(TriggerFiredBundle bundle){
         JobDetail jobDetail = bundle.getJobDetail();
-        Integer qId = jobDetail.getJobDataMap().getIntValue(JobDetailsFactory.QUESTION_ID_PARAM_NAME);
+        Long qId = jobDetail.getJobDataMap().getLongValue(JobDetailsFactory.QUESTION_ID_PARAM_NAME);
         return questionRepository.getById(qId).orElseThrow(QuestionNotFoundException::new);
     }
 }

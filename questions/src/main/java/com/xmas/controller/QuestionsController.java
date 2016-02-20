@@ -33,7 +33,7 @@ public class QuestionsController {
     }
 
     @RequestMapping("/{id}")
-    public Question getQuestion(@PathVariable Integer id) {
+    public Question getQuestion(@PathVariable Long id) {
         return questionService.getById(id);
     }
 
@@ -63,12 +63,12 @@ public class QuestionsController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public List<Answer> evalQuestion(@PathVariable Integer id, @RequestParam(required = false) MultipartFile data) {
+    public List<Answer> evalQuestion(@PathVariable Long id, @RequestParam(required = false) MultipartFile data) {
         return questionService.evalQuestion(id, data);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public void updateQuestion(@PathVariable Integer id,
+    public void updateQuestion(@PathVariable Long id,
                                @RequestParam(required = false) MultipartFile script,
                                @RequestParam(required = false) DataSourceType dataSourceType,
                                @RequestParam(required = false) DataType dataType,

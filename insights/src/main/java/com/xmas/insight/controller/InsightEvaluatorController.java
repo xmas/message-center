@@ -1,11 +1,14 @@
 package com.xmas.insight.controller;
 
+import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.insight.service.InsightEvaluatorService;
 import com.xmas.util.script.ScriptType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static com.xmas.util.json.MapParser.parseScriptArgs;
 
@@ -34,7 +37,7 @@ public class InsightEvaluatorController {
                                     @RequestParam(required = false) String cron,
                                     @RequestParam ScriptType scriptType) {
         InsightEvaluator evaluator = InsightEvaluator.builder()
-                .scriptArgs(parseScriptArgs(scriptArgs))
+                .scriptArgs(scriptArgs == null ? null : parseScriptArgs(scriptArgs))
                 .cron(cron)
                 .questionId(questionId)
                 .scriptType(scriptType)
@@ -44,8 +47,8 @@ public class InsightEvaluatorController {
     }
 
     @RequestMapping(value = "/{insightId}", method = RequestMethod.POST)
-    public void evaluateInsight(){
-
+    public List<Insight> evaluateInsight(@PathVariable Long insightId){
+        return insightEvaluatorService.evaluate(insightId);
     }
 
 }
