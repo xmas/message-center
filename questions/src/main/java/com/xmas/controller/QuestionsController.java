@@ -102,7 +102,7 @@ public class QuestionsController {
     }
 
     private String mapRequestPathToResource(HttpServletRequest request) {
-        return request.getServletPath().replace("/data", "");
+        return request.getServletPath().replace("/data", "/questions");
     }
 
 }

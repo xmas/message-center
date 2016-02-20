@@ -43,4 +43,8 @@ public class Answer implements EvaluatedEntity{
             throw new IllegalArgumentException("Parent for answer should be instance of Question class.");
         }
     }
+
+    public String getDataDir(){
+        return question.getDirectoryPath();
+    }
 }

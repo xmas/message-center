@@ -101,7 +101,7 @@ public class FileSystemData {
     }
 
     private boolean isBackupDirectory(File file){
-        return !TEMP_DIR_NAME_PATTERN.matcher(getFileName(file)).matches();
+        return TEMP_DIR_NAME_PATTERN.matcher(getFileName(file)).matches();
     }
 
     private boolean isScriptDirectory(File file){

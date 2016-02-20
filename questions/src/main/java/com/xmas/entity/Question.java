@@ -17,7 +17,7 @@ import java.util.Map;
 @Table(name = "questions")
 @Data
 @NoArgsConstructor
-public class Question {
+public class Question implements EvaluatorEntity{
 
     @Id
     @GeneratedValue

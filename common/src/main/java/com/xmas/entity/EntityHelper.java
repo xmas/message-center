@@ -9,7 +9,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
  * Application context has to have CrudRepository for this class with name [classname]Repository
  * @param <T> type of served entity
  */
-public class EntityHelper<T extends EvaluatedEntity, P> {
+public class EntityHelper<T extends EvaluatedEntity, P extends EvaluatorEntity> {
 
     private ApplicationContext applicationContext;
 
@@ -93,7 +92,7 @@ public class EntityHelper<T extends EvaluatedEntity, P> {
 
     private T fillDefaultFields(T entity, P parent){
         entity.setParent(parent);
-        entity.setDate(LocalDateTime.now());
+        entity.setDate(parent.getLastTimeEvaluated());
         return entity;
     }
 
