@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -52,8 +53,8 @@ public class FileUtil {
         }
     }
 
-    public static File createRandomNameDirInThis(String thisDirName){
-        String questionDirPath = Paths.get(thisDirName, RandomNamesUtil.getRandomName())
+    public static File createRandomNameDirInThis(Path thisDirName){
+        String questionDirPath = thisDirName.resolve(RandomNamesUtil.getRandomName())
                 .toAbsolutePath()
                 .toString();
 

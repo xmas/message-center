@@ -11,6 +11,7 @@ import com.xmas.exceptions.ProcessingException;
 import com.xmas.exceptions.QuestionNotFoundException;
 import com.xmas.service.datasource.DataService;
 import com.xmas.util.FileUtil;
+import com.xmas.util.data.DataDirectoryService;
 import com.xmas.util.script.ScriptFileUtil;
 import com.xmas.util.script.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,6 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionHelper implements QuestionEvaluator{
 
-    public static final String QUESTIONS_BASE_DIR_PATH = QuestionHelper.class.getResource("/questions").getPath();
-
     @Autowired
     private ScriptService scriptService;
 
@@ -41,11 +40,14 @@ public class QuestionHelper implements QuestionEvaluator{
     private EntityHelper<Answer, Question> answerHelper;
 
     @Autowired
-    DataService dataService;
+    private DataService dataService;
+
+    @Autowired
+    private DataDirectoryService dataDirectory;
 
     public void saveQuestion(Question question, MultipartFile scriptFile) {
 
-        File questionDir = FileUtil.createRandomNameDirInThis(QUESTIONS_BASE_DIR_PATH);
+        File questionDir = FileUtil.createRandomNameDirInThis(dataDirectory.getDataDirectory());
 
         ScriptFileUtil.saveScript(questionDir.getAbsolutePath(), scriptFile);
 
@@ -117,10 +119,10 @@ public class QuestionHelper implements QuestionEvaluator{
 
     }
 
-    public static String getQuestionDirFullPath(Question question){
+    public String getQuestionDirFullPath(Question question){
         if(question == null || question.getDirectoryPath() == null)
             throw new IllegalArgumentException("Cant evaluate dir for this question.");
-        return QUESTIONS_BASE_DIR_PATH + "/" +  question.getDirectoryPath();
+        return dataDirectory.getDataDirectory().resolve(question.getDirectoryPath()).toString();
     }
 
 

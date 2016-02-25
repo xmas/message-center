@@ -5,6 +5,7 @@ import com.xmas.insight.dao.InsightEvaluatorRepository;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.util.FileUtil;
+import com.xmas.util.data.DataDirectoryService;
 import com.xmas.util.data.FileSystemData;
 import com.xmas.util.script.ScriptFileUtil;
 import com.xmas.util.script.ScriptService;
@@ -27,10 +28,11 @@ public class InsightEvaluatorHelper {
     @Autowired
     private EntityHelper<Insight, InsightEvaluator> insightHelper;
 
-    private static String EVALUATORS_BASE_DIR = InsightEvaluatorHelper.class.getResource("/insights").getPath();
+    @Autowired
+    private DataDirectoryService dataDirectory;
 
     public void saveInsightEvaluator(InsightEvaluator evaluator, MultipartFile scriptFile){
-        File evaluatorDir = FileUtil.createRandomNameDirInThis(EVALUATORS_BASE_DIR);
+        File evaluatorDir = FileUtil.createRandomNameDirInThis(dataDirectory.getDataDirectory());
         ScriptFileUtil.saveScript(evaluatorDir.getAbsolutePath(), scriptFile);
         evaluator.setDirectoryPath(evaluatorDir.toPath().getFileName().toString());
         saveToDB(evaluator);
@@ -50,7 +52,7 @@ public class InsightEvaluatorHelper {
     }
 
     private String getDataDirFullPath(InsightEvaluator evaluator) {
-        return this.getClass().getResource("/insights/").getPath() + evaluator.getDirectoryPath();
+        return dataDirectory.getDataDirectory().resolve(evaluator.getDirectoryPath()).toString();
     }
 
 }

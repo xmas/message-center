@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +28,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
     private String nodePath;
 
     @Override
-    public void evaluate(String scriptFileName, String workDir, Map<String, String> args){
+    public void evaluate(String scriptFileName, String workDir, Map<String, String> args) {
         try {
 
             Process process = Runtime.getRuntime()
@@ -32,10 +36,9 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
 
             int processResult = process.waitFor();
 
-            if(processResult != 0){
+            if (processResult != 0) {
                 String error = getError(process.getErrorStream());
-                throw new ProcessingException("Error during evaluating Node script. Exit code: " + processResult + ".\n" +
-                        error);
+                processError(error);
             }
         } catch (IOException | InterruptedException | ProcessingException e) {
             logger.error("Error during executind script " + workDir + SCRIPT_FILE);
@@ -44,24 +47,60 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
         }
     }
 
-    private String buildExecString(String workDir, Map<String, String> args){
-        return "node " +  workDir + SCRIPT_FILE + " " + buildScriptArgsString(args);
+    private void processError(String executionResult) {
+        Pattern noModureErrorPattern = Pattern.compile("Error: Cannot find module '([a-z]+)'");
+        Matcher matcher = noModureErrorPattern.matcher(executionResult);
+        if (matcher.find()) {
+            try {
+                tryToInstallRequiredModule(matcher.group(1));
+            } catch (ProcessingException pe){
+                throw new ProcessingException("Error during evaluating Node script. Exit code: " + executionResult);
+            }
+        } else {
+            throw new ProcessingException("Error during evaluating Node script. Exit code: " + executionResult);
+        }
     }
 
-    private String buildScriptArgsString(Map<String, String> args){
+    private String buildExecString(String workDir, Map<String, String> args) {
+        return new ArrayList<String>() {{
+            //add("node");
+            add(workDir + SCRIPT_FILE);
+            addAll(buildScriptArgsString(args));
+        }}.stream().collect(Collectors.joining(" "));
+    }
+
+    private List<String> buildScriptArgsString(Map<String, String> args) {
         return args.keySet().stream()
                 .map(key -> key + " " + args.get(key))
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.toList());
     }
 
     private String[] getEnvironment(){
         return new String[]{"NODE_PATH="+nodePath};
     }
 
-    private String getError(InputStream errorStream){
+    private String getError(InputStream errorStream) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
         return reader.lines().collect(Collectors.joining("\n"));
     }
 
+    private void tryToInstallRequiredModule(String moduleName) {
+        try {
+            Process process = new ProcessBuilder()
+                    .command("npm", "install", "-g", moduleName)
+                    .start();
+
+            int processResult = process.waitFor();
+
+            if (processResult != 0) {
+                String error = getError(process.getErrorStream());
+                throw new ProcessingException("Error during installing Node module. Exit code: " + processResult + ".\n" +
+                        error);
+            }
+        } catch (IOException | InterruptedException | ProcessingException e) {
+            logger.debug(e.getMessage(), e);
+            throw new ProcessingException(e);
+        }
+    }
 
 }

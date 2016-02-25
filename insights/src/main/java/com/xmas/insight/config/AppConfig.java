@@ -27,7 +27,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.xmas")
 @EnableAutoConfiguration(exclude = {
         org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,
-        org.springframework.boot.actuate.autoconfigure.ManagementSecurityAutoConfiguration.class})
+        org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = "com.xmas.insight.dao")
 public class AppConfig {
 

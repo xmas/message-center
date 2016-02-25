@@ -6,16 +6,16 @@ import com.xmas.entity.Tag;
 import com.xmas.exceptions.ResourceNotFoundException;
 import com.xmas.service.QuestionBuilder;
 import com.xmas.service.QuestionService;
-import com.xmas.util.data.DataType;
 import com.xmas.service.datasource.DataSourceType;
 import com.xmas.util.FileUtil;
+import com.xmas.util.data.DataDirectoryService;
+import com.xmas.util.data.DataType;
 import com.xmas.util.script.ScriptType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +26,9 @@ public class QuestionsController {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private DataDirectoryService dataDirectory;
 
     @RequestMapping
     public Iterable<Question> getQuestions(@RequestParam(required = false) List<String> tags) {
@@ -94,15 +97,16 @@ public class QuestionsController {
 
     @RequestMapping(value = {"/data/{a}", "/data/{a}/{b}", "/data/{a}/{b}/{c}", "/data/{a}/{b}/{c}/{d}"}, method = RequestMethod.GET)
     public Object getFiles(HttpServletRequest request) {
-        return Optional.ofNullable(this.getClass()
-                .getResource(mapRequestPathToResource(request)))
-                .map(URL::getPath)
+        return Optional.ofNullable(dataDirectory
+                        .getDataDirectory()
+                        .resolve(mapRequestPathToResource(request))
+                        .toString())
                 .map(FileUtil::getFilesInDirOrFileContent)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
     private String mapRequestPathToResource(HttpServletRequest request) {
-        return request.getServletPath().replace("/data", "/questions");
+        return request.getServletPath().replace("/data/", "");
     }
 
 }
