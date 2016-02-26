@@ -3,6 +3,7 @@ package com.xmas.service;
 import com.xmas.dao.TagsRepository;
 import com.xmas.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +37,12 @@ public class TagsService {
                 .map(this::getTag)
                 .filter(tag -> tag != null)
                 .collect(Collectors.toList());
+    }
+
+    public static class TagConverter implements Converter<String, Tag> {
+        @Override
+        public Tag convert(String source) {
+            return new Tag(source);
+        }
     }
 }
