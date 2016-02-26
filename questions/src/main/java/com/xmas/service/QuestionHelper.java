@@ -49,7 +49,7 @@ public class QuestionHelper implements QuestionEvaluator{
 
         File questionDir = FileUtil.createRandomNameDirInThis(dataDirectory.getDataDirectory());
 
-        ScriptFileUtil.saveScript(questionDir.getAbsolutePath(), scriptFile);
+        ScriptFileUtil.saveScript(questionDir.getAbsolutePath(), scriptFile, question.getScriptType());
 
         question.setDirectoryPath(questionDir.toPath().getFileName().toString());
 
@@ -61,7 +61,7 @@ public class QuestionHelper implements QuestionEvaluator{
 
         updateExistingFields(fromDb, question);
 
-        if(scriptFile != null) ScriptFileUtil.replaceScript(getQuestionDirFullPath(fromDb), scriptFile);
+        if(scriptFile != null) ScriptFileUtil.replaceScript(getQuestionDirFullPath(fromDb), scriptFile, question.getScriptType());
 
         saveToDB(fromDb);
     }

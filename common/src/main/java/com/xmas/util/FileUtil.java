@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,6 +49,14 @@ public class FileUtil {
     public static void saveUploadedFile(File destFile, MultipartFile fileToSave) {
         try {
             FileUtils.writeByteArrayToFile(destFile, fileToSave.getBytes());
+        } catch (IOException e) {
+            throw new ProcessingException("Cant store file: " + destFile);
+        }
+    }
+
+    public static void saveUploadedFile(File destFile, InputStream fileToSave) {
+        try {
+            FileUtils.copyInputStreamToFile(fileToSave, destFile);
         } catch (IOException e) {
             throw new ProcessingException("Cant store file: " + destFile);
         }
