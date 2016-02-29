@@ -33,7 +33,7 @@ public class InsightEvaluatorHelper {
 
     public void saveInsightEvaluator(InsightEvaluator evaluator, MultipartFile scriptFile){
         File evaluatorDir = FileUtil.createRandomNameDirInThis(dataDirectory.getDataDirectory());
-        ScriptFileUtil.saveScript(evaluatorDir.getAbsolutePath(), scriptFile);
+        ScriptFileUtil.saveScript(evaluatorDir.getAbsolutePath(), scriptFile, evaluator.getScriptType());
         evaluator.setDirectoryPath(evaluatorDir.toPath().getFileName().toString());
         saveToDB(evaluator);
     }
