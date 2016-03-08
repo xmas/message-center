@@ -1,9 +1,13 @@
 package com.xmas.config;
 
+import com.xmas.service.TagsService;
+import com.xmas.util.data.DataDirectoryService;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -13,12 +17,21 @@ import java.util.Set;
 
 @Configuration
 @EnableWebMvc
-public class MVCConfiguration extends WebMvcConfigurerAdapter {
+public class MVCConfiguration extends WebMvcConfigurationSupport {
+
+    @Autowired
+    private DataDirectoryService dataDirectoryService;
+
+    @Override
+    public FormattingConversionService mvcConversionService() {
+        FormattingConversionService f = super.mvcConversionService();
+        f.addConverter(new TagsService.TagConverter());
+        return f;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/R/data/**").addResourceLocations("classpath:/R/data/");
-        registry.addResourceHandler("/questions/data/**").addResourceLocations("classpath:/questions/");
+        registry.addResourceHandler("/data/**").addResourceLocations(dataDirectoryService.getDataDirectory().toString());
     }
 
     @Bean

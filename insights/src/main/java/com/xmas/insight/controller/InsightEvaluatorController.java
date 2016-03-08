@@ -13,25 +13,25 @@ import java.util.List;
 import static com.xmas.util.json.MapParser.parseScriptArgs;
 
 @RestController
-@RequestMapping("/questions/{questionId}/insightEval")
+@RequestMapping("/insightevals")
 public class InsightEvaluatorController {
 
     @Autowired
     private InsightEvaluatorService insightEvaluatorService;
 
     @RequestMapping
-    public Iterable<InsightEvaluator> getInsightEvaluators(@PathVariable Long questionId) {
+    public Iterable<InsightEvaluator> getInsightEvaluators(@RequestParam Long questionId) {
         return insightEvaluatorService.getInsights(questionId);
     }
 
     @RequestMapping("/{insightId}")
-    public InsightEvaluator getInsightEvaluator(@PathVariable Long questionId,
+    public InsightEvaluator getInsightEvaluator(@RequestParam Long questionId,
                                                 @PathVariable Long insightId) {
         return insightEvaluatorService.getEvaluator(questionId, insightId);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public void addInsightEvaluator(@PathVariable Long questionId,
+    public void addInsightEvaluator(@RequestParam Long questionId,
                                     @RequestParam MultipartFile script,
                                     @RequestParam(required = false) String scriptArgs,
                                     @RequestParam(required = false) String cron,

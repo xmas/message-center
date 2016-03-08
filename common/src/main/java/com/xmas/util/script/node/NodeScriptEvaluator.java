@@ -2,6 +2,7 @@ package com.xmas.util.script.node;
 
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.util.script.ScriptEvaluator;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Qualifier("nodeScriptEvaluator")
@@ -34,22 +36,33 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
             Process process = Runtime.getRuntime()
                     .exec(buildExecString(workDir, args), getEnvironment(), new File(workDir));
 
-            int processResult = process.waitFor();
+            logScriptExecutingProcess(process);
+
+            int processResult = process.exitValue();
 
             if (processResult != 0) {
                 String error = getError(process.getErrorStream());
                 processError(error);
             }
-        } catch (IOException | InterruptedException | ProcessingException e) {
-            logger.error("Error during executind script " + workDir + SCRIPT_FILE);
-            logger.debug(e.getMessage(), e);
+        } catch (IOException | ProcessingException e) {
             throw new ProcessingException(e);
         }
     }
 
+    private void logScriptExecutingProcess(Process process){
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        BufferedReader stdReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        logStrings(errorReader.lines(), Level.ERROR);
+        logStrings(stdReader.lines(), Level.DEBUG);
+    }
+
+    private void logStrings(Stream<String> stream, Level level){
+        stream.forEach(s -> logger.log(level, s));
+    }
+
     private void processError(String executionResult) {
-        Pattern noModureErrorPattern = Pattern.compile("Error: Cannot find module '([a-z]+)'");
-        Matcher matcher = noModureErrorPattern.matcher(executionResult);
+        Pattern noModuleErrorPattern = Pattern.compile("Error: Cannot find module '([a-z]+)'");
+        Matcher matcher = noModuleErrorPattern.matcher(executionResult);
         if (matcher.find()) {
             try {
                 tryToInstallRequiredModule(matcher.group(1));
@@ -63,7 +76,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
 
     private String buildExecString(String workDir, Map<String, String> args) {
         return new ArrayList<String>() {{
-            //add("node");
+            add("node");
             add(workDir + SCRIPT_FILE);
             addAll(buildScriptArgsString(args));
         }}.stream().collect(Collectors.joining(" "));
@@ -98,7 +111,6 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
                         error);
             }
         } catch (IOException | InterruptedException | ProcessingException e) {
-            logger.debug(e.getMessage(), e);
             throw new ProcessingException(e);
         }
     }
