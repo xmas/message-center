@@ -2,6 +2,7 @@ package com.xmas.service.scheduller;
 
 import com.xmas.dao.QuestionRepository;
 import com.xmas.entity.Question;
+import com.xmas.exceptions.ProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.*;
@@ -58,8 +59,7 @@ public class JobDetailsFactory {
         try {
             scheduler.scheduleJob(buildJob(question), buildTrigger(question));
         } catch (SchedulerException e) {
-            logger.error("Cant schedule evaluating question. " +  e.getMessage());
-            logger.debug(e.getMessage(), e);
+            throw new ProcessingException("Cant schedule evaluating question. " +  e.getMessage(), e);
         }
     }
 
