@@ -38,13 +38,13 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
 
             logScriptExecutingProcess(process);
 
-            int processResult = process.exitValue();
+            int processResult = process.waitFor();
 
             if (processResult != 0) {
                 String error = getError(process.getErrorStream());
                 processError(error);
             }
-        } catch (IOException | ProcessingException e) {
+        } catch (IOException | ProcessingException | InterruptedException e) {
             throw new ProcessingException(e);
         }
     }

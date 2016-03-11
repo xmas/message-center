@@ -94,7 +94,7 @@ function getDateStores(pathArray) {
         //    console.log('promising: '+element);
         promises.push(new Promise(function (resolve, reject) {
             //dataDir/date/path/store.json
-            options.path = '/questions/data/' + element.dataDir + '/' + element.date + '/' + element.path + '/store.json';
+            options.path = '/push/questions/data/' + element.dataDir + '/' + element.date + '/' + element.path + '/store.json';
             options.method = 'GET';
 
             getRequest(options, function (body) {
@@ -211,7 +211,7 @@ var treeParser = function parseTree(body) {
         }
         var ques = '--------Question: ' + question.id + '  Tags: ' + tag_string;
 
-        options.path = '/questions/' + question.id + '/answers';
+        options.path = '/push/questions/' + question.id + '/answers';
 
         if (clargs.from || clargs.to) {
             options.path = options.path + '?';
@@ -231,11 +231,11 @@ var treeParser = function parseTree(body) {
 };
 
 if (clargs.question) {
-    options.path = '/questions/' + clargs.question;
+    options.path = '/push/questions/' + clargs.question;
     options.method = 'GET';
     getRequest(options, parser);
 } else if (clargs.answer) {
-    options.path = '/questions/' + clargs.answer + '/answers';
+    options.path = '/push/questions/' + clargs.answer + '/answers';
     options.method = 'GET';
 
     if (clargs.from || clargs.to) {
@@ -256,7 +256,7 @@ if (clargs.question) {
         method: 'POST',
         host: server,
         port: 8080,
-        path: '/questions/' + clargs.eval,
+        path: '/push/questions/' + clargs.eval,
         headers: {
             'content-type': 'multipart/form-data; boundary=---011000010111000001101001'
         },
@@ -278,7 +278,7 @@ if (clargs.question) {
 
     var options = {
         method: 'POST',
-        url: 'http://' + server + ':8080/questions',
+        url: 'http://' + server + ':8080/push/questions',
         headers: {
             'postman-token': 'eba44f6f-bc86-bb6e-d121-15be852d8d51',
             'cache-control': 'no-cache',
@@ -303,13 +303,13 @@ if (clargs.question) {
 
 } else if (clargs.tree) {
 
-    options.path = '/questions/';
+    options.path = '/push/questions/';
     options.method = 'GET';
     getRequest(options, treeParser);
 
 }
 else {
-    options.path = '/questions';
+    options.path = '/push/questions';
     options.method = 'GET';
     getRequest(options, parser);
 }
