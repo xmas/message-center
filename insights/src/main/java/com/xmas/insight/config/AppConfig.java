@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -29,6 +30,7 @@ import java.util.Properties;
         org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,
         org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = "com.xmas.insight.dao")
+@EnableSpringDataWebSupport
 public class AppConfig {
 
     @Value("${jdbc.driver}")
