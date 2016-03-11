@@ -29,7 +29,7 @@ public class QuestionService {
     private AnswerRepository answerRepository;
 
     @Autowired
-    private JobDetailsFactory jobDetailsFactory;
+    private JobDetailsFactory<Question> jobDetailsFactory;
 
     @Autowired
     private TagsService tagsService;
@@ -51,7 +51,7 @@ public class QuestionService {
 
     public void addQuestion(Question question, MultipartFile script) {
         questionHelper.saveQuestion(question, script);
-        if (question.getCron() != null && question.getDataSourceType().supportScheduling())
+        if (question.getCron() != null && question.supportScheduling())
             scheduleQuestionEvaluating(question);
     }
 
@@ -71,16 +71,11 @@ public class QuestionService {
     }
 
     private void scheduleQuestionEvaluating(Question question) {
-        if (!canBeScheduled(question)) {
+        if (!question.supportScheduling()) {
             throw new BadRequestException("Question with such type can't be scheduled for evaluating.");
         } else if (question.getCron() != null) {
             jobDetailsFactory.addQuestionJob(question);
         }
     }
-
-    private boolean canBeScheduled(Question question) {
-        return question.getDataSourceType().supportScheduling();
-    }
-
 
 }

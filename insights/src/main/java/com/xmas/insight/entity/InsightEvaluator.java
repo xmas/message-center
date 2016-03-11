@@ -1,8 +1,8 @@
 package com.xmas.insight.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.xmas.entity.EvaluatorEntity;
 import com.xmas.util.json.LocalDateTimeSerializer;
+import com.xmas.util.scheduler.ScheduledEntity;
 import com.xmas.util.script.ScriptType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ import static com.xmas.util.ValidationUtil.CRON_REGEX;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InsightEvaluator implements EvaluatorEntity{
+public class InsightEvaluator implements ScheduledEntity{
     @Id
     @GeneratedValue
     private Long id;
@@ -49,4 +49,9 @@ public class InsightEvaluator implements EvaluatorEntity{
     @MapKeyColumn (name="name")
     @Column(name="value")
     private Map<String, String> scriptArgs;
+
+    @Override
+    public boolean supportScheduling() {
+        return true;
+    }
 }

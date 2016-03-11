@@ -9,6 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Qualifier annotation is required since scheduler
+ * in Common module require repository
+ * that contains sheduled entities
+ */
 @Qualifier("evaluatedEntityRepository")
 public interface QuestionRepository extends ScheduledCrudRepository<Question> {
 

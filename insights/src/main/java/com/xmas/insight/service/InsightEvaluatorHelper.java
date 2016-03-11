@@ -4,12 +4,14 @@ import com.xmas.entity.EntityHelper;
 import com.xmas.insight.dao.InsightEvaluatorRepository;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
+import com.xmas.util.EntityEvaluator;
 import com.xmas.util.FileUtil;
 import com.xmas.util.data.DataDirectoryService;
 import com.xmas.util.data.FileSystemData;
 import com.xmas.util.script.ScriptFileUtil;
 import com.xmas.util.script.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +19,8 @@ import java.io.File;
 import java.time.LocalDateTime;
 
 @Service
-public class InsightEvaluatorHelper {
+@Qualifier("entityEvaluator")
+public class InsightEvaluatorHelper implements EntityEvaluator<InsightEvaluator>{
 
     @Autowired
     private InsightEvaluatorRepository repository;

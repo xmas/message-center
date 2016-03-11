@@ -1,11 +1,13 @@
 package com.xmas.insight.service;
 
+import com.xmas.exceptions.BadRequestException;
 import com.xmas.exceptions.NotFoundException;
 import com.xmas.insight.dao.InsightEvaluatorRepository;
 import com.xmas.insight.dao.InsightRepository;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.insight.validator.questionid.QuestionTemplate;
+import com.xmas.util.scheduller.JobDetailsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class InsightEvaluatorService {
     @Autowired
     private InsightRepository insightRepository;
 
+    @Autowired
+    private JobDetailsFactory<InsightEvaluator> jobDetailsFactory;
+
     public Iterable<InsightEvaluator> getInsights(Long questionId) {
         validateQuestion(questionId);
         return evaluatorRepository.getByQuestionId(questionId);
@@ -48,6 +53,8 @@ public class InsightEvaluatorService {
     public void addInsightEvaluator(InsightEvaluator evaluator, MultipartFile script) {
         validateQuestion(evaluator.getQuestionId());
         helper.saveInsightEvaluator(evaluator, script);
+        if (evaluator.getCron() != null && evaluator.supportScheduling())
+            scheduleQuestionEvaluating(evaluator);
     }
 
     public List<Insight> evaluate(Long evaluatorId){
@@ -66,6 +73,14 @@ public class InsightEvaluatorService {
                 throw new NotFoundException("There is no question with such id or Question service is unreachable.");
         } catch (RestClientException rce) {
             throw new NotFoundException("There is no question with such id or Question service is unreachable.", rce);
+        }
+    }
+
+    private void scheduleQuestionEvaluating(InsightEvaluator insightEvaluator) {
+        if (!insightEvaluator.supportScheduling()) {
+            throw new BadRequestException("Question with such type can't be scheduled for evaluating.");
+        } else if (insightEvaluator.getCron() != null) {
+            jobDetailsFactory.addQuestionJob(insightEvaluator);
         }
     }
 }
