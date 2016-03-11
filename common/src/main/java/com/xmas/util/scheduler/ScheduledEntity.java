@@ -1,9 +1,21 @@
 package com.xmas.util.scheduler;
 
+import com.xmas.entity.EvaluatorEntity;
+
 /**
  * Represents entity that can be evaluated by some schedule
  */
-public interface ScheduledEntity {
+public interface ScheduledEntity extends EvaluatorEntity{
+
+    /**
+     * @return path to directory with entity data
+     */
+    String getDirectoryPath();
+
+    /**
+     * @return unique identifier of this entity
+     */
+    Long getId();
 
     /**
      * Define if this entity support scheduling

@@ -1,13 +1,12 @@
 package com.xmas.service.scheduller;
 
-import com.xmas.dao.QuestionRepository;
-import com.xmas.entity.Question;
 import com.xmas.exceptions.ProcessingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.xmas.service.ScheduledCrudRepository;
+import com.xmas.util.scheduler.ScheduledEntity;
 import org.quartz.*;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,22 +18,20 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 
 @Service
-public class JobDetailsFactory {
+public class JobDetailsFactory<T extends ScheduledEntity> {
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public static final String DEFAULT_JOB_GROUP = "QUESTIONS";
-    public static final String QUESTION_ID_PARAM_NAME = "QID";
+    public static final String DEFAULT_JOB_GROUP = "ENTITY";
+    public static final String ENTITY_ID_PARAM_NAME = "ID";
 
     private Scheduler scheduler;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private JobFactory jobFactory;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
-    private QuestionRepository questionRepository;
+    @Qualifier("evaluatedEntityRepository")
+    private ScheduledCrudRepository<T> evaluatedEntityRepository;
 
     @PostConstruct
     public void init() throws SchedulerException {
@@ -55,31 +52,31 @@ public class JobDetailsFactory {
         }
     }
 
-    public void addQuestionJob(Question question) {
+    public void addQuestionJob(T entity) {
         try {
-            scheduler.scheduleJob(buildJob(question), buildTrigger(question));
+            scheduler.scheduleJob(buildJob(entity), buildTrigger(entity));
         } catch (SchedulerException e) {
-            throw new ProcessingException("Cant schedule evaluating question. " +  e.getMessage(), e);
+            throw new ProcessingException("Cant schedule evaluating entity. " +  e.getMessage(), e);
         }
     }
 
-    private JobDetail buildJob(Question question){
+    private JobDetail buildJob(T entity){
         return newJob()
-                .withIdentity(question.getDirectoryPath(), DEFAULT_JOB_GROUP)
-                .usingJobData(QUESTION_ID_PARAM_NAME, question.getId())
+                .withIdentity(entity.getDirectoryPath(), DEFAULT_JOB_GROUP)
+                .usingJobData(ENTITY_ID_PARAM_NAME, entity.getId())
                 .ofType(TaskExecutor.class)
                 .build();
     }
 
-    private Trigger buildTrigger(Question question){
+    private Trigger buildTrigger(T entity){
         return newTrigger()
-                .withSchedule(cronSchedule(question.getCron()))
+                .withSchedule(cronSchedule(entity.getCron()))
                 .build();
     }
 
     private void standUpScheduler(){
-        questionRepository.getScheduled().stream()
-                .filter(question -> question.getDataSourceType().supportScheduling())
+        evaluatedEntityRepository.getScheduled().stream()
+                .filter(ScheduledEntity::supportScheduling)
                 .forEach(this::addQuestionJob);
     }
 

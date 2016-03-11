@@ -2,15 +2,15 @@ package com.xmas.dao;
 
 import com.xmas.entity.Question;
 import com.xmas.entity.Tag;
+import com.xmas.service.ScheduledCrudRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Qualifier("evaluatedEntityRepository")
-public interface QuestionRepository extends CrudRepository<Question, Long>{
+public interface QuestionRepository extends ScheduledCrudRepository<Question> {
 
     @Query("SELECT question from Question question")
     List<Question> getAll();
