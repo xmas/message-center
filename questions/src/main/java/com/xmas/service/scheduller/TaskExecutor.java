@@ -1,26 +1,24 @@
 package com.xmas.service.scheduller;
 
-import com.xmas.entity.Question;
 import com.xmas.service.EntityEvaluator;
-import com.xmas.service.QuestionHelper;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class TaskExecutor<T> implements Job{
 
-    private EntityEvaluator entityEvaluator;
+    private EntityEvaluator<T> entityEvaluator;
 
-    private Question question;
+    private T entity;
 
-    public TaskExecutor(QuestionHelper questionHelper, Question question) {
-        this.entityEvaluator = questionHelper;
-        this.question = question;
+    public TaskExecutor(EntityEvaluator<T> entityEvaluator, T entity) {
+        this.entityEvaluator = entityEvaluator;
+        this.entity = entity;
     }
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        entityEvaluator.evaluate(question);
+        entityEvaluator.evaluate(entity);
     }
 
 }
