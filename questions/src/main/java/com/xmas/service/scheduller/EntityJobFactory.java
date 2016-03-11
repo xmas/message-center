@@ -1,9 +1,7 @@
 package com.xmas.service.scheduller;
 
-import com.xmas.dao.QuestionRepository;
-import com.xmas.entity.Question;
 import com.xmas.exceptions.QuestionNotFoundException;
-import com.xmas.service.QuestionHelper;
+import com.xmas.service.EntityEvaluator;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -11,26 +9,32 @@ import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class QuestionJobFactory implements JobFactory {
+public class EntityJobFactory<T> implements JobFactory {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
-    private QuestionRepository questionRepository;
+    @Qualifier("evaluatedEntityRepository")
+    private CrudRepository<T, Long> evaluatedEntityRepository;
 
     @Autowired
-    private QuestionHelper questionHelper;
+    @Qualifier("entityEvaluator")
+    private EntityEvaluator<T> entityEvaluator;
 
     @Override
     public Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
-        return new TaskExecutor(questionHelper, getQuestion(bundle));
+        return new TaskExecutor<>(entityEvaluator, getQuestion(bundle));
     }
 
-    private Question getQuestion(TriggerFiredBundle bundle){
+    private T getQuestion(TriggerFiredBundle bundle){
         JobDetail jobDetail = bundle.getJobDetail();
         Long qId = jobDetail.getJobDataMap().getLongValue(JobDetailsFactory.QUESTION_ID_PARAM_NAME);
-        return questionRepository.getById(qId).orElseThrow(QuestionNotFoundException::new);
+        return Optional.ofNullable(evaluatedEntityRepository.findOne(qId)).orElseThrow(QuestionNotFoundException::new);
     }
 }

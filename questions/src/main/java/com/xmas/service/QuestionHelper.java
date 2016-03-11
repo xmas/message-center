@@ -15,6 +15,7 @@ import com.xmas.util.data.DataDirectoryService;
 import com.xmas.util.script.ScriptFileUtil;
 import com.xmas.util.script.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
+@Qualifier("entityEvaluator")
 public class QuestionHelper implements EntityEvaluator<Question> {
 
     @Autowired
