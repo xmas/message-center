@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xmas.util.data.DataType;
 import com.xmas.service.datasource.DataSourceType;
 import com.xmas.util.json.LocalDateTimeSerializer;
+import com.xmas.util.scheduler.ScheduledEntity;
 import com.xmas.util.script.ScriptType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Table(name = "questions")
 @Data
 @NoArgsConstructor
-public class Question implements EvaluatorEntity{
+public class Question implements EvaluatorEntity, ScheduledEntity{
 
     @Id
     @GeneratedValue
@@ -69,5 +70,9 @@ public class Question implements EvaluatorEntity{
         this.scriptType = scriptType;
         this.dataSourceResource = dataSourceResource;
         this.cron = cron;
+    }
+
+    public boolean supportScheduling(){
+        return dataSourceType.supportScheduling();
     }
 }
