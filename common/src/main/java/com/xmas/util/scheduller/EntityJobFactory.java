@@ -1,7 +1,7 @@
-package com.xmas.service.scheduller;
+package com.xmas.util.scheduller;
 
-import com.xmas.exceptions.QuestionNotFoundException;
-import com.xmas.service.EntityEvaluator;
+import com.xmas.exceptions.NotFoundException;
+import com.xmas.util.EntityEvaluator;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -34,7 +34,7 @@ public class EntityJobFactory<T> implements JobFactory {
 
     private T getQuestion(TriggerFiredBundle bundle){
         JobDetail jobDetail = bundle.getJobDetail();
-        Long qId = jobDetail.getJobDataMap().getLongValue(JobDetailsFactory.QUESTION_ID_PARAM_NAME);
-        return Optional.ofNullable(evaluatedEntityRepository.findOne(qId)).orElseThrow(QuestionNotFoundException::new);
+        Long qId = jobDetail.getJobDataMap().getLongValue(JobDetailsFactory.ENTITY_ID_PARAM_NAME);
+        return Optional.ofNullable(evaluatedEntityRepository.findOne(qId)).orElseThrow(NotFoundException::new);
     }
 }

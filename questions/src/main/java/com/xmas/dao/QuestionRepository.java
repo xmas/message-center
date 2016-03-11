@@ -2,7 +2,7 @@ package com.xmas.dao;
 
 import com.xmas.entity.Question;
 import com.xmas.entity.Tag;
-import com.xmas.service.ScheduledCrudRepository;
+import com.xmas.util.ScheduledCrudRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.Query;
 

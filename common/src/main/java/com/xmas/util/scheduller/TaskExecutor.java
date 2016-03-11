@@ -1,6 +1,6 @@
-package com.xmas.service.scheduller;
+package com.xmas.util.scheduller;
 
-import com.xmas.service.EntityEvaluator;
+import com.xmas.util.EntityEvaluator;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

@@ -1,4 +1,4 @@
-package com.xmas.service;
+package com.xmas.util;
 
 import org.springframework.data.repository.CrudRepository;
 

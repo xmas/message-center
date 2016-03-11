@@ -1,4 +1,4 @@
-package com.xmas.service;
+package com.xmas.util;
 
 /**
  * Represent entity evaluator.
