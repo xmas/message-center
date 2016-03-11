@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
-public class QuestionHelper implements QuestionEvaluator{
+public class QuestionHelper implements EntityEvaluator<Question> {
 
     @Autowired
     private ScriptService scriptService;
