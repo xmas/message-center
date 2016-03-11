@@ -17,9 +17,6 @@ public class Insight implements EvaluatedEntity {
     @GeneratedValue
     private Long id;
 
-    @Column
-    private Long question;
-
     @ElementCollection
     @CollectionTable(name = "insight_answers", joinColumns = @JoinColumn(name = "insight"))
     private List<Long> answers;
