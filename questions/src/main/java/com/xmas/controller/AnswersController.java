@@ -34,12 +34,15 @@ public class AnswersController {
                                        @RequestParam(required = false)
                                        @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate from,
                                        @RequestParam(required = false)
-                                       @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)LocalDate to) {
+                                       @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)LocalDate to,
+                                       @RequestParam(required = false) String path) {
         LocalDateTime startFromDay = getStartOfDay(from);
         LocalDateTime endToDay = getEndOfDay(to);
         return questionRepository.getById(qId)
-                .map(q -> answerRepository.findAnswers(q, startFromDay, endToDay))
-                .orElseThrow(() -> new NotFoundException("There is no question with such id"));
+                .map(q -> answerRepository.findAnswers(q, startFromDay, endToDay).stream())
+                .orElseThrow(() -> new NotFoundException("There is no question with such id"))
+                .filter(a -> a.getPath().equalsIgnoreCase(path))
+                .collect(Collectors.toList());
     }
 
     @RequestMapping("/answers")

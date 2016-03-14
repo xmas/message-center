@@ -47,15 +47,6 @@ public class AppContext {
     @Value("${hibernate.hbm2ddl.auto}")
     private String hbm2ddl;
 
-    @Value("${mail.host}")
-    private String mailServerHost;
-    @Value("${mail.port}")
-    private Integer mailServerPort;
-    @Value("${mail.user}")
-    private String mailServerUser;
-    @Value("${mail.password}")
-    private String mailServerPassword;
-
     @Autowired
     ApplicationContext applicationContext;
 
@@ -98,9 +89,9 @@ public class AppContext {
     @Bean
     public static PropertyPlaceholderConfigurer propertyConfigurer() throws IOException {
         PropertyPlaceholderConfigurer props = new PropertyPlaceholderConfigurer();
-        props.setLocations(new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/app.properties"),
-                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/jdbc.properties"),
-                           new FileSystemResource(System.getProperty("user.home")+ "/.pushmessages/properties/hibernate.properties"));
+        props.setLocations(new FileSystemResource(System.getProperty("user.home")+ "/.questions/properties/app.properties"),
+                           new FileSystemResource(System.getProperty("user.home")+ "/.questions/properties/jdbc.properties"),
+                           new FileSystemResource(System.getProperty("user.home")+ "/.questions/properties/hibernate.properties"));
         return props;
     }
 

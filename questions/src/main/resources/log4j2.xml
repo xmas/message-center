@@ -4,8 +4,8 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <RollingFile name="RollingFile" fileName="${sys:user.home}/.pushmessages/logs/app.log"
-                     filePattern="${sys:user.home}/.pushmessages/logs/app-%d{MM-dd-yyyy}.log.gz"
+        <RollingFile name="RollingFile" fileName="${sys:user.home}/.questions/log/app.log"
+                     filePattern="${sys:user.home}/.questions/log/app-%d{MM-dd-yyyy}.log.gz"
                      ignoreExceptions="false">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
@@ -15,7 +15,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="DEBUG">
+        <Root level="info">
             <AppenderRef ref="RollingFile"/>
             <AppenderRef ref="Console"/>
         </Root>
