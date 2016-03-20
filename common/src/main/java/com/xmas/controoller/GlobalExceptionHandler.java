@@ -1,4 +1,4 @@
-package com.xmas.controller;
+package com.xmas.controoller;
 
 import com.xmas.exceptions.ConflictException;
 import com.xmas.exceptions.NotFoundException;
