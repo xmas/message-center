@@ -4,7 +4,6 @@ import com.xmas.dao.AnswerRepository;
 import com.xmas.dao.QuestionRepository;
 import com.xmas.entity.Answer;
 import com.xmas.entity.Tag;
-import com.xmas.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,9 +38,10 @@ public class AnswersController {
         LocalDateTime startFromDay = getStartOfDay(from);
         LocalDateTime endToDay = getEndOfDay(to);
         return questionRepository.getById(qId)
-                .map(q -> answerRepository.findAnswers(q, startFromDay, endToDay).stream())
-                .orElseThrow(() -> new NotFoundException("There is no question with such id"))
-                .filter(a -> a.getPath().equalsIgnoreCase(path))
+                .map(q -> answerRepository.findAnswers(q, startFromDay, endToDay))
+                .orElseThrow(RuntimeException::new)
+                .stream()
+                .filter(a -> path == null || path.isEmpty() | a.getPath().equalsIgnoreCase(path))
                 .collect(Collectors.toList());
     }
 
