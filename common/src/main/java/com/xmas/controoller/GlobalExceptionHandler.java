@@ -3,8 +3,7 @@ package com.xmas.controoller;
 import com.xmas.exceptions.ConflictException;
 import com.xmas.exceptions.NotFoundException;
 import com.xmas.exceptions.ProcessingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,9 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-
-    private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler
     @ResponseBody
@@ -53,8 +51,7 @@ public class GlobalExceptionHandler {
     }
 
     private String logAndReturn(Throwable exception){
-        logger.error(exception.getMessage());
-        logger.debug(exception.getMessage(), exception);
+        log.error(exception.getMessage(), exception);
         return exception.getMessage();
     }
 }
