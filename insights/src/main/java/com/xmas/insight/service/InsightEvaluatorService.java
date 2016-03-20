@@ -28,6 +28,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InsightEvaluatorService {
@@ -75,7 +76,11 @@ public class InsightEvaluatorService {
         InsightEvaluator evaluator = evaluatorRepository.findOne(evaluatorId);
         if(evaluator == null) throw new NotFoundException("Evaluator with id " + evaluatorId + " not found.");
         helper.evaluate(evaluator);
-        return insightRepository.find(evaluator, evaluator.getLastTimeEvaluated());
+        return insightRepository.find().stream()
+                .filter(i -> i.getEvaluator().equals(evaluator))
+                .filter(i -> i.getDate().equals(evaluator.getLastTimeEvaluated()))
+                .collect(Collectors.toList()
+        );
 
     }
 
