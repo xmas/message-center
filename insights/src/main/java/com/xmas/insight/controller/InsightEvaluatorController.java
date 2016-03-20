@@ -13,7 +13,7 @@ import java.util.List;
 import static com.xmas.util.json.MapParser.parseScriptArgs;
 
 @RestController
-@RequestMapping("/insightevals")
+@RequestMapping("/evals")
 public class InsightEvaluatorController {
 
     @Autowired

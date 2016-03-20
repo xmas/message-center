@@ -6,4 +6,4 @@ curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
   -F "scriptType=NODE" \
   -F "questionId=3" \
   -F "cron=3 * * * * ?" \
-  ${server}"/insightevals"
+  ${server}"/insights/evals"

@@ -4,4 +4,4 @@ read -r server < ${dir}/../server.info
 echo ${server}
 curl --silent -k -G \
 -d "questionId=3" \
-${server}"/insightevals/1"
+${server}"/insights/evals/1"

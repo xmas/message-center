@@ -11,7 +11,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "insights", path = "insights")
+@RepositoryRestResource(collectionResourceRel = "/", path = "/")
 public interface InsightRepository extends CrudRepository<Insight, Long>{
 
     @Query("SELECT insight FROM Insight insight WHERE insight.evaluator = ?1 AND insight.date > ?2")

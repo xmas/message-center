@@ -3,6 +3,8 @@ package com.xmas.insight.config;
 import com.xmas.entity.EntityHelper;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -21,12 +23,16 @@ import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.persistence.ValidationMode;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -115,7 +121,28 @@ public class AppConfig {
         return new EntityHelper<>(Insight.class, context);
     }
 
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver = new ExtendedMultipartResolver();
+        resolver.setDefaultEncoding("utf-8");
+        return resolver;
+    }
 
+    private static class ExtendedMultipartResolver extends CommonsMultipartResolver {
+
+        public static final Set<String> ALLOWED_MULTIPART_METHODS = new HashSet<String>() {{
+            add("POST");
+            add("PUT");
+            add("PATCH");
+        }};
+
+        @Override
+        public boolean isMultipart(HttpServletRequest request) {
+            return  request != null &&
+                    ALLOWED_MULTIPART_METHODS.contains(request.getMethod().toUpperCase()) &&
+                    FileUploadBase.isMultipartContent(new ServletRequestContext(request));
+        }
+    }
 
     @Bean
     public ResourceProcessor<Resource<Insight>> personProcessor() {

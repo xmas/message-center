@@ -2,9 +2,7 @@ package com.xmas.util.script.node;
 
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.util.script.ScriptEvaluator;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,9 +18,8 @@ import java.util.stream.Stream;
 
 @Service
 @Qualifier("nodeScriptEvaluator")
+@Slf4j
 public class NodeScriptEvaluator implements ScriptEvaluator {
-
-    private static final Logger logger = LogManager.getLogger();
 
     public static final String SCRIPT_FILE = "/script/script.sc";
 
@@ -42,7 +39,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
 
             if (processResult != 0) {
                 String error = getError(process.getErrorStream());
-                processError(error);
+                processError(error, processResult);
             }
         } catch (IOException | ProcessingException | InterruptedException e) {
             throw new ProcessingException(e);
@@ -52,31 +49,36 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
     private void logScriptExecutingProcess(Process process){
         BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         BufferedReader stdReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        logStrings(errorReader.lines(), Level.ERROR);
-        logStrings(stdReader.lines(), Level.DEBUG);
+        logStrings(errorReader.lines(), 4);
+        logStrings(stdReader.lines(), 0);
     }
 
-    private void logStrings(Stream<String> stream, Level level){
-        stream.forEach(s -> logger.log(level, s));
+    private void logStrings(Stream<String> stream, int level){
+        switch (level) {
+            case 0 : stream.forEach(log::trace);break;
+            case 1 : stream.forEach(log::debug);break;
+            case 2 : stream.forEach(log::info);break;
+            case 3 : stream.forEach(log::warn);break;
+            case 4 : stream.forEach(log::error);break;
+        }
     }
 
-    private void processError(String executionResult) {
+    private void processError(String executionResult, int processResult) {
         Pattern noModuleErrorPattern = Pattern.compile("Error: Cannot find module '([a-z]+)'");
         Matcher matcher = noModuleErrorPattern.matcher(executionResult);
         if (matcher.find()) {
             try {
                 tryToInstallRequiredModule(matcher.group(1));
             } catch (ProcessingException pe){
-                throw new ProcessingException("Error during evaluating Node script. Exit code: " + executionResult);
+                throw new ProcessingException("Error during evaluating Node script. Exit code: " + processResult + ". "+ executionResult);
             }
         } else {
-            throw new ProcessingException("Error during evaluating Node script. Exit code: " + executionResult);
+            throw new ProcessingException("Error during evaluating Node script. Exit code: "+ processResult + ". " + executionResult);
         }
     }
 
     private String buildExecString(String workDir, Map<String, String> args) {
         return new ArrayList<String>() {{
-            add("node");
             add(workDir + SCRIPT_FILE);
             addAll(buildScriptArgsString(args));
         }}.stream().collect(Collectors.joining(" "));
@@ -99,6 +101,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
 
     private void tryToInstallRequiredModule(String moduleName) {
         try {
+            log.debug("Try to install node module " + moduleName);
             Process process = new ProcessBuilder()
                     .command("npm", "install", "-g", moduleName)
                     .start();
@@ -110,6 +113,7 @@ public class NodeScriptEvaluator implements ScriptEvaluator {
                 throw new ProcessingException("Error during installing Node module. Exit code: " + processResult + ".\n" +
                         error);
             }
+            log.info("Node module " + moduleName + "successfully installed.");
         } catch (IOException | InterruptedException | ProcessingException e) {
             throw new ProcessingException(e);
         }

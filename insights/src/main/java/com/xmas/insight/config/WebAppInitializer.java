@@ -1,4 +1,4 @@
-package com.xmas.config;
+package com.xmas.insight.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,14 +29,14 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         entityManagerInView.addMappingForUrlPatterns(null, true, "/*");
 
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        File file = new File(System.getProperty("user.home")+ "/.questions/properties/log4j2.xml");
+        File file = new File(System.getProperty("user.home")+ "/.insights/properties/log4j2.xml");
         if(file.exists())
             context.setConfigLocation(file.toURI());
     }
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {AppContext.class, MVCConfiguration.class};
+        return new Class[] {AppConfig.class};
     }
 
     @Override
