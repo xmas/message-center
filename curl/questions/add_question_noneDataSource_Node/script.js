@@ -1,4 +1,4 @@
-#!/usr/bin/nodejs
+#!/usr/local/bin/node
 var jsforce = require('jsforce');
 var fs = require('fs');
 

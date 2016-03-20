@@ -1,4 +1,4 @@
-//noinspection JSUnresolvedFunction
+#!/usr/local/bin/node
 var fs = require('fs');
 
 var insights = [

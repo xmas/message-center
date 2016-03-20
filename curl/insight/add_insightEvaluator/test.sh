@@ -4,6 +4,6 @@ read -r server < ${dir}/../server.info
 curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
   -F "script=@${dir}/simpleTest.js" \
   -F "scriptType=NODE" \
-  -F "questionId=3" \
-  -F "cron=3 * * * * ?" \
+  -F "questionId=4" \
+  -F "cron=3 * 3 * * ?" \
   ${server}"/insights/evals"
