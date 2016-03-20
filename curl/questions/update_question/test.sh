@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-read -r server < ../server.info
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info5
 curl -i -X PUT -H "Content-Type: multipart/form-data"  \
-  -F "script=@script.r" \
+  -F "script=@${dir}/script.r" \
   -F "answerTemplate=@template.json" \
   -F "dataSourceType=FILE_UPLOAD" \
   -F "scriptType=R" \

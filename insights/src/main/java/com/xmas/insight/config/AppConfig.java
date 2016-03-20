@@ -15,6 +15,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -22,7 +25,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import javax.persistence.ValidationMode;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.xmas")
@@ -49,8 +54,12 @@ public class AppConfig {
     @Value("${hibernate.hbm2ddl.auto}")
     private String hbm2ddl;
 
+    @Value("${questions.api.url}")
+    String questionsApiUrl;
+
     @Autowired
     private ApplicationContext context;
+
 
     public static void main(String[] args) {
         SpringApplication.run(AppConfig.class, args);
@@ -105,4 +114,25 @@ public class AppConfig {
     EntityHelper<Insight, InsightEvaluator> insightHelper(){
         return new EntityHelper<>(Insight.class, context);
     }
+
+
+
+    @Bean
+    public ResourceProcessor<Resource<Insight>> personProcessor() {
+        return new ResourceProcessor<Resource<Insight>>() {
+            @Override
+            public Resource<Insight> process(Resource<Insight> resource) {
+                long qId = resource.getContent().getEvaluator().getQuestionId();
+                List<Link> links = resource.getLinks().stream()
+                        .filter(l -> l.getVariableNames().contains("insight"))
+                        .collect(Collectors.toList());
+                resource.removeLinks();
+                resource.add(links);
+                resource.add(new Link("" + questionsApiUrl + "/" + qId, "question"));
+                return resource;
+            }
+        };
+    }
+
+
 }

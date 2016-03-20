@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-read -r server < ../server.info
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info5
 curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
-  -F "script=@script.py" \
+  -F "script=@${dir}/script.py" \
   -F "dataSourceType=NONE" \
   -F "scriptType=PYTHON" \
   -F "dataType=FILE" \

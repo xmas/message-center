@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-read -r server < ../server.info
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info5
 curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
-  -F "script=@script.r" \
+  -F "script=@${dir}/script.r" \
   -F "dataSourceType=HTTP_API" \
   -F "dataSourceResource=https://schemata.io/query/query?queryToken=PSLXNBJ9EJPIJM2I1GRSKEPBVGF4H338HY6XSN3Q" \
   -F "scriptType=R" \

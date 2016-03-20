@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-read -r server < ../server.info
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info
 echo ${server}
 curl --silent -k -G \
 -d "questionId=3" \
-${server}"/insightevals"
+${server}"/insightevals/1"
