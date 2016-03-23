@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletRequest;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Service
@@ -44,8 +46,8 @@ public class InsightsFilterService {
                         .comparison(Comparison.BETWEEN)
                         .field("date")
                         .value(new HashMap<String, LocalDateTime>() {{
-                            put(EntityFilter.LOWER_LIMIT_PARAM_NAME, LocalDateTime.parse(Optional.ofNullable(params.get("from")).orElseGet(LocalDateTime.MIN::toString)));
-                            put(EntityFilter.UPPER_LIMIT_PARAM_NAME, LocalDateTime.parse(Optional.ofNullable(params.get("to")).orElseGet(LocalDateTime.MAX::toString)));
+                            put(EntityFilter.LOWER_LIMIT_PARAM_NAME, parseDateOrDateTime(Optional.ofNullable(params.get("from")).orElseGet(LocalDateTime.MIN::toString)));
+                            put(EntityFilter.UPPER_LIMIT_PARAM_NAME, parseDateOrDateTime(Optional.ofNullable(params.get("to")).orElseGet(LocalDateTime.MAX::toString)));
                         }})
                         .build())
 
@@ -60,16 +62,16 @@ public class InsightsFilterService {
                 .build();
     }
 
-
-    private Long getQuestionId(ServletRequest request) {
-        String qIdString = request.getParameter("question");
-        Long qId = null;
+    private LocalDateTime parseDateOrDateTime(String val) {
         try {
-            qId = Long.valueOf(qIdString);
-        } catch (NumberFormatException nfe) {
-            throw new BadRequestException("Bad question id " + qIdString, nfe);
+            return LocalDateTime.parse(val);
+        } catch (DateTimeParseException dtpe) {
+            try {
+                return LocalDate.parse(val).atStartOfDay();
+            } catch (DateTimeParseException dpe) {
+                throw new BadRequestException("Bad dateTimeFormat for string " + val + ". Should be in ISO date format");
+            }
         }
-        return qId;
     }
 
     private EntityFilter.EntityFilterBuilder<Insight> addNonPredefinedParams(ServletRequest request) {

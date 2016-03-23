@@ -5,8 +5,10 @@ curl --silent -k \
 -H "Accept: application/json" \
 -G ${server}"/insights" -stderr \
 `# Non predefined parameters that was added by evaluator. Nothing is required`\
-`# Predefined parameters such as time and evalId. Nothing is required`\
--d "from=2016-03-23T17:27:20" \
--d "to=2016-03-26T22:34:33" \
 -d "param2=2" \
--d "question=19" \ | python -m json.tool
+`# Predefined parameters such as time when was evaluated, question and evalId. Nothing is required`\
+-d "from=2016-03-22" \
+-d "to=2016-03-26T22:15:31" \
+-d "eval=1" \
+-d "question=3" \ |
+ python -m json.tool
