@@ -1,10 +1,9 @@
 package com.xmas.insight.service;
 
+import com.xmas.exceptions.BadRequestException;
 import com.xmas.insight.entity.Insight;
-import com.xmas.util.filter.Comparison;
-import com.xmas.util.filter.Condition;
-import com.xmas.util.filter.EntityFilter;
-import com.xmas.util.filter.JoinMapCondition;
+import com.xmas.insight.entity.InsightEvaluator;
+import com.xmas.util.filter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,27 @@ public class InsightsFilterService {
                         }})
                         .build())
 
+                .withJoinCondition(JoinCondition.builder()
+                        .comparison(Comparison.EQUAL)
+                        .joinClass(InsightEvaluator.class)
+                        .joinAttributeName("evaluator")
+                        .field("questionId")
+                        .value(params.get("question") != null ? Long.valueOf(params.get("question")) : null)
+                        .build())
+
                 .build();
+    }
+
+
+    private Long getQuestionId(ServletRequest request) {
+        String qIdString = request.getParameter("question");
+        Long qId = null;
+        try {
+            qId = Long.valueOf(qIdString);
+        } catch (NumberFormatException nfe) {
+            throw new BadRequestException("Bad question id " + qIdString, nfe);
+        }
+        return qId;
     }
 
     private EntityFilter.EntityFilterBuilder<Insight> addNonPredefinedParams(ServletRequest request) {

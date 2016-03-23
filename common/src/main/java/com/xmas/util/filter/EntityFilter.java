@@ -15,26 +15,31 @@ public class EntityFilter<T> implements Specification<T> {
     public static final String UPPER_LIMIT_PARAM_NAME = "upper";
 
     private List<Condition> conditions = new ArrayList<>();
+    private List<JoinCondition> joinConditions = new ArrayList<>();
     private List<JoinMapCondition> joinMapConditions = new ArrayList<>();
     private Root<T> root;
     private CriteriaBuilder criteriaBuilder;
+    private CriteriaQuery<?> criteriaQuery;
+    private List<Predicate> predicates = new ArrayList<>();
 
-    private EntityFilter(List<Condition> conditions, List<JoinMapCondition> joinMapConditions) {
+    private EntityFilter(List<Condition> conditions, List<JoinMapCondition> joinMapConditions, List<JoinCondition> joinConditions) {
         this.conditions = conditions;
         this.joinMapConditions = joinMapConditions;
+        this.joinConditions = joinConditions;
     }
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        initFilter(root, criteriaBuilder);
-        List<Predicate> predicates = buildPredicates();
+        initFilter(root, criteriaBuilder, criteriaQuery);
+        predicates.addAll(buildPredicates());
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
     }
 
-    private void initFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
+    private void initFilter(Root<T> root, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery) {
         this.root = root;
         this.criteriaBuilder = criteriaBuilder;
+        this.criteriaQuery = criteriaQuery;
     }
 
     private List<Predicate> buildPredicates() {
@@ -46,18 +51,14 @@ public class EntityFilter<T> implements Specification<T> {
                 .map(this::buildMapJoinPredicate)
                 .collect(Collectors.toList());
 
+        List<Predicate> jPredicates = (List<Predicate>) joinConditions.stream()
+                .map(this::buildJoinPredicate)
+                .collect(Collectors.toList());
+
         predicates.addAll(jmPredicates);
+        predicates.addAll(jPredicates);
 
         return predicates;
-    }
-
-    private <K, V> Predicate buildMapJoinPredicate(JoinMapCondition<K, V> joinMapCondition) {
-        MapJoin<T, K, V> mapJoin = root.joinMap(joinMapCondition.getField());
-
-        Predicate keyPredicate = criteriaBuilder.equal(mapJoin.key(), joinMapCondition.getKey());
-        Predicate valPredicate = criteriaBuilder.equal(mapJoin.value(), joinMapCondition.getValue());
-
-        return criteriaBuilder.and(keyPredicate, valPredicate);
     }
 
     private Predicate buildPredicate(Condition condition) {
@@ -77,6 +78,25 @@ public class EntityFilter<T> implements Specification<T> {
             default:
                 throw new IllegalArgumentException("Unsupported filter type");
         }
+    }
+
+    private Predicate buildJoinPredicate(JoinCondition condition) {
+
+        Path path = root
+                .join(condition.getJoinAttributeName())
+                .get(condition.getField());
+
+        return criteriaBuilder.equal(path,
+                condition.getValue());
+    }
+
+    private <K, V> Predicate buildMapJoinPredicate(JoinMapCondition<K, V> joinMapCondition) {
+        MapJoin<T, K, V> mapJoin = root.joinMap(joinMapCondition.getField());
+
+        Predicate keyPredicate = criteriaBuilder.equal(mapJoin.key(), joinMapCondition.getKey());
+        Predicate valPredicate = criteriaBuilder.equal(mapJoin.value(), joinMapCondition.getValue());
+
+        return criteriaBuilder.and(keyPredicate, valPredicate);
     }
 
     private Predicate buildGreaterThanPredicate(Condition condition) {
@@ -132,21 +152,27 @@ public class EntityFilter<T> implements Specification<T> {
 
     public static class EntityFilterBuilder<T> {
 
+        private List<JoinCondition> joinConditions = new ArrayList<>();
         private List<Condition> conditions = new ArrayList<>();
         private List<JoinMapCondition> joinMapConditions = new ArrayList<>();
 
         public EntityFilterBuilder<T> withCondition(Condition condition) {
-            if(checkCondition(condition)) conditions.add(condition);
+            if (checkCondition(condition)) conditions.add(condition);
             return this;
         }
 
         public EntityFilterBuilder<T> withJoinMapCondition(JoinMapCondition condition) {
-            if(checkCondition(condition)) joinMapConditions.add(condition);
+            if (checkCondition(condition)) joinMapConditions.add(condition);
+            return this;
+        }
+
+        public EntityFilterBuilder<T> withJoinCondition(JoinCondition condition) {
+            if (checkCondition(condition)) joinConditions.add(condition);
             return this;
         }
 
         public EntityFilter<T> build() {
-            return new EntityFilter<>(conditions, joinMapConditions);
+            return new EntityFilter<>(conditions, joinMapConditions, joinConditions);
         }
     }
 
@@ -163,5 +189,13 @@ public class EntityFilter<T> implements Specification<T> {
                 && condition.getComparison() != null
                 && condition.getField() != null
                 && condition.getKey() != null;
+    }
+
+    private static boolean checkCondition(JoinCondition condition) {
+        return condition.getValue() != null
+                && condition.getComparison() != null
+                && condition.getField() != null
+                && condition.getJoinAttributeName() != null
+                && condition.getJoinClass() != null;
     }
 }

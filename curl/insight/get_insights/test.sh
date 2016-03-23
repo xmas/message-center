@@ -4,8 +4,9 @@ read -r server < ${dir}/../server.info
 curl --silent -k \
 -H "Accept: application/json" \
 -G ${server}"/insights" -stderr \
--d "param1=value3" \
--d "param2=5" \
--d "from=2016-03-23T14:57:20" \
+`# Non predefined parameters that was added by evaluator. Nothing is required`\
+`# Predefined parameters such as time and evalId. Nothing is required`\
+-d "from=2016-03-23T17:27:20" \
 -d "to=2016-03-26T22:34:33" \
--d "eval=1" \ | python -m json.tool
+-d "param2=2" \
+-d "question=19" \ | python -m json.tool
