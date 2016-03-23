@@ -13,7 +13,7 @@ import java.util.Map;
 public class ScriptFileUtil {
 
     private static final Map<ScriptType, String> scryptHeaders = new HashMap<ScriptType, String>() {{
-        put(ScriptType.NODE, "#!/usr/bin/nodejs");
+        put(ScriptType.NODE, "#!/usr/local/bin/node");
     }};
 
     public static final String SCRIPT_DIRECTORY_NAME = "script";

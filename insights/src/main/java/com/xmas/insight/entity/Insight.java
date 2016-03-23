@@ -1,7 +1,9 @@
 package com.xmas.insight.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xmas.entity.EvaluatedEntity;
 import com.xmas.util.NonePredefinedAttributesConverter;
+import com.xmas.util.json.LocalDateTimeSerializer;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,6 +31,7 @@ public class Insight implements EvaluatedEntity {
     private Map<String, Object> parameters;
 
     @Column
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime date;
 
     @Column
