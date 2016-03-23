@@ -1,6 +1,5 @@
 package com.xmas.insight.controller;
 
-import com.xmas.insight.dao.InsightRepository;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.service.InsightsFilterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +13,12 @@ import javax.servlet.ServletRequest;
 public class InsightsController {
 
     @Autowired
-    private InsightRepository insightRepository;
-
-    @Autowired
     private InsightsFilterService filterService;
 
 
     @RequestMapping
     public Iterable<Insight> getInsights(ServletRequest request) {
-        return filterService.aplyFilters(request, insightRepository.find());
+        return filterService.getInsights(request);
 
     }
 

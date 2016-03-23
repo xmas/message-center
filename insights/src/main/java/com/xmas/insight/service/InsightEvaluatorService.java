@@ -7,7 +7,7 @@ import com.xmas.insight.dao.InsightRepository;
 import com.xmas.insight.entity.Insight;
 import com.xmas.insight.entity.InsightEvaluator;
 import com.xmas.insight.validator.questionid.QuestionTemplate;
-import com.xmas.util.scheduller.JobDetailsFactory;
+import com.xmas.util.scheduler.JobDetailsFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustStrategy;

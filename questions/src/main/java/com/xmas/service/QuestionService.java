@@ -7,7 +7,7 @@ import com.xmas.entity.Question;
 import com.xmas.entity.Tag;
 import com.xmas.exceptions.BadRequestException;
 import com.xmas.exceptions.QuestionNotFoundException;
-import com.xmas.util.scheduller.JobDetailsFactory;
+import com.xmas.util.scheduler.JobDetailsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,8 +1,7 @@
-package com.xmas.util.scheduller;
+package com.xmas.util.scheduler;
 
 import com.xmas.exceptions.ProcessingException;
 import com.xmas.util.ScheduledCrudRepository;
-import com.xmas.util.scheduler.ScheduledEntity;
 import org.quartz.*;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Autowired;

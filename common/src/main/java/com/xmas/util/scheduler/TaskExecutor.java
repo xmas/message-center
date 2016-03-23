@@ -1,4 +1,4 @@
-package com.xmas.util.scheduller;
+package com.xmas.util.scheduler;
 
 import com.xmas.util.EntityEvaluator;
 import org.quartz.Job;
