@@ -1,5 +1,6 @@
+/*/target
+*.iml
 /src/main/resources/app.properties
-/target
 /.idea
-/message-service.iml
+
 

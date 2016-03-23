@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-read -r server < ../server.info
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info
 curl --silent -k -i -X POST -H "Content-Type: multipart/form-data"  \
-  -F "data=@input.dat" \
-  ${server}"/push/questions/3"
+  -F "data=@${dir}/input.dat" \
+  ${server}"/questions/3"

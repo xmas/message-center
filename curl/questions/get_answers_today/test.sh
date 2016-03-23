@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-read -r server < ../server.info
-curl --silent -k -G ${server}"/push/questions/3/answers" -stderr | python -m json.tool
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info
+curl --silent -k -G ${server}"/questions/3/answers" -stderr | python -m json.tool

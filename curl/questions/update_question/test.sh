@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+read -r server < ${dir}/../server.info5
 curl -i -X PUT -H "Content-Type: multipart/form-data"  \
-  -F "script=@script.r" \
+  -F "script=@${dir}/script.r" \
   -F "answerTemplate=@template.json" \
   -F "dataSourceType=FILE_UPLOAD" \
   -F "scriptType=R" \
   -F "dataType=FILE" \
   -F "tags=tag1" \
-  localhost:8080/push/questions/3
+  ${server}"/questions/3"
